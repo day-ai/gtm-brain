@@ -2,6 +2,16 @@
 
 **A Claude Code harness for running your Day AI workspace like a GTM operating system.**
 
+## Quickstart
+
+1. **Clone** this repo and open the folder in [Claude Code](https://claude.com/claude-code).
+2. **Authenticate** the Day AI MCP server (approve the `day-ai` server, complete the OAuth flow). You'll need to be an Owner or Admin of your workspace.
+3. **Run `/setup`** — it checks the connection, learns who's in your workspace, and scaffolds your plan.
+
+That's it. Details below.
+
+---
+
 This repo is a working example of how a go-to-market team can use [Claude Code](https://claude.com/claude-code) plus the **Day AI MCP server** to do two things well:
 
 1. **Plan** — turn your company's goals, your revenue strategy, and the concrete outcomes you're driving toward into living documents that an agent understands.
