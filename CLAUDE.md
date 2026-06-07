@@ -42,6 +42,8 @@ This harness is built on the workspace-management tools plus the read-only graph
 
 Use the Day AI MCP's read-only graph tools to ground the plan and every skill prompt in what the workspace actually contains — pipeline, contacts, meetings, prior conversations. `search_objects` (general graph search) and `get_meeting_recording_context` (a specific meeting's full context) are the primary ones. Discover the rest from the connected tool list rather than assuming names. **Never fabricate a custom property, pipeline stage, or page that you haven't confirmed exists in the workspace.**
 
+`get_skill_history` (read a skill's recent runs — produced output, firing times, and the `notification.result` delivery) is how the analyst confirms a skill is *actually delivering value*, not just configured. Use the run `notification.result` to confirm delivery — never the channel config. Admin/Owner can read any agent's skill history via `targetAssistantId`.
+
 ### Snapshots
 
 There's no separate version history for an agent. The `read`/`list` outputs of `assistant_settings` and `manage_skills` *are* the canonical snapshot of an agent and its skills. If you want to be able to diff or restore, capture those outputs to disk (the implementor does this under `rollouts/`).
@@ -100,7 +102,7 @@ The planning documents are designed to be **synced to Day AI Pages** (`/sync-pag
 
 A core thesis the analyst and implementor operate on: **almost every active person should be running at least two Day AI agents.** One agent is a chat; two or more means real job functions have been delegated. Every seller's baseline is a **CRM Data Nerd** (keeps the customer record correct and complete) and a **Coach** (deep on every deal, fluent in the company's process, preps and follows up). An agent's **identity description is its definition** — the equivalent of an `.md` agent definition here — so a blank or generic description is an unconfigured agent. The full archetype playbook and quality rubric live in `.claude/agents/data-analyst.md`.
 
-**Measuring value honestly:** the existing MCP confirms whether an agent is *well-built* (identity, skill craft, automation config). Confirming it's *actually delivering* — real run output and engagement — needs tools the public MCP doesn't expose yet. Those gaps are recorded in `docs/MCP_REQUIREMENTS.md`; never assert "delivering value" from configuration alone.
+**Measuring value honestly:** the MCP confirms whether an agent is *well-built* (identity, skill craft, automation) and — via `get_skill_history` — whether each skill is *actually delivering*: firing recently, producing substantive (not hollow) output, and delivered (per the run's `notification.result`, never the channel config). The remaining unknown is engagement *depth* (does a human act on it?), which needs tools recorded in `docs/MCP_REQUIREMENTS.md`. Never assert "delivering value" from a schedule existing — read the run history.
 
 ---
 

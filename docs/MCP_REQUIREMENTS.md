@@ -1,10 +1,10 @@
 # MCP Requirements — gaps the agent-value analyst needs closed
 
-The `data-analyst` agent and `/agent-audit` can already evaluate a lot from the existing Day AI MCP (membership, agent coverage, skill prompt craft, agent identity). But several high-value judgments — above all, *"is this agent actually delivering value?"* — can't be made from configuration alone. They need data the **admin** MCP exposes internally but the **public** `day.ai/api/mcp` server does not yet.
+The `data-analyst` agent and `/agent-audit` can already evaluate a lot from the existing Day AI MCP (membership, agent coverage, skill prompt craft, agent identity) and — with `get_skill_history`, now specified in DAY-2585 — whether each skill is actually *firing, producing substantive output, and being delivered.* A few high-value judgments still can't be made from what's exposed: above all, **engagement depth** (does a human act on the delivered output?) and **activation** (who's a live user vs. a cold seat). Those need data the **admin** MCP exposes internally but the **public** `day.ai/api/mcp` server does not yet.
 
-This doc records those gaps as paste-ready Linear tickets. Until they ship, the analyst is explicit in its reports about what it can confirm (build quality) vs. what it can't (realized value), and cites this file.
+This doc records the remaining gaps as paste-ready Linear tickets. The analyst stays explicit about what it can confirm (build quality + delivery) vs. what it can't yet (engagement depth, activation), and cites this file.
 
-> **Scope note.** The DAY-2585 "Admin/Owner MCP Tools" items (`assistant_settings` `list` + `targetAssistantId`, `manage_skills` cross-agent, `list_suggested_invites`, `resend_invite`) are treated as **live** in this harness. The items below are **net-new** beyond DAY-2585.
+> **Scope note.** DAY-2585 items are treated as **live** in this harness — including `assistant_settings` `list` + `targetAssistantId`, `manage_skills` cross-agent, `list_suggested_invites`, `resend_invite`, and now **`get_skill_history`** (run output + delivery result). The items below are **net-new** beyond DAY-2585.
 
 **Last updated:** 2026-06-07
 
@@ -14,29 +14,25 @@ This doc records those gaps as paste-ready Linear tickets. Until they ship, the 
 
 | # | Capability | Unblocks | Priority |
 |---|------------|----------|----------|
-| 1 | Skill run history (read) | Dimension 3 — is a skill *delivering*, not just configured | **P0** |
-| 2 | Engagement metrics (workspace + per-agent/user) | Dimension 3 value + Dimension 1 activation | **P0** |
+| ~~1~~ | ~~Skill run history (read)~~ | ~~is a skill *delivering*, not just configured~~ | ✅ **Specified in DAY-2585** — `get_skill_history`; treated as live |
+| 2 | Engagement metrics (workspace + per-agent/user) | Dimension 3 engagement depth + Dimension 1 activation | **P0** |
 | 3 | Member activity / last-active | Dimension 1 — dormant vs active, who to nudge | P1 |
 | 4 | Pipeline & stage definitions / CRM schema (read) | Dimension 2 — process-fluent Coach agents | P1 |
 | 5 | Object completeness / `updatedAt` in search results | Dimension 3 — measuring CRM hygiene at scale | P2 |
 
 ---
 
-## 1 — Skill run history (read) · P0
+## 1 — Skill run history (read) · ✅ Specified in DAY-2585
 
-**Title:** Public MCP: read skill run history (recent run output + delivery result)
+**Status:** No longer a gap — translated into the DAY-2585 spec as the **`get_skill_history`** tool (run output, firing times, and `notification.result` delivery), and treated as live in this harness. The analyst (`.claude/agents/data-analyst.md`, Dimension 3a.3) and `/agent-audit` now read it to confirm a skill is firing, producing substantive vs. hollow output, and being delivered — rather than caveating every effectiveness claim.
 
-**Problem.** `/agent-audit` can read a skill's prompt and trigger config, but cannot see whether it actually fires, what it produces, or whether the output is substantive vs. hollow. "This skill has a daily schedule" is not evidence it delivers value — a great prompt over empty data produces nothing useful, and a stale skill keeps a schedule long after it stopped mattering. Today the analyst must caveat every effectiveness claim.
+The original requirement is preserved here for traceability:
 
-**What we need.** A read tool (parallel to the internal admin `get_skill_history`) that, given a skill (and `targetAssistantId` for Admin/Owner), returns the last N runs: timestamp, whether it fired on schedule, the run's output/transcript (or a substantive summary), and the **delivery result** of any notification call (delivered via Slack DM / email / failed) — not just the channel config.
+> **What we needed.** A read tool (parallel to the internal admin `get_skill_history`) that, given a skill (and `targetAssistantId` for Admin/Owner), returns the last N runs: timestamp, whether it fired on schedule, the run's output/transcript (or a substantive summary), and the **delivery result** of any notification call (delivered via Slack DM / email / failed) — not just the channel config.
+>
+> **Acceptance criteria.** Returns ≥5 recent runs with timestamps and output; surfaces the notification *result* (delivered/failed + channel) so delivery is confirmed from the event, not `slackNotificationChannels`; Admin/Owner can read any agent via `targetAssistantId`, a user their own; "never run" returns empty, not an error.
 
-**Acceptance criteria.**
-- Returns ≥ the last 5 runs for a given skill, with timestamps and output.
-- Surfaces the notification *result* (delivered/failed + channel), so delivery is confirmed from the event, not inferred from `slackNotificationChannels`.
-- Admin/Owner can read any agent's skill history via `targetAssistantId`; a user can read their own.
-- Handles "never run" cleanly (empty, not error).
-
-**Notes.** This is the single highest-value gap. With it, `/agent-audit` can score each skill Thriving / Producing-but-hollow / Not-firing on evidence.
+What it does **not** cover (still open below): whether a human actually *engages* with the delivered output — that's **#2, engagement metrics**, now the top remaining priority.
 
 ---
 

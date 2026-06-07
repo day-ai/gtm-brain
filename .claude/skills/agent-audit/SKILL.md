@@ -41,10 +41,11 @@ Evaluate all three dimensions per your instructions:
    Recommend the missing agents by archetype (every seller needs a CRM Data Nerd and a Coach),
    favoring human-shaped agents built on a real slice of each person's week.
 3. Agent quality — for each agent: skill craft (vs write-skill bar), automation fitness (scheduled/
-   triggered vs manual, right cadence, delivered), and whether the data the skills depend on exists.
-   And identity quality: name, title, and especially the description (the agent's system prompt).
-   Be explicit about what you can confirm vs. what needs run-history/engagement data we don't have yet
-   (cite docs/MCP_REQUIREMENTS.md).
+   triggered vs manual, right cadence), and effectiveness from get_skill_history (firing recently?
+   output substantive vs hollow? delivered — per notification.result, not channel config?). And
+   identity quality: name, title, and especially the description (the agent's system prompt). The one
+   thing you still can't see is engagement depth (does a human act on the output?) — name it and cite
+   docs/MCP_REQUIREMENTS.md.
 Recommend; do not execute. Return your full analysis in your output format, prioritized for /implement.
 ```
 
@@ -63,7 +64,8 @@ Save to `rollouts/<YYYY-MM-DD>-agent-audit/REPORT.md` and present a tight summar
 | Active people with ≥2 agents | {N}/{N} |
 | Sellers with both a Coach and a CRM Data Nerd | {N}/{N} |
 | Agents with a strong identity (name + title + description) | {N}/{N} |
-| Skills that are well-written AND properly automated | {N}/{N} |
+| Skills well-written AND properly automated | {N}/{N} |
+| Scheduled skills confirmed firing with substantive, delivered output | {N}/{N} |
 | People who should be in the workspace but aren't | {N} |
 
 **Where this team is:** {one line — e.g. "using Day AI as a shared contact list, not as GTM automation."}
@@ -99,6 +101,6 @@ Report saved to rollouts/{date}-agent-audit/REPORT.md
 
 - **Recommend-only. No invites, no edits, no skill writes.** This skill sees clearly and proposes; `/implement` acts.
 - **The draft nudge emails are a first-class output** — they're often the single highest-ROI thing in the report, because re-engaging an already-invited person is nearly free. Draft them in the operator's voice, specific to each person, short and human.
-- **Be honest about the effectiveness gap.** You can confirm an agent is well-built and *should* work; confirming it's actually delivering needs run-history/engagement tools the public MCP doesn't expose yet (`docs/MCP_REQUIREMENTS.md`). Don't claim "delivering value" from configuration alone.
+- **Confirm effectiveness from `get_skill_history`, not config.** Read recent runs: firing? substantive vs hollow output? delivered (per `notification.result`, never the channel config)? Firing + substantive + delivered = delivering value. The only thing still unmeasurable is engagement *depth* (does the person act on it?) — that needs the engagement-metrics tool in `docs/MCP_REQUIREMENTS.md`. Don't claim "delivering value" from a schedule existing.
 - Prioritize by leverage: standing up Coach + CRM Data Nerd agents for a team of active sellers beats polishing one already-good agent.
 - Re-run periodically — the maturity table is most useful as a trend.

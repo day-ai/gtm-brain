@@ -99,7 +99,7 @@ That has a sharp implication this harness is built around: **almost every active
 
 `/agent-audit` measures how far a workspace is from that bar and hands you the path to close it. `/design-agent` builds the agents. The whole harness exists to make the value of Day AI's agents real and visible — and most teams are capturing a fraction of it.
 
-> **A note on measuring value.** Confirming an agent is *well-built* is possible with today's Day AI MCP. Confirming it's *actually delivering* — reading real skill-run output and engagement — needs a few MCP tools that don't exist yet. Those gaps are written up as ready-to-file Linear tickets in [`docs/MCP_REQUIREMENTS.md`](docs/MCP_REQUIREMENTS.md); until they ship, the analyst is explicit about what it can and can't confirm.
+> **A note on measuring value.** The analyst confirms an agent is *well-built* (identity, skill craft, automation) **and** *actually delivering* — it reads each skill's real run history via `get_skill_history` to check it's firing, producing substantive (not hollow) output, and being delivered. The one thing it still can't see is engagement *depth* — whether a human acts on the output — which needs a couple of MCP tools that don't exist yet. Those remaining gaps are written up as ready-to-file Linear tickets in [`docs/MCP_REQUIREMENTS.md`](docs/MCP_REQUIREMENTS.md), and the analyst is explicit about the line between what it can and can't confirm.
 
 ---
 
