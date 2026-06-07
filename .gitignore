@@ -1,0 +1,21 @@
+# Local Claude Code state — keep agents/skills/commands tracked, ignore runtime
+.claude/settings.local.json
+.claude/projects/
+.claude/worktrees/
+.claude/scheduled_tasks.lock
+.claude/**/*.lock
+
+# OS / editor
+.DS_Store
+*.swp
+.vscode/
+.idea/
+
+# Secrets — never commit credentials or tokens
+.env
+.env.*
+*.local
+
+# Scratch
+tmp/
+*.log
