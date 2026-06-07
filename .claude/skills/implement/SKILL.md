@@ -17,7 +17,12 @@ Scope the run to what the argument names (a person, a team, an outcome, or "the 
 
 1. Call `manage_workspace_members` → `list_configuration` and check `currentUser.roleName`.
    - **Not Owner/Admin** → stop for anything cross-agent or member-related. Tell the operator they can only configure their *own* agent; everything else needs Admin/Owner. Offer to proceed with just their own agent, or to stop.
-2. Read the plan (`planning/*.md`, `workspace/PEOPLE.md`) and the most recent `rollouts/<date>-audit/REPORT.md` if one exists. If there's no recent audit, run `/audit` first (or spawn the audit inline) — don't implement blind.
+2. Read the plan (`planning/*.md`, `workspace/PEOPLE.md`) and the relevant recommendations in `rollouts/`:
+   - `<date>-agent-audit/REPORT.md` — recommended invites (and the draft nudge emails), missing agents, and weak skills/identities from `/agent-audit`.
+   - `<date>-audit/REPORT.md` — plan-vs-workspace gaps from `/audit`.
+   - `<date>-<person>-<archetype>/AGENT.md` — deployment-ready agent specs from `/design-agent`.
+
+   If there's no recent audit or spec for the scope, run `/agent-audit` or `/audit` first (or spawn one inline) — don't implement blind.
 
 ---
 

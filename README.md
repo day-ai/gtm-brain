@@ -75,15 +75,31 @@ claude mcp add --transport http day-ai https://day.ai/api/mcp
                     the plan is the source of truth
                                    ▼
 ┌──────────────────────── IMPLEMENTATION LAYER ────────────────────────┐
-│  Audit the current workspace → find the gap between plan and reality   │
+│  Audit how well you're using Day AI's agents today (the agent-value    │
+│    review) and the gap between the plan and reality                    │
 │  Invite the right people at the right roles                            │
-│  Configure each teammate's agent identity                              │
+│  Give each person the agents they should have, with strong identities  │
 │  Deploy role-specific skills that do real work on a schedule           │
 │  Sync planning docs to/from Day AI Pages                               │
 └───────────────────────────────────────────────────────────────────────┘
 ```
 
 You write (with an agent's help) what the business is trying to do. The harness then makes your Day AI workspace *reflect* that — and keeps it reflecting it as the plan evolves.
+
+---
+
+## Day AI agents are GTM automation
+
+The point of Day AI isn't a smarter chatbot you talk to all day. It's **automation**: you carve slices of your job into agent-shaped job descriptions and hand them over, and the agents produce work product proactively — prep, drafts, clean records, coaching — without anyone having to ask.
+
+That has a sharp implication this harness is built around: **almost every active person should be running at least two agents.** One agent is a chat. Two or more means you've actually started delegating job functions. For sellers specifically, the baseline is two:
+
+- **A CRM Data Nerd** — keeps every opportunity, note, and context object correct and complete from what actually happened in conversations. Works whether you run on Day AI, HubSpot, or Salesforce. This is the agent that ends "the CRM is always out of date."
+- **A Coach** — goes deep on every deal: patterns, blockers, what's working on other reps' deals, fluent in *your* pipeline and process. Preps you before meetings, drafts emails to unstick deals, follows up after calls.
+
+`/agent-audit` measures how far a workspace is from that bar and hands you the path to close it. `/design-agent` builds the agents. The whole harness exists to make the value of Day AI's agents real and visible — and most teams are capturing a fraction of it.
+
+> **A note on measuring value.** Confirming an agent is *well-built* is possible with today's Day AI MCP. Confirming it's *actually delivering* — reading real skill-run output and engagement — needs a few MCP tools that don't exist yet. Those gaps are written up as ready-to-file Linear tickets in [`docs/MCP_REQUIREMENTS.md`](docs/MCP_REQUIREMENTS.md); until they ship, the analyst is explicit about what it can and can't confirm.
 
 ---
 
@@ -95,7 +111,7 @@ Three subagents do the work. You rarely invoke them directly — the skills belo
 |-------|------|
 | **`gtm-strategist`** | Builds and maintains the planning layer. Identifies the key players, interviews you to fill gaps, and runs through your workspace graph to ground the plan in what's actually there. |
 | **`agent-implementor`** | The workhorse. Reads the plan, audits the workspace, and creates/updates agents and skills via the MCP. Writes every skill prompt to a high bar. |
-| **`data-analyst`** | Grounds everything in reality — pulls the workspace's pipeline, contacts, meetings, and current agent/skill configuration so the plan and rollout are built on what the data actually supports. |
+| **`data-analyst`** | The agent-value analyst. Grounds the plan in reality *and* evaluates how much value you're actually getting from your Day AI agents — who should be in the workspace, who's missing the agents they need, and whether the skills and identities are any good. Recommends; never executes. |
 
 ## The skills (slash commands)
 
@@ -103,24 +119,28 @@ Three subagents do the work. You rarely invoke them directly — the skills belo
 |---------|-------------|
 | **`/setup`** | **Start here.** Verifies the MCP connection and your role, identifies the workspace and its people, and scaffolds your planning documents through a short interview. |
 | **`/plan`** | Build or refresh the three planning-layer documents. Interview loop + workspace asset discovery. |
-| **`/audit`** | Compare the current workspace (members, agents, skills) against the plan and produce a prioritized gap report. No changes are made. |
-| **`/implement`** | Turn the plan and audit into real changes: invites, agent identity, and deployed skills. Always previews before it writes. |
-| **`/write-skill`** | The teaching guide for authoring a single high-quality skill prompt. Read by the implementor before it writes anything. |
+| **`/agent-audit`** | The agent-value review. Scores how well you're using Day AI's agents and hands you a prioritized path to a lot more — invites (with draft nudge emails), missing agents, and weak skills/identities. No changes are made. |
+| **`/design-agent`** | Design one complete, deployment-ready agent for a person — its identity and starter skills — built on a proven archetype (CRM Data Nerd, Coach, …). |
+| **`/audit`** | Compare the current workspace against *the plan* and produce a prioritized gap report. No changes are made. |
+| **`/implement`** | Turn the plan, audit, and agent designs into real changes: invites, agent identity, and deployed skills. Always previews before it writes. |
+| **`/write-skill`** | The teaching guide for authoring a single high-quality skill prompt. Read before any skill is written. |
 | **`/sync-pages`** | Sync the planning documents to/from Day AI Pages so the rest of your company can see them. |
 
 ---
 
-## Quickstart
+## The full flow
 
 ```
 1.  Open this folder in Claude Code and approve the `day-ai` MCP server.
 2.  Run  /setup            → connection check, who's-who, planning scaffolds
 3.  Run  /plan             → fill in goals, strategy, and outcomes
-4.  Run  /audit            → see the gap between the plan and the workspace
-5.  Run  /implement        → invite people, tune agents, deploy skills
+4.  Run  /agent-audit      → how well are you using Day AI's agents? what's the gap?
+5.  Run  /audit            → how well does the workspace deliver the plan?
+6.  Run  /design-agent     → design the missing agents (e.g. a Coach for each seller)
+7.  Run  /implement        → invite people, tune agents, deploy skills
 ```
 
-Re-run `/audit` and `/implement` whenever the plan changes. The plan is living; the workspace should track it.
+`/agent-audit` and `/audit` are two lenses: one on *how well you're using Day AI*, one on *how well the workspace delivers your plan*. Re-run them — and `/implement` — whenever the plan or the team changes. The plan is living; the workspace should track it.
 
 ---
 
@@ -133,14 +153,17 @@ gtm-brain/
 ├── .mcp.json                 ← Day AI MCP server config
 ├── .claude/
 │   ├── agents/               ← gtm-strategist, agent-implementor, data-analyst
-│   └── skills/               ← setup, plan, audit, implement, write-skill, sync-pages
+│   └── skills/               ← setup, plan, agent-audit, design-agent, audit,
+│                                implement, write-skill, sync-pages
 ├── planning/
 │   ├── COMPANY_PLAN.md       ← layer 1: goals, forecasts, plans
 │   ├── STRATEGY.md           ← layer 2: CRO-level strategy & direction
 │   └── OUTCOMES.md           ← layer 3: concrete outcomes
 ├── workspace/
 │   └── PEOPLE.md             ← who's who in the workspace
-└── rollouts/                 ← per-rollout build artifacts the implementor writes
+├── docs/
+│   └── MCP_REQUIREMENTS.md   ← MCP tool gaps the analyst needs (Linear-ready)
+└── rollouts/                 ← audit reports, agent specs, and deploy snapshots
 ```
 
 ---

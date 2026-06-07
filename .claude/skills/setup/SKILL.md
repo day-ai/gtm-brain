@@ -75,10 +75,12 @@ Close by showing the operator where they are and what's next:
 **Plan:** scaffolded — {N} open questions marked TODO
 
 ### What's next
-- `/plan`      → deepen the planning layer; resolve the {N} open TODOs
-- `/audit`     → see the gap between the plan and the workspace today
-- `/implement` → invite people, tune agents, deploy skills (Owner/Admin)
-- `/sync-pages`→ publish the plan to Day AI Pages for the rest of the company
+- `/plan`         → deepen the planning layer; resolve the {N} open TODOs
+- `/agent-audit`  → see how well you're using Day AI's agents today and where the value is (recommended early — it's often eye-opening)
+- `/audit`        → see the gap between the plan and the workspace today
+- `/design-agent` → design the missing agents (every seller wants a Coach and a CRM Data Nerd)
+- `/implement`    → invite people, tune agents, deploy skills (Owner/Admin)
+- `/sync-pages`   → publish the plan to Day AI Pages for the rest of the company
 
 The plan in `planning/` is yours to edit directly anytime — the agents read it as the source of truth.
 ```

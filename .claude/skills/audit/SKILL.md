@@ -9,6 +9,8 @@ Diff the plan against reality. For every outcome the plan calls for, is the work
 
 `/audit` makes **no changes**. It produces the gap report that `/implement` then acts on.
 
+> **`/audit` vs `/agent-audit`:** this skill checks the workspace against *your plan*. `/agent-audit` checks how well you're using Day AI's agents at all (coverage, skill/identity quality, who's missing) — independent of the plan. Run both; they're complementary lenses.
+
 $ARGUMENTS
 
 If an argument scopes the run (a person, a team, an outcome), focus there. Otherwise audit the whole workspace against the whole plan.

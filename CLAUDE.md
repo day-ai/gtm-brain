@@ -91,20 +91,29 @@ The shared state the team operates on. Agents read from and write to these locat
 | `planning/STRATEGY.md` | CRO-level revenue strategy & direction (layer 2) | `/plan`, manual |
 | `planning/OUTCOMES.md` | Concrete outcomes that serve layers 1–2 (layer 3) | `/plan`, manual |
 | `workspace/PEOPLE.md` | Who's who in the workspace — roles, agents, focus | `/setup`, `/plan` |
-| `rollouts/<YYYY-MM-DD>-<slug>/` | Per-rollout artifacts: audit, proposed changes, deployed snapshot | `/audit`, `/implement` |
+| `rollouts/<YYYY-MM-DD>-<slug>/` | Per-run artifacts: audit reports, agent specs, proposed/approved/deployed changes, snapshots | `/agent-audit`, `/audit`, `/design-agent`, `/implement` |
+| `docs/MCP_REQUIREMENTS.md` | MCP tool gaps the analyst needs closed, as Linear-ready tickets | manual |
 
 The planning documents are designed to be **synced to Day AI Pages** (`/sync-pages`) so the rest of the company sees the same source of truth.
+
+## Agents are GTM automation
+
+A core thesis the analyst and implementor operate on: **almost every active person should be running at least two Day AI agents.** One agent is a chat; two or more means real job functions have been delegated. Every seller's baseline is a **CRM Data Nerd** (keeps the customer record correct and complete) and a **Coach** (deep on every deal, fluent in the company's process, preps and follows up). An agent's **identity description is its definition** — the equivalent of an `.md` agent definition here — so a blank or generic description is an unconfigured agent. The full archetype playbook and quality rubric live in `.claude/agents/data-analyst.md`.
+
+**Measuring value honestly:** the existing MCP confirms whether an agent is *well-built* (identity, skill craft, automation config). Confirming it's *actually delivering* — real run output and engagement — needs tools the public MCP doesn't expose yet. Those gaps are recorded in `docs/MCP_REQUIREMENTS.md`; never assert "delivering value" from configuration alone.
 
 ---
 
 ## How the pieces fit
 
 ```
-/setup     → connection + role check, identify people, scaffold the plan
-/plan      → gtm-strategist + data-analyst build the planning layer
-/audit     → data-analyst + agent-implementor diff the workspace vs. the plan
-/implement → agent-implementor invites people, tunes agents, deploys skills
-/sync-pages→ push/pull planning docs to Day AI Pages
+/setup        → connection + role check, identify people, scaffold the plan
+/plan         → gtm-strategist + data-analyst build the planning layer
+/agent-audit  → data-analyst scores how well you're using Day AI's agents + recommends
+/design-agent → data-analyst + agent-implementor design one complete agent (identity + skills)
+/audit        → data-analyst + agent-implementor diff the workspace vs. the plan
+/implement    → agent-implementor invites people, tunes agents, deploys skills
+/sync-pages   → push/pull planning docs to Day AI Pages
 ```
 
-Read the plan, change the workspace, keep them in sync. That's the loop.
+Two audit lenses: `/agent-audit` measures how well you're using Day AI's agents (independent of the plan); `/audit` measures how well the workspace delivers the plan. Read the plan, raise the bar on the agents, change the workspace, keep them in sync. That's the loop.
