@@ -1,6 +1,10 @@
-# GTM Brain
+<p align="center">
+  <img src="assets/gtm-brain-ribbons.png" alt="GTM Brain" width="240">
+</p>
 
-**A Claude Code harness for running your Day AI workspace like a GTM operating system.**
+<h1 align="center">GTM Brain</h1>
+
+<p align="center"><strong>A Claude Code harness for running your Day AI workspace like a GTM operating system.</strong></p>
 
 ## Quickstart
 
