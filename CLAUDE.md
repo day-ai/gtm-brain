@@ -9,12 +9,14 @@ There are two layers, and they have a strict relationship:
 
 Plan first. Implement from the plan. When reality and the plan diverge, the job is to either change the workspace or update the plan — never to let the gap sit silently.
 
+**Initiatives are the unit of work between the two.** An **initiative** (`initiatives/<slug>.md`) is a bounded, owned, time-boxed effort with a verifiable definition of success — it pulls from the plan and drives implementation work until its success criteria actually verify against the workspace. Initiatives sit *above* the fine-grained outcomes in `planning/OUTCOMES.md`: an outcome is atomic ("draft a follow-up after a call"); an initiative is the larger effort an outcome serves ("get the team running on Day AI by Q3"), realized through many outcomes, invites, agents, and skills. **`/start`** is the entrypoint that takes stock of every initiative and kicks off what each one needs. See [`initiatives/README.md`](initiatives/README.md) for the file format, status lifecycle (`NEW → IN_PROGRESS → SUCCEEDED`, plus `PAUSED`/`CANCELLED`), and the default `bootstrap-day-ai` initiative that ships with the repo.
+
 ---
 
 ## Prerequisites every agent assumes
 
 1. **The Day AI MCP server (`day-ai`) is connected and authorized.** All workspace reads and writes go through it. Identity is implicit in the OAuth token — you never pass `workspaceId`, `userId`, or the current `assistantId`. You only pass `targetAssistantId` when an Owner/Admin acts on a *different* agent than their own.
-2. **The operator is an Owner or Admin.** Cross-agent and member-management actions require the `USERS:manage` permission. If a tool returns *"requires Admin or Owner,"* stop and tell the operator — don't design around it. `/setup` confirms the role up front via `manage_workspace_members` → `list_configuration` → `currentUser.roleName`.
+2. **The operator is an Owner or Admin.** Cross-agent and member-management actions require the `USERS:manage` permission. If a tool returns *"requires Admin or Owner,"* stop and tell the operator — don't design around it. `/start` confirms the role up front via `manage_workspace_members` → `list_configuration` → `currentUser.roleName`.
 
 ---
 
@@ -91,8 +93,9 @@ The shared state the team operates on. Agents read from and write to these locat
 |----------|-----------|-----------|
 | `planning/COMPANY_PLAN.md` | Company goals, forecasts, plans (layer 1) | `/plan`, manual |
 | `planning/STRATEGY.md` | CRO-level revenue strategy & direction (layer 2) | `/plan`, manual |
-| `planning/OUTCOMES.md` | Concrete outcomes that serve layers 1–2 (layer 3) | `/plan`, manual |
-| `workspace/PEOPLE.md` | Who's who in the workspace — roles, agents, focus | `/setup`, `/plan` |
+| `planning/OUTCOMES.md` | Concrete, fine-grained outcomes that serve layers 1–2 (layer 3) | `/plan`, manual |
+| `initiatives/<slug>.md` | Bounded, owned, time-boxed efforts with verifiable success criteria and a status. The unit of work between the plan and implementation; realized through outcomes/agents/skills | `/start`, manual |
+| `workspace/PEOPLE.md` | Who's who in the workspace — roles, agents, focus | `/start`, `/plan` |
 | `rollouts/<YYYY-MM-DD>-<slug>/` | Per-run artifacts: audit reports, agent specs, proposed/approved/deployed changes, snapshots | `/agent-audit`, `/audit`, `/design-agent`, `/implement` |
 | `docs/MCP_REQUIREMENTS.md` | MCP tool gaps the analyst needs closed, as Linear-ready tickets | manual |
 
@@ -102,6 +105,8 @@ The planning documents are designed to be **synced to Day AI Pages** (`/sync-pag
 
 A core thesis the analyst and implementor operate on: **almost every active person should be running at least two Day AI agents.** One agent is a chat; two or more means real job functions have been delegated. Every seller's baseline is a **CRM Data Nerd** (keeps the customer record correct and complete) and a **Coach** (deep on every deal, fluent in the company's process, preps and follows up). An agent's **identity description is its definition** — the equivalent of an `.md` agent definition here — so a blank or generic description is an unconfigured agent. The full archetype playbook and quality rubric live in `.claude/agents/data-analyst.md`.
 
+**Two is the default expectation, not a quota to hit.** Agents cost money — they consume seats, and their automated skills consume tier budget. So every recommendation to add an agent must carry its own **value-vs-cost case**: the job slice it delegates, the work product it would proactively produce, and the seat/tier it requires. An agent worth adding pays for itself many times over and that case is easy to make; an agent added to move a count is waste. Never recommend "add a second agent" without making the case, and surface the seat/tier cost (`navigate_to_billing` when a seat is needed) as part of the recommendation, not as a surprise at deploy time.
+
 **Measuring value honestly:** the MCP confirms whether an agent is *well-built* (identity, skill craft, automation) and — via `get_skill_history` — whether each skill is *actually delivering*: firing recently, producing substantive (not hollow) output, and delivered (per the run's `notification.result`, never the channel config). The remaining unknown is engagement *depth* (does a human act on it?), which needs tools recorded in `docs/MCP_REQUIREMENTS.md`. Never assert "delivering value" from a schedule existing — read the run history.
 
 ---
@@ -109,7 +114,7 @@ A core thesis the analyst and implementor operate on: **almost every active pers
 ## How the pieces fit
 
 ```
-/setup        → connection + role check, identify people, scaffold the plan
+/start        → connection + role check, take stock of initiatives, kick off what each one needs
 /plan         → gtm-strategist + data-analyst build the planning layer
 /agent-audit  → data-analyst scores how well you're using Day AI's agents + recommends
 /design-agent → data-analyst + agent-implementor design one complete agent (identity + skills)
@@ -118,4 +123,4 @@ A core thesis the analyst and implementor operate on: **almost every active pers
 /sync-pages   → push/pull planning docs to Day AI Pages
 ```
 
-Two audit lenses: `/agent-audit` measures how well you're using Day AI's agents (independent of the plan); `/audit` measures how well the workspace delivers the plan. Read the plan, raise the bar on the agents, change the workspace, keep them in sync. That's the loop.
+`/start` is the standing entrypoint: it reads `initiatives/`, reports each initiative's progress against its verifiable success criteria, and hands off to the skills above to do the work. On a fresh clone the only initiative is `bootstrap-day-ai`, so `/start` behaves like first-run setup. Two audit lenses: `/agent-audit` measures how well you're using Day AI's agents (independent of the plan); `/audit` measures how well the workspace delivers the plan. Read the plan, raise the bar on the agents, change the workspace, keep them in sync. That's the loop.

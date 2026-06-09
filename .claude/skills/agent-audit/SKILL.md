@@ -67,9 +67,11 @@ Save to `rollouts/<YYYY-MM-DD>-agent-audit/REPORT.md` and present a tight summar
 | Skills well-written AND properly automated | {N}/{N} |
 | Scheduled skills confirmed firing with substantive, delivered output | {N}/{N} |
 | People who should be in the workspace but aren't | {N} |
+| Recommended new agents · seats they'd need · ~free moves (no new seat) | {N} · {N} · {N} |
 
 **Where this team is:** {one line — e.g. "using Day AI as a shared contact list, not as GTM automation."}
 **The single highest-leverage move:** {one line}
+**The cost to close the gap:** {one line — e.g. "3 new seats for the 3 active sellers; the other 5 highest-value moves need no new seat."}
 ```
 
 Then the analyst's full findings, recommendations, and the draft nudge emails verbatim.
@@ -92,6 +94,7 @@ Report saved to rollouts/{date}-agent-audit/REPORT.md
 ### Next
 - `/design-agent {person} {archetype}` → turn a recommended agent into a deployment-ready spec
 - `/implement {scope}`               → deploy the approved invites, identities, and skills (previews first)
+- `/start`                           → see how this moves your initiatives (agent coverage + delivery are core `bootstrap-day-ai` criteria)
 - Send the draft nudge emails above from your own inbox to the people who should be here
 ```
 
@@ -102,5 +105,6 @@ Report saved to rollouts/{date}-agent-audit/REPORT.md
 - **Recommend-only. No invites, no edits, no skill writes.** This skill sees clearly and proposes; `/implement` acts.
 - **The draft nudge emails are a first-class output** — they're often the single highest-ROI thing in the report, because re-engaging an already-invited person is nearly free. Draft them in the operator's voice, specific to each person, short and human.
 - **Confirm effectiveness from `get_skill_history`, not config.** Read recent runs: firing? substantive vs hollow output? delivered (per `notification.result`, never the channel config)? Firing + substantive + delivered = delivering value. The only thing still unmeasurable is engagement *depth* (does the person act on it?) — that needs the engagement-metrics tool in `docs/MCP_REQUIREMENTS.md`. Don't claim "delivering value" from a schedule existing.
-- Prioritize by leverage: standing up Coach + CRM Data Nerd agents for a team of active sellers beats polishing one already-good agent.
+- Prioritize by **value per cost**, not raw leverage: a near-free move (re-engaging an already-invited person, rewriting an existing skill, scheduling a skill that already exists) outranks one that needs a new seat unless the value is overwhelming. Standing up Coach + CRM Data Nerd agents for a team of active sellers is high value *and* worth the seats — but say what it costs. Every recommended new agent must carry its value-vs-cost case (job slice + output vs. seat/tier), and the report must total the cost to close the gap so the operator sees the bill before `/implement`, never after.
 - Re-run periodically — the maturity table is most useful as a trend.
+- **This audit is how `/start` verifies an initiative's agent-coverage and skill-delivery criteria.** When invoked as a grounding step for an initiative (e.g. `bootstrap-day-ai`), the maturity table maps directly onto those success criteria — frame the headline around what the initiative still needs to hit, not just abstract maturity.

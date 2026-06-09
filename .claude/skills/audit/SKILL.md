@@ -95,6 +95,7 @@ Report saved to rollouts/{date}-audit/REPORT.md
 ### Next
 - `/implement {scope}` → roll out the {N} high-priority changes (previews before writing)
 - `/plan`              → if the audit revealed the plan itself is wrong or incomplete
+- `/start`             → if these gaps belong to an active initiative, see how closing them moves its success criteria
 ```
 
 ---

@@ -17,12 +17,12 @@ Scope the run to what the argument names (a person, a team, an outcome, or "the 
 
 1. Call `manage_workspace_members` → `list_configuration` and check `currentUser.roleName`.
    - **Not Owner/Admin** → stop for anything cross-agent or member-related. Tell the operator they can only configure their *own* agent; everything else needs Admin/Owner. Offer to proceed with just their own agent, or to stop.
-2. Read the plan (`planning/*.md`, `workspace/PEOPLE.md`) and the relevant recommendations in `rollouts/`:
+2. Read the plan (`planning/*.md`, `workspace/PEOPLE.md`), any **initiative(s)** the scope serves (`initiatives/*.md` — most changes advance the success criteria of one), and the relevant recommendations in `rollouts/`:
    - `<date>-agent-audit/REPORT.md` — recommended invites (and the draft nudge emails), missing agents, and weak skills/identities from `/agent-audit`.
    - `<date>-audit/REPORT.md` — plan-vs-workspace gaps from `/audit`.
    - `<date>-<person>-<archetype>/AGENT.md` — deployment-ready agent specs from `/design-agent`.
 
-   If there's no recent audit or spec for the scope, run `/agent-audit` or `/audit` first (or spawn one inline) — don't implement blind.
+   If there's no recent audit or spec for the scope, run `/agent-audit` or `/audit` first (or spawn one inline) — don't implement blind. Note which initiative's criteria this change set moves; you'll report progress against it at the end.
 
 ---
 
@@ -53,8 +53,9 @@ Present the full change set to the operator, organized as:
 - **Invites** — table of email, role, and the plan reference justifying each.
 - **Agent identity edits** — per person, the from → to for each field.
 - **Skills** — for each: target agent, scope (agent vs. workspace_library), trigger, channel, the plan outcome it serves, and the **full prompt text**. Show enough that the operator can read what their teammate will actually receive.
+- **Cost** — what this change set costs: new agents and the seats they need, any tier bump required to fit the automated skills, and which items are free (re-engages, identity rewrites, skills on existing agents). Surface `navigate_to_billing` if a seat is needed. The operator should see the bill before approving, not discover it at deploy time.
 
-Then stop and ask for approval. Make the stakes explicit: invites send email to real people; skills will deliver to teammates on a schedule. Let the operator approve all, approve a subset, or send back edits. **Do not write anything until they approve.**
+Then stop and ask for approval. Make the stakes explicit: invites send email to real people; skills will deliver to teammates on a schedule; new agents and skills consume seats and tier budget. Let the operator approve all, approve a subset, or send back edits. **Do not write anything until they approve.**
 
 ---
 
@@ -101,7 +102,10 @@ Save the rollout record to `rollouts/<YYYY-MM-DD>-<slug>/` (proposed set, approv
 ### Gaps skills can't solve
 - {missing integrations, seats needed (navigate_to_billing), onboarding for new invitees}
 
-Snapshots saved to rollouts/{date}-{slug}/. Re-run /audit anytime to re-check plan ↔ workspace alignment.
+### Initiative progress
+- {Which initiative(s) this advanced, and how its success criteria stand now — e.g. "bootstrap-day-ai: criterion 4 (agent coverage) now met for 5/6 sellers." Don't mark an initiative SUCCEEDED here — that's verified in `/start`, where criteria are checked against the workspace, not assumed from a deploy.}
+
+Snapshots saved to rollouts/{date}-{slug}/. Re-run `/start` to re-take-stock and update initiative status, or `/audit` to re-check plan ↔ workspace alignment.
 ```
 
 ---

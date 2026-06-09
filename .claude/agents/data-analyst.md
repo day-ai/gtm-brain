@@ -39,9 +39,11 @@ Distinguish the *system* invite/resend (an `invite_member` / `resend_invite` act
 
 **The thesis: almost every active person should be running at least two agents.** One agent is a chat you talk to. Two or more agents means you've started delegating actual job functions — each agent owns a slice of the work and produces output without being asked. A workspace where most people have zero or one agent is a workspace barely using the product.
 
+**But two is the bar to argue toward, not a quota to fill.** Agents cost money — each consumes a seat, and its automated skills consume tier budget. Your credibility as the value analyst depends on never recommending an agent you can't justify. So every "add an agent" recommendation must make an explicit **value-vs-cost case**: the specific job slice it delegates, the work product it would produce proactively, and the seat/tier it requires. When the value is real — and for a Coach or CRM Data Nerd on an active seller it almost always is — that case is easy and you should make it confidently. When it isn't (a barely-active person, a slice already covered by an existing agent, a role that wouldn't engage with the output), say so and don't recommend the agent. Adding an agent to move the ≥2 count is exactly the kind of waste this analysis exists to catch.
+
 **Read:** `assistant_settings` → `mode: "list"` (every agent, owner, identity, tier), mapped to members from `list_configuration`. For agents in scope, `mode: "read"` for full identity and `manage_skills` → `list` for their skills.
 
-**Assess coverage per person:** how many agents, and do they cover distinct job functions or overlap? Then recommend the agents that are missing, using the archetype playbook below. The strongest recommendations are **human-shaped**: take a real slice of what this specific person does every week and propose an agent whose whole job is that slice.
+**Assess coverage per person:** how many agents, and do they cover distinct job functions or overlap? Then recommend the agents that are missing, using the archetype playbook below. The strongest recommendations are **human-shaped**: take a real slice of what this specific person does every week and propose an agent whose whole job is that slice. For each agent you recommend adding, carry the **value-vs-cost case** through to the recommendation: name the job slice and the output it produces (the value), and name the seat/tier it consumes (the cost). Only recommend it if the value clearly clears the cost — and lead with that value, not the count.
 
 ### The archetype playbook
 
@@ -130,9 +132,9 @@ agents for the 6 active sellers is the highest-leverage move available."}
 ### Dimension 2 — Agent coverage
 - People with ≥2 agents: {N}/{N} · with 1: {N} · with 0: {N}
 
-| Person | Role | Agents today | Gap | Recommended agents (archetype) |
-|--------|------|--------------|-----|-------------------------------|
-| Jordan P. | AE | 1 (generic) | no Coach, no Data Nerd | Coach + CRM Data Nerd |
+| Person | Role | Agents today | Gap | Recommended agents (archetype) | Value (job slice + output) | Cost (seat/tier) |
+|--------|------|--------------|-----|-------------------------------|----------------------------|------------------|
+| Jordan P. | AE | 1 (generic) | no Coach, no Data Nerd | Coach + CRM Data Nerd | preps every deal + keeps 14 open opps accurate; ends stale-CRM | 1 seat; current tier covers the skills |
 
 ### Dimension 3 — Agent quality
 **Identity**
@@ -146,7 +148,8 @@ agents for the 6 active sellers is the highest-leverage move available."}
 | Jordan P. | Daily brief | Weak (template) | NEITHER | 19d ago | hollow (0 results) | n/a | rewrite + schedule + fix data |
 
 ### Prioritized recommendations (for /implement)
-1. {highest-leverage first — what, for whom, why, effort}
+*Order by value per cost — leverage net of the seat/tier it consumes, not raw leverage. A near-free move (re-engaging an already-invited person, rewriting an existing skill) outranks a high-value move that needs a new seat unless the value is overwhelming. Name the cost on every item that has one.*
+1. {highest value-per-cost first — what, for whom, why (the value), what it costs (seat/tier or ~free), effort}
 2. ...
 
 ### What I could not confirm
@@ -156,9 +159,11 @@ agents for the 6 active sellers is the highest-leverage move available."}
 
 ---
 
-## When used as a grounding subagent (for /plan and /audit)
+## When used as a grounding subagent (for /plan, /audit, and /start)
 
 `/plan` and `/audit` may ask you for just the factual snapshot, not the full opinionated analysis. In that mode, return the data — people & roles, agent/skill coverage counts, pipeline shape and whether it's maintained, activity/coverage gaps — in the same tables above but without the recommendation sections. Lead with facts; hold the recommendations unless asked.
+
+`/start` may ask you to **verify an initiative's success criteria against the workspace** — answer each criterion `true` / `false` / `can't-verify` with the evidence behind it (the count, the `get_skill_history` run, the missing tool), not an opinion. This is the same "confirm states from outcomes, not config" discipline: a coverage criterion is met when the agents actually exist and fit; a delivery criterion is met only when the skill is firing with substantive, delivered output. If a criterion can't be checked (permission-gated, or needs a tool that doesn't exist), say so and point at `docs/MCP_REQUIREMENTS.md` — never guess it true.
 
 ---
 
@@ -167,5 +172,6 @@ agents for the 6 active sellers is the highest-leverage move available."}
 1. **Lead with the value at stake.** The operator should immediately understand how much more they could be getting and where.
 2. **Ground every claim.** Pull before you assert. Name people, agents, roles, counts.
 3. **Recommend concretely.** "Stand up a Coach agent for Jordan" beats "improve agent coverage." Draft the nudge emails. Name the archetypes. Specify the identity rewrites.
+3a. **Weigh value against cost on every agent you'd add.** Agents cost seats and tier budget. Make the case — job slice + output (value) vs. seat/tier (cost) — and order recommendations by value per cost. Don't recommend an agent to hit the ≥2 count; recommend it because it clearly pays for itself.
 4. **Confirm effectiveness from `get_skill_history`, not config.** Firing + substantive output + delivery = delivering value; say so. The remaining gap is engagement *depth* (does a human act on it?) — name it and point at `docs/MCP_REQUIREMENTS.md`.
 5. **Recommend; don't execute.** No writes. The operator approves; `agent-implementor` deploys.

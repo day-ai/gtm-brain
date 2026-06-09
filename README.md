@@ -10,16 +10,17 @@
 
 1. **Clone** this repo and open the folder in [Claude Code](https://claude.com/claude-code).
 2. **Authenticate** the Day AI MCP server (approve the `day-ai` server, complete the OAuth flow). You'll need to be an Owner or Admin of your workspace.
-3. **Run `/setup`** — it checks the connection, learns who's in your workspace, and scaffolds your plan.
+3. **Run `/start`** — it checks the connection, takes stock of your initiatives, and (on a fresh clone) runs the default *bootstrap* initiative: learn who's in your workspace and scaffold your plan.
 
 That's it. Details below.
 
 ---
 
-This repo is a working example of how a go-to-market team can use [Claude Code](https://claude.com/claude-code) plus the **Day AI MCP server** to do two things well:
+This repo is a working example of how a go-to-market team can use [Claude Code](https://claude.com/claude-code) plus the **Day AI MCP server** to do three things well:
 
 1. **Plan** — turn your company's goals, your revenue strategy, and the concrete outcomes you're driving toward into living documents that an agent understands.
-2. **Implement** — translate that plan into real configuration in your Day AI workspace: the right people invited at the right roles, and every teammate's agent set up with thoughtful, role-specific skills that do real work on a schedule.
+2. **Audit** — measure how much value you're actually getting from your Day AI agents and the workspace today, and surface the gap: who's missing, who needs the agents they don't have, and which skills and identities are weak.
+3. **Implement** — translate that plan into real configuration in your Day AI workspace: the right people invited at the right roles, and every teammate's agent set up with thoughtful, role-specific skills that do real work on a schedule.
 
 It is meant to be **cloned and adapted**. Nothing here is specific to one company — the planning documents are scaffolds for you to fill in, and the agents and skills know how to read your workspace and tailor everything to it.
 
@@ -30,7 +31,7 @@ It is meant to be **cloned and adapted**. Nothing here is specific to one compan
 Two things, both non-negotiable:
 
 1. **The Day AI MCP server, authenticated.** Everything in this repo runs through it. Setup instructions are below.
-2. **You must be an Owner or Admin of your Day AI workspace.** Most of what this harness does — reading and editing *other* teammates' agents, creating skills for them, inviting members, changing roles — requires the `USERS:manage` permission, which only Owners and Admins have. A Member can use the planning side, but the implementation side will return *"requires Admin or Owner"* errors. If you're not sure what role you are, run `/setup` — it checks first.
+2. **You must be an Owner or Admin of your Day AI workspace.** Most of what this harness does — reading and editing *other* teammates' agents, creating skills for them, inviting members, changing roles — requires the `USERS:manage` permission, which only Owners and Admins have. A Member can use the planning side, but the implementation side will return *"requires Admin or Owner"* errors. If you're not sure what role you are, run `/start` — it checks first.
 
 ---
 
@@ -51,7 +52,7 @@ This repo already ships a `.mcp.json` pointing at it:
 When you open this folder in Claude Code, you'll be asked to approve the `day-ai` MCP server. Approve it, then complete the OAuth flow. To verify the connection and your role in one step, run:
 
 ```
-/setup
+/start
 ```
 
 If you prefer to add it manually (or to your global config):
@@ -62,17 +63,26 @@ claude mcp add --transport http day-ai https://day.ai/api/mcp
 
 ---
 
-## The model: a planning layer and an implementation layer
+## The model: plan → initiatives → implementation
 
 ```
 ┌─────────────────────────── PLANNING LAYER ───────────────────────────┐
 │  planning/COMPANY_PLAN.md   High-level goals, forecasts, plans         │
 │  planning/STRATEGY.md       CRO-level revenue strategy & direction     │
-│  planning/OUTCOMES.md       Concrete outcomes that serve the above     │
+│  planning/OUTCOMES.md       Concrete, fine-grained outcomes            │
 │  workspace/PEOPLE.md        Who's who in the workspace (the cast)      │
 └───────────────────────────────────────────────────────────────────────┘
                                    │
-                    the plan is the source of truth
+                    standing intent feeds bounded efforts
+                                   ▼
+┌────────────────────────────── INITIATIVES ───────────────────────────┐
+│  initiatives/<slug>.md      Bounded, owned, time-boxed efforts with    │
+│                             verifiable success criteria + a status     │
+│                             (NEW · IN_PROGRESS · PAUSED · CANCELLED ·   │
+│                             SUCCEEDED). The unit of work.              │
+└───────────────────────────────────────────────────────────────────────┘
+                                   │
+                    /start takes stock and kicks off the work
                                    ▼
 ┌──────────────────────── IMPLEMENTATION LAYER ────────────────────────┐
 │  Audit how well you're using Day AI's agents today (the agent-value    │
@@ -84,7 +94,9 @@ claude mcp add --transport http day-ai https://day.ai/api/mcp
 └───────────────────────────────────────────────────────────────────────┘
 ```
 
-You write (with an agent's help) what the business is trying to do. The harness then makes your Day AI workspace *reflect* that — and keeps it reflecting it as the plan evolves.
+You write (with an agent's help) what the business is trying to do. You break that into **initiatives** — bounded efforts with a clear, checkable definition of success and someone accountable. The harness then makes your Day AI workspace *reflect* the plan and drive each initiative to done — and keeps it reflecting as the plan evolves.
+
+**Initiatives vs. outcomes.** An outcome (`planning/OUTCOMES.md`) is atomic — "draft a follow-up after a call." An initiative is the larger, owned effort an outcome serves — "get the team running on Day AI by end of Q3" — realized through many outcomes, invites, agents, and skills. Every workspace starts with one default initiative, `bootstrap-day-ai`: get connected, get the people in, get each person on the agents they should have, get the plan real and synced. `/start` runs it first. See [`initiatives/README.md`](initiatives/README.md) for the file format and status lifecycle.
 
 ---
 
@@ -117,7 +129,7 @@ Three subagents do the work. You rarely invoke them directly — the skills belo
 
 | Command | What it does |
 |---------|-------------|
-| **`/setup`** | **Start here.** Verifies the MCP connection and your role, identifies the workspace and its people, and scaffolds your planning documents through a short interview. |
+| **`/start`** | **Start here, every time.** Verifies the MCP connection and your role, takes stock of every initiative in `initiatives/`, reports progress against each one's verifiable success criteria, and kicks off the agents and skills the active ones need. On a fresh clone it runs the default `bootstrap-day-ai` initiative (identify people, scaffold the plan). |
 | **`/plan`** | Build or refresh the three planning-layer documents. Interview loop + workspace asset discovery. |
 | **`/agent-audit`** | The agent-value review. Scores how well you're using Day AI's agents and hands you a prioritized path to a lot more — invites (with draft nudge emails), missing agents, and weak skills/identities. No changes are made. |
 | **`/design-agent`** | Design one complete, deployment-ready agent for a person — its identity and starter skills — built on a proven archetype (CRM Data Nerd, Coach, …). |
@@ -132,7 +144,8 @@ Three subagents do the work. You rarely invoke them directly — the skills belo
 
 ```
 1.  Open this folder in Claude Code and approve the `day-ai` MCP server.
-2.  Run  /setup            → connection check, who's-who, planning scaffolds
+2.  Run  /start            → connection check, take stock of initiatives, kick off what's next
+                             (on a fresh clone: who's-who + planning scaffolds via bootstrap-day-ai)
 3.  Run  /plan             → fill in goals, strategy, and outcomes
 4.  Run  /agent-audit      → how well are you using Day AI's agents? what's the gap?
 5.  Run  /audit            → how well does the workspace deliver the plan?
@@ -140,7 +153,7 @@ Three subagents do the work. You rarely invoke them directly — the skills belo
 7.  Run  /implement        → invite people, tune agents, deploy skills
 ```
 
-`/agent-audit` and `/audit` are two lenses: one on *how well you're using Day AI*, one on *how well the workspace delivers your plan*. Re-run them — and `/implement` — whenever the plan or the team changes. The plan is living; the workspace should track it.
+Come back to `/start` whenever you sit down to work — it's the standing entrypoint that tells you where every initiative stands and what to do next, not just a first-run command. `/agent-audit` and `/audit` are two lenses: one on *how well you're using Day AI*, one on *how well the workspace delivers your plan*. Re-run them — and `/implement` — whenever the plan or the team changes. The plan is living; the workspace should track it.
 
 ---
 
@@ -153,12 +166,16 @@ gtm-brain/
 ├── .mcp.json                 ← Day AI MCP server config
 ├── .claude/
 │   ├── agents/               ← gtm-strategist, agent-implementor, data-analyst
-│   └── skills/               ← setup, plan, agent-audit, design-agent, audit,
+│   └── skills/               ← start, plan, agent-audit, design-agent, audit,
 │                                implement, write-skill, sync-pages
+├── initiatives/
+│   ├── README.md             ← what an initiative is: schema, statuses, lifecycle
+│   ├── TEMPLATE.md           ← copy this to start a new initiative
+│   └── bootstrap-day-ai.md   ← the default first-run initiative
 ├── planning/
 │   ├── COMPANY_PLAN.md       ← layer 1: goals, forecasts, plans
 │   ├── STRATEGY.md           ← layer 2: CRO-level strategy & direction
-│   └── OUTCOMES.md           ← layer 3: concrete outcomes
+│   └── OUTCOMES.md           ← layer 3: concrete, fine-grained outcomes
 ├── workspace/
 │   └── PEOPLE.md             ← who's who in the workspace
 ├── docs/

@@ -83,6 +83,7 @@ Close with the bridge to implementation:
 ### Next
 - `/audit`      → see which outcomes the workspace already delivers and where the gaps are
 - `/sync-pages` → publish the updated plan to Day AI Pages
+- `/start`      → take stock of initiatives; if a strategy shift here implies a bounded, owned effort, capture it as a new `initiatives/<slug>.md`
 ```
 
 ---
@@ -92,3 +93,4 @@ Close with the bridge to implementation:
 - **Plan only — no workspace writes.** `/plan` reads and lists the workspace (via the data-analyst and strategist) but never invites, edits agents, or creates skills. That's `/implement`.
 - Keep the plan decision-ready, not exhaustive. A tight plan an implementor can act on beats a sprawling one.
 - If the workspace snapshot contradicts the plan (e.g. the forecast assumes a pipeline that isn't maintained), surface the contradiction in the interview — don't quietly write around it.
+- **Plan vs. initiative.** `/plan` keeps the standing intent and the fine-grained outcomes current. When the plan implies a *bounded, owned effort* with a deadline and a verifiable definition of done ("get the SE team live on Day AI by Q3"), that's an **initiative**, not an outcome — note it so it can be captured in `initiatives/` and driven by `/start`. See `initiatives/README.md`.

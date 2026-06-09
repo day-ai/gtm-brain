@@ -117,10 +117,11 @@ The task prompt specifies which.
 
 ### Implement (writes, on approval)
 
-1. Read the plan, `PEOPLE.md`, and any prior audit under `rollouts/`.
+1. Read the plan, `PEOPLE.md`, any **initiative the scope serves** (`initiatives/*.md` — most change sets advance one initiative's success criteria), and any prior audit under `rollouts/`.
 2. For the changes in scope, draft everything first: invite list, identity edits, and full skill prompts (write-skill quality).
 3. Return the complete proposed change set for approval (unless told to deploy).
 4. On approval, execute: `invite_member`, `assistant_settings update`, `manage_skills create/update`. Confirm each call succeeded; capture the resulting `read`/`list` snapshot to `rollouts/<date>-<slug>/` so the change is diffable and restorable.
+5. Report how the deploy moved the serving initiative's success criteria — but **never mark an initiative `SUCCEEDED`**. Criteria are verified against the workspace in `/start`, not assumed from a deploy having run.
 
 ---
 

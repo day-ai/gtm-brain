@@ -1,6 +1,6 @@
 ---
 name: sync-pages
-description: Sync the planning documents to/from Day AI Pages so the rest of the company sees the same source of truth. Pushes local planning/*.md to Pages, or pulls Pages back into the repo. Degrades gracefully if Pages tools aren't available on the connected MCP. Usage: /sync-pages [push|pull|status]
+description: Sync the planning documents and active initiatives to/from Day AI Pages so the rest of the company sees the same source of truth. Pushes local planning/*.md and initiatives/*.md to Pages, or pulls Pages back into the repo. Degrades gracefully if Pages tools aren't available on the connected MCP. Usage: /sync-pages [push|pull|status]
 ---
 
 # /sync-pages
@@ -9,7 +9,7 @@ Keep the planning layer visible to the whole company by mirroring it to Day AI P
 
 $ARGUMENTS
 
-- **`push`** (default) — write the local `planning/*.md` documents up to Day AI Pages.
+- **`push`** (default) — write the local `planning/*.md` documents and active `initiatives/*.md` up to Day AI Pages.
 - **`pull`** — bring the Pages versions back into the repo (for edits made in Day AI).
 - **`status`** — report what's linked and whether local and Pages versions differ, without changing anything.
 
@@ -33,6 +33,9 @@ Never invent a Pages tool name. Discover it from the connected tool list.
 | `planning/COMPANY_PLAN.md` | "Company Plan" |
 | `planning/STRATEGY.md` | "GTM Strategy" |
 | `planning/OUTCOMES.md` | "GTM Outcomes" |
+| `initiatives/<slug>.md` *(status `NEW` / `IN_PROGRESS` / `SUCCEEDED`)* | "Initiative: {title}" |
+
+**Initiatives are a first-class thing to publish** — an owned effort with a deadline and a verifiable definition of done is exactly what the rest of the company wants visibility into. Sync the active ones (`NEW`, `IN_PROGRESS`) and recently `SUCCEEDED` ones by default; skip `PAUSED`/`CANCELLED` unless asked. Before pushing an initiative, apply the messaging discipline below — strip or summarize anything in its **Context**/**Cost**/**sources** that's internal-only (forecast detail, candid notes, raw meeting ids); publish the title, status, timeframe, DRI, success criteria, and the plain-language *why*. `initiatives/README.md` and `TEMPLATE.md` are scaffolding — never synced.
 
 `workspace/PEOPLE.md` is **not** synced by default — it can contain candid notes about teammates that don't belong on a shared Page. Sync it only if the operator explicitly asks.
 
@@ -42,7 +45,7 @@ Track the link between each file and its Page (the Page ID and last-synced state
 
 ## push
 
-1. For each planning document, read the local file.
+1. For each synced file (the planning documents and each active initiative), read the local file.
 2. If a linked Page exists (from `.pages-sync.json`), update it; otherwise create the Page and record its ID.
 3. Preserve the document's markdown structure as faithfully as the Page format allows.
 4. Report what was created vs. updated, with the Page links.

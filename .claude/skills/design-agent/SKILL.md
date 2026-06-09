@@ -57,6 +57,11 @@ Save a deployment-ready spec to `rollouts/<YYYY-MM-DD>-<person>-<archetype>/AGEN
 
 **Archetype:** {Coach | CRM Data Nerd | …}   **Owner:** {person email}   **Tier needed:** {…}
 
+## Value vs. cost
+- **Value:** {the job slice this agent delegates and the work product it produces proactively — the concrete reason it's worth running}
+- **Cost:** {a seat for {Person} (new or existing?); the tier needed to support {N} automated skills; whether that's a tier bump}
+- **The case:** {one line — why the value clearly clears the cost. If it doesn't, this agent shouldn't be designed; say so and stop.}
+
 ## Identity
 - **First / last name:** {…}
 - **Title:** {…}
@@ -85,8 +90,9 @@ Spec saved to rollouts/{date}-{person}-{archetype}/AGENT.md
 
 ### Next
 - Review the description and skill prompts above — this is what {Person} will be working with daily.
-- `/implement {person}` → create the agent (identity + skills) on approval. Needs a seat/tier that
-  supports {N} automated skills; the implementor will surface billing if a seat is needed.
+- `/implement {person}` → create the agent (identity + skills) on approval. Costs a seat and a tier that
+  supports {N} automated skills (see **Value vs. cost** above); the implementor surfaces billing
+  (`navigate_to_billing`) before deploying so the cost is never a surprise.
 ```
 
 ---

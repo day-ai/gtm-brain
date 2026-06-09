@@ -2,7 +2,7 @@
 
 > **What this is:** the cast — everyone in the Day AI workspace, who they really are, and what they own. The agents read this to know who they're configuring agents and skills *for*. It's joined at the hip with the plan: every outcome owner appears here, and every key player has outcomes they own.
 >
-> **How it's built:** `/setup` and `/plan` populate this via the `gtm-strategist`, which reads `manage_workspace_members → list_configuration` (roster + roles), `assistant_settings → list` (who has which agent), and `list_suggested_invites` (who's in the CRM but not yet a member). Confirm and correct it in the interview — the agents trust it.
+> **How it's built:** `/start` and `/plan` populate this via the `gtm-strategist`, which reads `manage_workspace_members → list_configuration` (roster + roles), `assistant_settings → list` (who has which agent), and `list_suggested_invites` (who's in the CRM but not yet a member). Confirm and correct it in the interview — the agents trust it.
 >
 > **Keep it candid but careful.** This file is *not* synced to Day AI Pages by default (see `/sync-pages`) precisely so it can hold honest working notes. Don't put anything here you wouldn't want a teammate to read if it ever were shared.
 
