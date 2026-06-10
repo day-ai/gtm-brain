@@ -43,6 +43,7 @@ For each initiative, **verify progress against its `success_criteria` from the w
 - people/roster criteria → `list_configuration` + `list_suggested_invites`
 - plan/Pages criteria → the files in `planning/` and the Pages tools
 - pipeline/forecast criteria → `search_objects`
+- shared-repo criteria → check `git remote -v` (origin points at the team's own repo, **not** `day-ai/gtm-brain` the template) and that it's a private repo with the operators as collaborators (`gh repo view --json visibility,name` and `gh api repos/{owner}/{repo}/collaborators` if `gh` is available; otherwise ask the operator). A still-on-the-template remote means criterion 1 isn't met — point them at the README's "Your team's GTM Brain repo."
 
 Spawn the **`data-analyst`** as a grounding subagent when a set of criteria needs real evaluation (agent coverage, skill delivery) — ask for the factual snapshot, not the full opinionated report. Keep it to what the criteria require.
 

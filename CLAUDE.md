@@ -99,7 +99,7 @@ The shared state the team operates on. Agents read from and write to these locat
 | `rollouts/<YYYY-MM-DD>-<slug>/` | Per-run artifacts: audit reports, agent specs, proposed/approved/deployed changes, snapshots | `/agent-audit`, `/audit`, `/design-agent`, `/implement` |
 | `docs/MCP_REQUIREMENTS.md` | MCP tool gaps the analyst needs closed, as Linear-ready tickets | manual |
 
-The planning documents are designed to be **synced to Day AI Pages** (`/sync-pages`) so the rest of the company sees the same source of truth.
+This data layer lives in the team's **own private GitHub repo** (made from the `day-ai/gtm-brain` template). That repo is the version-controlled source of truth the **operators** sync through — `git pull` before working, `git push` when the plan, an initiative, or `PEOPLE.md` changes. It's private because it holds strategy, forecasts, and candid notes about teammates. Three planes, kept distinct: the **private repo** (operators author and sync here), **Day AI Pages** (a published mirror of the plan and active initiatives the whole company reads, via `/sync-pages`), and the **Day AI workspace** (where it all executes, via the MCP). See the README's "Your team's GTM Brain repo."
 
 ## Agents are GTM automation
 

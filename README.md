@@ -8,9 +8,10 @@
 
 ## Quickstart
 
-1. **Clone** this repo and open the folder in [Claude Code](https://claude.com/claude-code).
-2. **Authenticate** the Day AI MCP server (approve the `day-ai` server, complete the OAuth flow). You'll need to be an Owner or Admin of your workspace.
-3. **Run `/start`** — it checks the connection, takes stock of your initiatives, and (on a fresh clone) runs the default *bootstrap* initiative: learn who's in your workspace and scaffold your plan.
+1. **Make it your team's repo.** This is a template. Create your **own private** repo from it (GitHub → *Use this template*, or clone and re-point the remote), and add the people who'll run the harness — your CRO, RevOps, chief of staff — as collaborators. Keep it private: it holds your strategy, forecasts, and candid notes about teammates. See [Your team's GTM Brain repo](#your-teams-gtm-brain-repo).
+2. **Clone your repo** and open the folder in [Claude Code](https://claude.com/claude-code).
+3. **Authenticate** the Day AI MCP server (approve the `day-ai` server, complete the OAuth flow). You'll need to be an Owner or Admin of your workspace.
+4. **Run `/start`** — it checks the connection, takes stock of your initiatives, and (on a fresh clone) runs the default *bootstrap* initiative: set up the shared repo, learn who's in your workspace, and scaffold your plan.
 
 That's it. Details below.
 
@@ -60,6 +61,27 @@ If you prefer to add it manually (or to your global config):
 ```
 claude mcp add --transport http day-ai https://day.ai/api/mcp
 ```
+
+---
+
+## Your team's GTM Brain repo
+
+GTM Brain runs across **three planes**, and it's worth keeping them straight:
+
+| Plane | What it holds | Who it's for | How it syncs |
+|-------|---------------|--------------|--------------|
+| **Your private GitHub repo** | The authored source of truth: the plan, the initiatives, `PEOPLE.md` | The **operators** who run the harness | `git push` / `git pull` |
+| **Day AI Pages** | A published, readable mirror of the plan and active initiatives | The **whole company** | `/sync-pages` |
+| **Your Day AI workspace** | The live execution surface: members, agents, skills | Everyone, via their agents | the Day AI MCP (`/implement`) |
+
+This repo is a **template**. The first thing a team does is make it their own:
+
+1. **Create a private repo from it.** On GitHub, *Use this template* → **private**. (Or clone, then `git remote set-url origin <your-repo>`.) It must be private — the planning layer contains revenue strategy, forecasts, and candid notes about teammates that don't belong in a public repo.
+2. **Add your operators as collaborators.** The people who actually run the harness — typically a small group: CRO, RevOps, chief of staff. They each clone the repo and work against the same `main`.
+3. **Keep it in sync like any shared repo.** `git pull` before you start, `git push` when you've updated the plan, an initiative, or `PEOPLE.md`. The repo is how operators stay aligned on *what the business is doing*; Day AI Pages is how the rest of the company reads it; the workspace is where it executes.
+4. **Pull harness improvements (optional).** If you want updates to the harness itself — new skills, better agent definitions — keep this template as an `upstream` remote and merge from it: `git remote add upstream https://github.com/day-ai/gtm-brain && git pull upstream main`.
+
+> The default `bootstrap-day-ai` initiative tracks this: "the team's private repo exists and the operators can sync" is one of its success criteria, so `/start` will check it's actually set up.
 
 ---
 
