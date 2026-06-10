@@ -69,7 +69,7 @@ Use `manage_skills`. Key fields:
 - `name` and `prompt`: required for `create`. The prompt is the full instruction set — write it with write-skill thinking.
 - `slashCommand`: unique per agent, lowercase-hyphens, no leading slash.
 - `triggerType`: `SCHEDULE` (cron-based), `EVENT`, or `NEITHER` (on-demand). `triggerValue`: cron expression or comma-separated event types. `timezone` for schedules.
-- `notificationType`: `["email"]`, `["slack"]`, or both. `slackNotificationChannels` for Slack channel IDs.
+- `notificationType`: `["email"]`, `["slack"]`, or both. `slackNotificationChannels` for Slack channel IDs. **If omitted, delivery defaults to email** — so a skill is never created with nowhere to go. Still set it deliberately to match the output and where the person works; don't lean on the default silently.
 - `enabled`: whether it's active.
 
 **Watch the tier budget.** Automated skills (SCHEDULE/EVENT) consume slots on the *target agent's* tier. Check the tier from `assistant_settings` read before proposing automations; if a teammate is over budget, prefer upgrading the single most valuable skill over adding more, and flag the packaging limit. For shared skills, `deploymentMode` is `MANAGED` (admin-managed, Admin/Owner only) or `TEMPLATE` (reusable starter).

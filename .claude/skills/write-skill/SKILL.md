@@ -115,7 +115,7 @@ When you hand a finished prompt to `agent-implementor` (or write the `manage_ski
 
 - **name** and **slashCommand** (unique per agent, lowercase-hyphens).
 - **triggerType**: `SCHEDULE` (with a cron `triggerValue` + `timezone`), `EVENT` (with event types), or `NEITHER` (on-demand).
-- **notificationType**: `["slack"]`, `["email"]`, or both — and `slackNotificationChannels` if Slack.
+- **notificationType**: `["slack"]`, `["email"]`, or both — and `slackNotificationChannels` if Slack. **If you set no notification target, the skill defaults to delivering by email** — so a skill never goes nowhere, but don't rely on the default by accident: choose the channel deliberately to match the output (long analysis → email; a short nudge → Slack), and set Slack explicitly when that's where the person actually works.
 - **scope**: a per-agent skill (`targetScope: "agent"` + the teammate's `targetAssistantId`) when the prompt is tailored to one person; a workspace-library skill (`targetScope: "workspace_library"`, `deploymentMode: "MANAGED"`) when a whole team needs the same capability.
 - Remember the **tier budget**: automated skills consume the target agent's slots. One excellent scheduled skill beats three thin ones.
 
