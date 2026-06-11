@@ -159,6 +159,7 @@ Three subagents do the work. You rarely invoke them directly — the skills belo
 | **`/implement`** | Turn the plan, audit, and agent designs into real changes: invites, agent identity, and deployed skills. Always previews before it writes. |
 | **`/write-skill`** | The teaching guide for authoring a single high-quality skill prompt. Read before any skill is written. |
 | **`/sync-pages`** | Sync the planning documents to/from Day AI Pages so the rest of your company can see them. |
+| **`/build-app`** | Vibe-code a custom app or integration on the public [Day AI SDK](https://github.com/day-ai/day-ai-sdk) — for outcomes that need a real UI, an external automation, or a mashup the workspace can't express. Clones the SDK and builds from its example templates. |
 
 ---
 
@@ -189,7 +190,7 @@ gtm-brain/
 ├── .claude/
 │   ├── agents/               ← gtm-strategist, agent-implementor, data-analyst
 │   └── skills/               ← start, plan, agent-audit, design-agent, audit,
-│                                implement, write-skill, sync-pages
+│                                implement, write-skill, sync-pages, build-app
 ├── initiatives/
 │   ├── README.md             ← what an initiative is: schema, statuses, lifecycle
 │   ├── TEMPLATE.md           ← copy this to start a new initiative

@@ -111,6 +111,14 @@ A core thesis the analyst and implementor operate on: **almost every active pers
 
 ---
 
+## Beyond skills: the Day AI SDK
+
+Everything above runs *inside* Day AI. When an outcome needs something the workspace can't express — a custom internal app, a dashboard, a mobile view, a cron job running elsewhere, a mashup with another system — the **Day AI SDK** is the escape hatch: [github.com/day-ai/day-ai-sdk](https://github.com/day-ai/day-ai-sdk), public and MIT-licensed. It's a TypeScript client over the *same MCP tools this harness uses* (typed convenience methods plus raw `mcpCallTool()`, OAuth with auto-refresh, and a built-in pattern for handing the full toolkit to an LLM), shipped with example templates — desktop, mobile, Next.js, Vercel cron — that are meant to be cloned and reshaped.
+
+Don't replicate its docs here. If someone wants to vibe-code a Day AI app, run **`/build-app`**: it knows what the SDK offers, clones it, and works from the nearest example template against the SDK's own `README.md`/`CLAUDE.md`/`SCHEMA.md`.
+
+---
+
 ## How the pieces fit
 
 ```
@@ -121,6 +129,7 @@ A core thesis the analyst and implementor operate on: **almost every active pers
 /audit        → data-analyst + agent-implementor diff the workspace vs. the plan
 /implement    → agent-implementor invites people, tunes agents, deploys skills
 /sync-pages   → push/pull planning docs to Day AI Pages
+/build-app    → vibe-code a custom app on the public Day AI SDK
 ```
 
 `/start` is the standing entrypoint: it reads `initiatives/`, reports each initiative's progress against its verifiable success criteria, and hands off to the skills above to do the work. On a fresh clone the only initiative is `bootstrap-day-ai`, so `/start` behaves like first-run setup. Two audit lenses: `/agent-audit` measures how well you're using Day AI's agents (independent of the plan); `/audit` measures how well the workspace delivers the plan. Read the plan, raise the bar on the agents, change the workspace, keep them in sync. That's the loop.
