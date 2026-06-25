@@ -45,6 +45,8 @@ Distinguish the *system* invite/resend (an `invite_member` / `resend_invite` act
 
 **Assess coverage per person:** how many agents, and do they cover distinct job functions or overlap? Then recommend the agents that are missing, using the archetype playbook below. The strongest recommendations are **human-shaped**: take a real slice of what this specific person does every week and propose an agent whose whole job is that slice. For each agent you recommend adding, carry the **value-vs-cost case** through to the recommendation: name the job slice and the output it produces (the value), and name the seat/tier it consumes (the cost). Only recommend it if the value clearly clears the cost — and lead with that value, not the count.
 
+Also name the best starting template when one fits, or say `custom` when the agent should be designed from scratch. Public starting templates are Turbo (`sales-assistant`, `meeting-notetaker`, `user-researcher`), Professional (`bdr`, `account-executive`, `sales-operator`, `crm-data-entry-specialist`, `sales-coach`, `marketing-director`), and Executive (`lead-analyst`, `gtm-strategist`, `senior-product-manager`). Gated Super Agent templates (`revenue-operations-manager`, `demand-generation-manager`) are only valid when the Super Agent SKU gate is enabled. Template choice is part of the cost/activation recommendation, not a substitute for designing the agent around the person's real work.
+
 ### The archetype playbook
 
 These are starting points, always tailored to the person and the company's actual process. The two every seller should have come first because they're the highest-leverage and most universal.

@@ -51,6 +51,7 @@ format. Make NO calls that write — propose only.
 Present the full change set to the operator, organized as:
 
 - **Invites** — table of email, role, and the plan reference justifying each.
+- **New agent seats** — for each new agent, show the tier, starting template slug/display name, or `custom`. If the deployment path is MCP-only, mark template-specific provisioning as requiring the Day AI admin UI because `manage_workspace_members` does not accept `agentTemplateSlug`.
 - **Agent identity edits** — per person, the from → to for each field.
 - **Skills** — for each: target agent, scope (agent vs. workspace_library), trigger, channel, the plan outcome it serves, and the **full prompt text**. Show enough that the operator can read what their teammate will actually receive.
 - **Cost** — what this change set costs: new agents and the seats they need, any tier bump required to fit the automated skills, and which items are free (re-engages, identity rewrites, skills on existing agents). Surface `navigate_to_billing` if a seat is needed. The operator should see the bill before approving, not discover it at deploy time.
@@ -114,6 +115,7 @@ Snapshots saved to rollouts/{date}-{slug}/. Re-run `/start` to re-take-stock and
 
 - **Preview is mandatory.** Never write to the workspace before the operator approves the change set. The only exception is if the operator explicitly says "deploy without preview."
 - **Invites are outward-facing.** They email real people. Treat the invite list with the same care as the skill prompts — confirm role and rationale for each.
+- **Templates are explicit.** When adding a new agent, choose the starting template or `custom` in the preview. Current MCP invites are generic; use the Day AI admin UI for template-specific authorizations until the MCP tool exposes `agentTemplateSlug`.
 - **Respect tier budgets.** Automated skills consume the target agent's slots; over-budget creates are rejected. Prefer one excellent scheduled skill over several thin ones, and prefer a single MANAGED workspace-library skill when a whole team needs the same capability.
 - **Don't touch Actions or Opportunity-automation skills** unless the scope explicitly includes them.
 - **Always snapshot after deploying.** The `read`/`list` output is the only before/after record an agent has.

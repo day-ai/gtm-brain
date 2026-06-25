@@ -100,7 +100,11 @@ Use `manage_workspace_members`. Always `list_configuration` first to read curren
 - **`enable_auto_invite` / `disable_auto_invite`** — domain auto-invite (Owner-only); use only when the plan explicitly wants everyone on a domain in.
 - **`navigate_to_billing`** — when seats are needed for new agents, surface this rather than guessing at billing.
 
-Invites are outward-facing — they send email to real people. Treat them as deploy actions: propose the full invite list (who, what role, why) and send only on approval.
+For a new agent seat, choose and preview the starting point: a public template slug (`sales-assistant`, `meeting-notetaker`, `user-researcher`, `bdr`, `account-executive`, `sales-operator`, `crm-data-entry-specialist`, `sales-coach`, `marketing-director`, `lead-analyst`, `gtm-strategist`, `senior-product-manager`) or `custom`. Gated Super Agent templates (`revenue-operations-manager`, `demand-generation-manager`) are only valid when the Super Agent SKU gate is enabled. Templates seed the title, description, and personality/instructions only when the user activates the agent; the agent can be edited afterward.
+
+Current MCP limitation: `invite_member` does not accept `agentTemplateSlug`. If a template-specific authorization matters, use the Day AI admin agent creation UI (or `navigate_to_billing` to get the operator there) instead of claiming the MCP invite applied the template. If you send an invite through MCP, record it as generic/custom.
+
+Invites are outward-facing — they send email to real people. Treat them as deploy actions: propose the full invite list (who, what role, why, and what agent tier/template if applicable) and send only on approval.
 
 ---
 

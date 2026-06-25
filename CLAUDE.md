@@ -38,6 +38,10 @@ This harness is built on the workspace-management tools plus the read-only graph
 
 **Tier limits are real.** Automated skills (those with a `SCHEDULE` or `EVENT` trigger) consume automated-skill slots governed by the *target agent's* tier. Over-budget creation is rejected with an explanation. When you create a skill for a teammate, the limit checks against *their* tier, not yours. Plan automations around the target agent's packaging; prefer one or two high-value scheduled skills over many.
 
+**Agent templates are one-time starting roles.** For a new agent seat, preview both the tier and the starting template: Turbo (`sales-assistant`, `meeting-notetaker`, `user-researcher`), Professional (`bdr`, `account-executive`, `sales-operator`, `crm-data-entry-specialist`, `sales-coach`, `marketing-director`), or Executive (`lead-analyst`, `gtm-strategist`, `senior-product-manager`). Gated Super Agent templates are `revenue-operations-manager` and `demand-generation-manager`; only use them when the Super Agent SKU gate is enabled. A template seeds the agent's title, description, and personality/instructions when the user activates the agent; it is not a permanent agent type. Use custom/generic when none fit.
+
+**Current MCP limitation:** `manage_workspace_members` can invite members and manage roles, but it does not accept `agentTemplateSlug`. If the operator needs a template-specific agent authorization, send them through the Day AI admin agent creation UI (`navigate_to_billing` when needed) rather than claiming an MCP invite applied the template. If you deploy a generic MCP invite, say that it is generic.
+
 **Result envelopes** are `{ result: {...} }` on success and `{ error: { message } }` on failure. Permission failures are explicit — surface them, don't retry blindly.
 
 ### Graph / read tools (for grounding)

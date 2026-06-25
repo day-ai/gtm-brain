@@ -55,7 +55,7 @@ Save a deployment-ready spec to `rollouts/<YYYY-MM-DD>-<person>-<archetype>/AGEN
 ```markdown
 # Agent Spec — {Agent name} for {Person} ({their role}) at {Company}
 
-**Archetype:** {Coach | CRM Data Nerd | …}   **Owner:** {person email}   **Tier needed:** {…}
+**Archetype:** {Coach | CRM Data Nerd | ...}   **Owner:** {person email}   **Tier needed:** {...}   **Starting template:** {slug or custom}
 
 ## Value vs. cost
 - **Value:** {the job slice this agent delegates and the work product it produces proactively — the concrete reason it's worth running}
