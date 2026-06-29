@@ -1,12 +1,12 @@
 # MCP Requirements — gaps the agent-value analyst needs closed
 
-The `data-analyst` agent and `/agent-audit` can already evaluate a lot from the existing Day AI MCP (membership, agent coverage, skill prompt craft, agent identity) and — with `get_skill_history`, now specified in DAY-2585 — whether each skill is actually *firing, producing substantive output, and being delivered.* A few high-value judgments still can't be made from what's exposed: above all, **engagement depth** (does a human act on the delivered output?) and **activation** (who's a live user vs. a cold seat). Those need data the **admin** MCP exposes internally but the **public** `day.ai/api/mcp` server does not yet.
+The `data-analyst` agent and `/agent-audit` can already evaluate a lot from the existing Day AI MCP (membership, agent coverage, skill prompt craft, agent identity) and — with `manage_skills → get_history`, shipped in DAY-2585 — whether each skill is actually *firing, producing substantive output, and being delivered.* A few high-value judgments still can't be made from what's exposed: above all, **engagement depth** (does a human act on the delivered output?) and **activation** (who's a live user vs. a cold seat). Those need data the **admin** MCP exposes internally but the **public** `day.ai/api/mcp` server does not yet.
 
 This doc records the remaining gaps as paste-ready Linear tickets. The analyst stays explicit about what it can confirm (build quality + delivery) vs. what it can't yet (engagement depth, activation), and cites this file.
 
-> **Scope note.** DAY-2585 items are treated as **live** in this harness — including `assistant_settings` `list` + `targetAssistantId`, `manage_skills` cross-agent, `list_suggested_invites`, `resend_invite`, and now **`get_skill_history`** (run output + delivery result). The items below are **net-new** beyond DAY-2585.
+> **Scope note.** DAY-2585 items are treated as **live** in this harness — including `assistant_settings` `list` + `targetAssistantId`, `manage_skills` cross-agent, `list_suggested_invites`, `resend_invite`, and now skill run history via **`manage_skills → get_history`** (run output + delivery result). The items below are **net-new** beyond DAY-2585.
 
-**Last updated:** 2026-06-07
+**Last updated:** 2026-06-29
 
 ---
 
@@ -14,7 +14,7 @@ This doc records the remaining gaps as paste-ready Linear tickets. The analyst s
 
 | # | Capability | Unblocks | Priority |
 |---|------------|----------|----------|
-| ~~1~~ | ~~Skill run history (read)~~ | ~~is a skill *delivering*, not just configured~~ | ✅ **Specified in DAY-2585** — `get_skill_history`; treated as live |
+| ~~1~~ | ~~Skill run history (read)~~ | ~~is a skill *delivering*, not just configured~~ | ✅ **Shipped in DAY-2585** — `manage_skills → get_history`; live |
 | 2 | Engagement metrics (workspace + per-agent/user) | Dimension 3 engagement depth + Dimension 1 activation | **P0** |
 | 3 | Member activity / last-active | Dimension 1 — dormant vs active, who to nudge | P1 |
 | 4 | Pipeline & stage definitions / CRM schema (read) | Dimension 2 — process-fluent Coach agents | P1 |
@@ -22,9 +22,9 @@ This doc records the remaining gaps as paste-ready Linear tickets. The analyst s
 
 ---
 
-## 1 — Skill run history (read) · ✅ Specified in DAY-2585
+## 1 — Skill run history (read) · ✅ Shipped in DAY-2585
 
-**Status:** No longer a gap — translated into the DAY-2585 spec as the **`get_skill_history`** tool (run output, firing times, and `notification.result` delivery), and treated as live in this harness. The analyst (`.claude/agents/data-analyst.md`, Dimension 3a.3) and `/agent-audit` now read it to confirm a skill is firing, producing substantive vs. hollow output, and being delivered — rather than caveating every effectiveness claim.
+**Status:** No longer a gap — shipped in DAY-2585 as the **`get_history`** action on `manage_skills` (run output, firing times, and `notification.result` delivery), and live in this harness. The analyst (`.claude/agents/data-analyst.md`, Dimension 3a.3) and `/agent-audit` now read it to confirm a skill is firing, producing substantive vs. hollow output, and being delivered — rather than caveating every effectiveness claim.
 
 The original requirement is preserved here for traceability:
 

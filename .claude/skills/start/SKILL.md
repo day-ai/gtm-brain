@@ -39,7 +39,7 @@ Read every `initiatives/*.md` (skip `README.md` and `TEMPLATE.md`). Parse the fr
 For each initiative, **verify progress against its `success_criteria` from the workspace, not from the file's status field** — this is the core principle (confirm states from outcomes, not config). Pull what each criterion needs:
 
 - agent-coverage criteria → `assistant_settings → mode: "list"`, mapped to members
-- "skill firing / delivering" criteria → `manage_skills → list` then `get_skill_history` (read the run's `notification.result` for delivery; never infer from a schedule existing)
+- "skill firing / delivering" criteria → `manage_skills → list` then `manage_skills → get_history` (read the run's `notification.result` for delivery; never infer from a schedule existing)
 - people/roster criteria → `list_configuration` + `list_suggested_invites`
 - plan/Pages criteria → the files in `planning/` and the Pages tools
 - pipeline/forecast criteria → `search_objects`

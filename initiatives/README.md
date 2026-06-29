@@ -49,7 +49,7 @@ sources:                             # where this initiative came from — cite 
 - **`status`** — exactly one of `NEW`, `IN_PROGRESS`, `PAUSED`, `CANCELLED`, `SUCCEEDED`. `/start` advances it; you can also edit it by hand. See the lifecycle below.
 - **`created` / `target`** — the timeframe: when it started and when success is due. Always absolute dates (`YYYY-MM-DD`), never "next month."
 - **`creator`** — required. **`dri`** — optional; the single person accountable for the outcome. If there's no DRI yet, omit the key or leave it blank — `/start` will flag it.
-- **`success_criteria`** — the heart of an initiative. Each must be **verifiable**: a person (or an agent reading the workspace graph) can look and say "true" or "false" without judgment calls. Prefer criteria that map to something queryable in Day AI (counts of agents, skills confirmed firing via `get_skill_history`, pipeline coverage, a Page existing) over vibes.
+- **`success_criteria`** — the heart of an initiative. Each must be **verifiable**: a person (or an agent reading the workspace graph) can look and say "true" or "false" without judgment calls. Prefer criteria that map to something queryable in Day AI (counts of agents, skills confirmed firing via `manage_skills → get_history`, pipeline coverage, a Page existing) over vibes.
 - **`sources`** — cite the origin so the initiative is traceable: the recorded planning meeting, the strategy Page, the Slack thread, the conversation. Use Day AI object ids / share URLs where the source lives in the workspace.
 
 ### Body

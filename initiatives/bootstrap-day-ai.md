@@ -12,7 +12,7 @@ success_criteria:
   - workspace/PEOPLE.md reflects the real roster with roles, and no key player from the CRM is left unplaced or uninvited.
   - planning/COMPANY_PLAN.md, planning/STRATEGY.md, and planning/OUTCOMES.md are non-empty, coherent, and free of unresolved blocking TODOs.
   - Every active person is running at least two agents that fit their role; every active seller has a Coach and a CRM Data Nerd, each with a strong (non-generic) identity.
-  - At least one scheduled skill per active person is confirmed firing with substantive, delivered output (verified via get_skill_history, not the schedule existing).
+  - At least one scheduled skill per active person is confirmed firing with substantive, delivered output (verified via `manage_skills → get_history`, not the schedule existing).
   - The planning layer is synced to Day AI Pages so the rest of the company sees the same source of truth.
 sources:
   - type: manual
@@ -33,7 +33,7 @@ Everything needed to run this lives in the repo and the workspace itself:
 - **The planning layer** — [`../planning/`](../planning/) (COMPANY_PLAN, STRATEGY, OUTCOMES) and [`../workspace/PEOPLE.md`](../workspace/PEOPLE.md).
 - **The agents that do the work** — `gtm-strategist`, `data-analyst`, `agent-implementor` in [`../.claude/agents/`](../.claude/agents/).
 - **The agents-are-GTM-automation thesis and the ≥2-agents bar** — see CLAUDE.md and `../.claude/agents/data-analyst.md`. Adding agents costs seats and tier budget, so every agent is justified with a value-vs-cost case (see **Cost** below).
-- **Workspace truth** — pulled live through the Day AI MCP (`manage_workspace_members → list_configuration`, `assistant_settings → list`, `manage_skills`, `get_skill_history`, `search_objects`). Never assume; pull.
+- **Workspace truth** — pulled live through the Day AI MCP (`manage_workspace_members → list_configuration`, `assistant_settings → list`, `manage_skills` incl. `→ get_history`, `search_objects`). Never assume; pull.
 
 ## What success looks like
 The seven `success_criteria` above, checked against reality, not config:
@@ -43,7 +43,7 @@ The seven `success_criteria` above, checked against reality, not config:
 3. **People** — the roster in `PEOPLE.md` matches `list_configuration`, and `list_suggested_invites` surfaces no key CRM contact who should be a member but isn't.
 4. **Plan** — the three planning docs read coherently and carry no blocking TODOs.
 5. **Agent coverage** — `assistant_settings → list` shows every active person with ≥2 role-fit agents; every seller has a Coach and a CRM Data Nerd with real identities (not "Assistant"/blank).
-6. **Delivery** — `get_skill_history` shows at least one scheduled skill per active person firing recently with substantive, delivered output. This is the criterion that proves *value*, not just *configuration*.
+6. **Delivery** — `manage_skills → get_history` shows at least one scheduled skill per active person firing recently with substantive, delivered output. This is the criterion that proves *value*, not just *configuration*.
 7. **Synced** — the planning docs exist as Day AI Pages (`/sync-pages`).
 
 ## Plan of attack
