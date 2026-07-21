@@ -24,7 +24,7 @@ This doc records the remaining gaps as paste-ready Linear tickets. The analyst s
 
 ## 1 — Skill run history (read) · ✅ Shipped in DAY-2585
 
-**Status:** No longer a gap — shipped in DAY-2585 as the **`get_history`** action on `manage_skills` (run output, firing times, and `notification.result` delivery), and live in this harness. The analyst (`.claude/agents/data-analyst.md`, Dimension 3a.3) and `/agent-audit` now read it to confirm a skill is firing, producing substantive vs. hollow output, and being delivered — rather than caveating every effectiveness claim.
+**Status:** No longer a gap — shipped in DAY-2585 as the **`get_history`** action on `manage_skills`, and live in this harness. The shipped shape differs from the ask below (live-verified 2026-07-21): each run is `{threadId, title, status, activatedAt, notification, messages[]}` where `messages[]` is the **full thread transcript** (no summary mode; ~40KB+ per run) and delivery is the `notification` object — `{delivered, emailSent, slackSent, slackSkipped, slackFailureReason, sendAt}` — not a `result` enum. Run `status` is a thread state (`idle`), not a success signal. The analyst (`.claude/agents/data-analyst.md`, Dimension 3a.3) and `/agent-audit` now read it to confirm a skill is firing, producing substantive vs. hollow output, and being delivered — rather than caveating every effectiveness claim.
 
 The original requirement is preserved here for traceability:
 
