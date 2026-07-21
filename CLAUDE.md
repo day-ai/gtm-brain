@@ -44,7 +44,7 @@ This harness is built on the workspace-management tools plus the read-only graph
 
 Use the Day AI MCP's read-only graph tools to ground the plan and every skill prompt in what the workspace actually contains — pipeline, contacts, meetings, prior conversations. `search_objects` (general graph search) and `get_meeting_recording_context` (a specific meeting's full context) are the primary ones. Discover the rest from the connected tool list rather than assuming names. **Never fabricate a custom property, pipeline stage, or page that you haven't confirmed exists in the workspace.**
 
-`manage_skills → get_history` (read a skill's recent runs — produced output, firing times, and the `notification.result` delivery) is how the analyst confirms a skill is *actually delivering value*, not just configured. Use the run `notification.result` to confirm delivery — never the channel config. Admin/Owner can read any agent's skill history via `targetAssistantId`.
+`manage_skills → get_history` (read a skill's recent runs — full transcript, firing times, and the per-run `notification` delivery block) is how the analyst confirms a skill is *actually delivering value*, not just configured. Use the run's `notification.delivered` boolean to confirm delivery — never the channel config. Admin/Owner can read any agent's skill history via `targetAssistantId`.
 
 ### Snapshots
 
@@ -107,7 +107,7 @@ A core thesis the analyst and implementor operate on: **almost every active pers
 
 **Two is the default expectation, not a quota to hit.** Agents cost money — they consume seats, and their automated skills consume tier budget. So every recommendation to add an agent must carry its own **value-vs-cost case**: the job slice it delegates, the work product it would proactively produce, and the seat/tier it requires. An agent worth adding pays for itself many times over and that case is easy to make; an agent added to move a count is waste. Never recommend "add a second agent" without making the case, and surface the seat/tier cost (`navigate_to_billing` when a seat is needed) as part of the recommendation, not as a surprise at deploy time.
 
-**Measuring value honestly:** the MCP confirms whether an agent is *well-built* (identity, skill craft, automation) and — via `manage_skills → get_history` — whether each skill is *actually delivering*: firing recently, producing substantive (not hollow) output, and delivered (per the run's `notification.result`, never the channel config). The remaining unknown is engagement *depth* (does a human act on it?), which needs tools recorded in `docs/MCP_REQUIREMENTS.md`. Never assert "delivering value" from a schedule existing — read the run history.
+**Measuring value honestly:** the MCP confirms whether an agent is *well-built* (identity, skill craft, automation) and — via `manage_skills → get_history` — whether each skill is *actually delivering*: firing recently, producing substantive (not hollow) output, and delivered (per the run's `notification.delivered`, never the channel config). The remaining unknown is engagement *depth* (does a human act on it?), which needs tools recorded in `docs/MCP_REQUIREMENTS.md`. Never assert "delivering value" from a schedule existing — read the run history.
 
 ---
 

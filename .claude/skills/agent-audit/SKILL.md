@@ -42,7 +42,7 @@ Evaluate all three dimensions per your instructions:
    favoring human-shaped agents built on a real slice of each person's week.
 3. Agent quality — for each agent: skill craft (vs write-skill bar), automation fitness (scheduled/
    triggered vs manual, right cadence), and effectiveness from `manage_skills → get_history` (firing recently?
-   output substantive vs hollow? delivered — per notification.result, not channel config?). And
+   output substantive vs hollow? delivered — per the run's `notification.delivered`, not channel config?). And
    identity quality: name, title, and especially the description (the agent's system prompt). The one
    thing you still can't see is engagement depth (does a human act on the output?) — name it and cite
    docs/MCP_REQUIREMENTS.md.
@@ -104,7 +104,7 @@ Report saved to rollouts/{date}-agent-audit/REPORT.md
 
 - **Recommend-only. No invites, no edits, no skill writes.** This skill sees clearly and proposes; `/implement` acts.
 - **The draft nudge emails are a first-class output** — they're often the single highest-ROI thing in the report, because re-engaging an already-invited person is nearly free. Draft them in the operator's voice, specific to each person, short and human.
-- **Confirm effectiveness from `manage_skills → get_history`, not config.** Read recent runs: firing? substantive vs hollow output? delivered (per `notification.result`, never the channel config)? Firing + substantive + delivered = delivering value. The only thing still unmeasurable is engagement *depth* (does the person act on it?) — that needs the engagement-metrics tool in `docs/MCP_REQUIREMENTS.md`. Don't claim "delivering value" from a schedule existing.
+- **Confirm effectiveness from `manage_skills → get_history`, not config.** Read recent runs: firing? substantive vs hollow output? delivered (per the run's `notification.delivered` boolean — `slackFailureReason` explains a failure — never the channel config)? Firing + substantive + delivered = delivering value. The only thing still unmeasurable is engagement *depth* (does the person act on it?) — that needs the engagement-metrics tool in `docs/MCP_REQUIREMENTS.md`. Don't claim "delivering value" from a schedule existing.
 - Prioritize by **value per cost**, not raw leverage: a near-free move (re-engaging an already-invited person, rewriting an existing skill, scheduling a skill that already exists) outranks one that needs a new seat unless the value is overwhelming. Standing up Coach + CRM Data Nerd agents for a team of active sellers is high value *and* worth the seats — but say what it costs. Every recommended new agent must carry its value-vs-cost case (job slice + output vs. seat/tier), and the report must total the cost to close the gap so the operator sees the bill before `/implement`, never after.
 - Re-run periodically — the maturity table is most useful as a trend.
 - **This audit is how `/start` verifies an initiative's agent-coverage and skill-delivery criteria.** When invoked as a grounding step for an initiative (e.g. `bootstrap-day-ai`), the maturity table maps directly onto those success criteria — frame the headline around what the initiative still needs to hit, not just abstract maturity.
