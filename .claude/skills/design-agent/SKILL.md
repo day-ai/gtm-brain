@@ -31,9 +31,11 @@ Start from the playbook in `.claude/agents/data-analyst.md` (Dimension 2), then 
 
 - **CRM Data Nerd** — keeps opportunities, notes, and context objects correct and complete from what actually happened in conversations. Works on Day AI or alongside HubSpot/Salesforce.
 - **Coach** — deep on every open opportunity; finds patterns, blockers, and what's working on other reps' deals; fluent in *this company's* process; preps before meetings, drafts unblock/follow-up emails.
-- **Relationship Radar · Pipeline/Forecast Analyst · Follow-Up Drafter · Market & Account Watch · Chief of Staff** — match to the role.
+- **Relationship Radar · Pipeline/Forecast Analyst · Follow-Up Drafter · Market & Account Watch · Chief of Staff · Enablement Editor** — match to the role.
 
 The archetype is the skeleton. The flesh — the company, the person, the pipeline names, the real accounts — is what makes the agent worth having.
+
+**Check the flywheel.** If the agent preps meetings (a Coach especially), look for the living guide pages its prep should read — workspace-shared Pages like a discovery guide (`search_objects`, then `read_page`; the pattern is in `.claude/agents/data-analyst.md`). If a guide exists, the prep skill references it by title and objectId. If none exists, or nobody owns updating it, say so in the spec's **Notes**: the operator likely wants the producer side — an Enablement Editor skill that reviews calls against the guide — designed next, or the flywheel never spins.
 
 ## Step 3 — Write the identity (this is the agent's definition)
 

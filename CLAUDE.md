@@ -31,6 +31,7 @@ This harness is built on the workspace-management tools plus the read-only graph
 | `mcp__day-ai__assistant_settings` | Inspect & edit agents — your own, or (Admin/Owner) any agent in the workspace | `read`, `update`, `list` |
 | `mcp__day-ai__manage_skills` | Full skill lifecycle on an agent or in the workspace library, plus reading a skill's run history | `list`, `get`, `create`, `update`, `delete`, `reset_prompt`, `get_history` |
 | `mcp__day-ai__manage_workspace_members` | Members, roles, invites, domain auto-invite, suggested invites | `list_configuration`, `invite_member`, `resend_invite`, `revoke_invite`, `update_invite_role`, `enable_auto_invite`, `disable_auto_invite`, `list_suggested_invites`, `navigate_to_billing` |
+| `mcp__day-ai__manage_workspace_instructions` | The single workspace-wide instruction every agent inherits — the home for rules that apply across the board | `list_configuration`, `update` |
 
 **Always start a member/invite task with `list_configuration`** — it returns the current members, roles, claimed domains, auto-invite config, and *what the caller is allowed to do*. Read `currentUser` before acting.
 
@@ -40,11 +41,19 @@ This harness is built on the workspace-management tools plus the read-only graph
 
 **Result envelopes** are `{ result: {...} }` on success and `{ error: { message } }` on failure. Permission failures are explicit — surface them, don't retry blindly.
 
+**Workspace instructions drive rules and consistency across the whole business.** The general workspace instruction is standing guidance every agent inherits everywhere it works. It matters most in **chat**, where there's no prompt scoping the work — it's what helps an agent route and act well: company context and terminology ("our stages are X → Y → Z"), universal guardrails ("never email customers directly"), norms for when to hand something to a human. Skill runs inherit it too, but it's less load-bearing there — a skill's prompt already defines its scope. It is **not** a home for task instructions: work that runs on a schedule or produces a deliverable is a skill (workspace-library if the whole team needs it), and similar lines appearing across several skills is normal, not a smell. The contract makes care mandatory: there is **one** editable record, writes are Owner/Admin-only, the text caps at **3000 characters**, and `update` **replaces the entire text**. Always `list_configuration` first, merge into the existing text, and write back the complete result — a naive update clobbers everything there. The cap is a feature: it keeps the record to the few rules that genuinely apply everywhere, always.
+
 ### Graph / read tools (for grounding)
 
 Use the Day AI MCP's read-only graph tools to ground the plan and every skill prompt in what the workspace actually contains — pipeline, contacts, meetings, prior conversations. `search_objects` (general graph search) and `get_meeting_recording_context` (a specific meeting's full context) are the primary ones. Discover the rest from the connected tool list rather than assuming names. **Never fabricate a custom property, pipeline stage, or page that you haven't confirmed exists in the workspace.**
 
 `manage_skills → get_history` (read a skill's recent runs — full transcript, firing times, and the per-run `notification` delivery block) is how the analyst confirms a skill is *actually delivering value*, not just configured. Use the run's `notification.delivered` boolean to confirm delivery — never the channel config. Admin/Owner can read any agent's skill history via `targetAssistantId`.
+
+### Shared artifacts: pages, folders, and living guides
+
+Some of what the harness deploys isn't agent config — it's **shared content agents work against**: playbooks, guides, dashboards. The MCP exposes `create_page` / `update_page` / `read_page` (rich HTML pages; `update_page` prefers targeted-edit and insert modes — full replace is a last resort that requires proof you read the current page) and `create_or_update_folder` (a folder created with `shareWithWorkspace: true` makes everything filed in it workspace-visible; deleting a folder unfiles its pages, never deletes them).
+
+The signature pattern is the **living-guide flywheel**: a playbook (e.g. the discovery guide) lives as a workspace-shared Page, and skills on *different people's* agents form a loop around it — **consumer** skills on each seller's agent read the guide when prepping meetings, and a **producer** skill on the enablement owner's agent reviews recent calls against the guide and proposes targeted `update_page` edits. Because skills reference the page rather than embedding its content, every improvement propagates to everyone's prep the moment the page changes — no skill redeploys. The archetype and audit rubric live in `.claude/agents/data-analyst.md`; `/design-agent` proposes the pairing.
 
 ### Snapshots
 
