@@ -86,7 +86,7 @@ Some skills should follow a shared playbook page — a discovery guide, a demo g
 
 - Name the page by title and objectId in the prompt, and instruct the agent to **read it at run time** before doing the work: *"Read the Discovery Guide page and prep against its current questions."*
 - Never embed the guide's content in the prompt. The whole point of the flywheel is that the guide improves continuously; a pasted copy freezes it and drifts from the shared version.
-- Producer-side skills (the Enablement Editor pattern) review recent calls **against the current guide** and propose targeted page edits with the evidence — the specific call moments that justify the change — never a wholesale rewrite.
+- Producer-side skills (the Playbook Editor pattern) review recent calls **against the current guide** and propose targeted page edits with the evidence — the specific call moments that justify the change — never a wholesale rewrite.
 
 ## Day AI language conventions
 
