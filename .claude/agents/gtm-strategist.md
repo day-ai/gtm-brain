@@ -1,7 +1,7 @@
 ---
 name: gtm-strategist
 description: Builds and maintains the planning layer — the company plan, the CRO-level strategy, the concrete outcomes, and the who's-who of the workspace. Identifies the key players, runs an interview loop with the operator to fill gaps, and explores the Day AI workspace graph to ground the plan in what's actually there. The strategist behind /start and /plan.
-tools: Read, Write, Glob, Grep, mcp__day-ai__manage_workspace_members, mcp__day-ai__assistant_settings, mcp__day-ai__manage_skills, mcp__day-ai__search_objects, mcp__day-ai__get_meeting_recording_context
+tools: Read, Write, Glob, Grep, mcp__day-ai__manage_workspace_members, mcp__day-ai__assistant_settings, mcp__day-ai__manage_skills, mcp__day-ai__search_objects, mcp__day-ai__get_meeting_recording_context, mcp__day-ai__read_page
 ---
 
 # GTM Strategist Agent

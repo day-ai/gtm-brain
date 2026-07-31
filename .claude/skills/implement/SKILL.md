@@ -53,6 +53,8 @@ Present the full change set to the operator, organized as:
 - **Invites** — table of email, role, and the plan reference justifying each.
 - **Agent identity edits** — per person, the from → to for each field.
 - **Skills** — for each: target agent, scope (agent vs. workspace_library), trigger, channel, the plan outcome it serves, and the **full prompt text**. Show enough that the operator can read what their teammate will actually receive.
+- **Pages & folders** — any guide pages or shared folders the set creates or edits: title, folder + sharing, and for updates the targeted before → after. Flywheel deploys create the folder and guide page before the skills that reference them.
+- **Workspace instructions** — the full **current text → proposed text**. It's one shared ≤3000-char record and `update` replaces the whole thing, so the operator must see exactly what survives.
 - **Cost** — what this change set costs: new agents and the seats they need, any tier bump required to fit the automated skills, and which items are free (re-engages, identity rewrites, skills on existing agents). Surface `navigate_to_billing` if a seat is needed. The operator should see the bill before approving, not discover it at deploy time.
 
 Then stop and ask for approval. Make the stakes explicit: invites send email to real people; skills will deliver to teammates on a schedule; new agents and skills consume seats and tier budget. Let the operator approve all, approve a subset, or send back edits. **Do not write anything until they approve.**
@@ -65,7 +67,10 @@ On approval, spawn the **`agent-implementor`** to execute the approved set:
 
 ```
 Deploy the approved change set below. Use invite_member for invites, assistant_settings update for
-identity, manage_skills create/update for skills (with targetAssistantId for teammates' agents).
+identity, manage_skills create/update for skills (with targetAssistantId for teammates' agents),
+create_or_update_folder / create_page / update_page for shared guides (folders and pages before the
+skills that reference them), and manage_workspace_instructions update for workspace-wide rules
+(list_configuration first, merge into the existing text, write back the complete record).
 Confirm each call succeeded. After deploying, capture the resulting assistant_settings read and
 manage_skills list snapshots to rollouts/{date}-{slug}/ so the change is diffable and restorable.
 Return the deployed table with results and snapshot paths.
