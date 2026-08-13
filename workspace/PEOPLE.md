@@ -2,11 +2,25 @@
 
 > **What this is:** the cast — everyone in the Day AI workspace, who they really are, and what they own. The agents read this to know who they're configuring agents and skills *for*. It's joined at the hip with the plan: every outcome owner appears here, and every key player has outcomes they own.
 >
-> **How it's built:** `/start` and `/plan` populate this via the `gtm-strategist`, which reads `manage_workspace_members → list_configuration` (roster + roles), `assistant_settings → list` (who has which agent), and `list_suggested_invites` (who's in the CRM but not yet a member). Confirm and correct it in the interview — the agents trust it.
+> **How it's built:** dual-sourced, depending on your mode.
+> - **Pre-signup** (no workspace yet): `/discover` builds it from your org chart, your inbox drops, and the Gate 3 interview. "Workspace role" holds the *intended* role, and each person gets a named **activation owner** (who is accountable for them actually turning their agent on).
+> - **Connected:** `/start` and `/plan` populate it via the `gtm-strategist`, which reads `manage_workspace_members → list_configuration` (roster + roles), `assistant_settings → list` (who has which agent), and `list_suggested_invites` (who's in the CRM but not yet a member). When a workspace connects after a pre-signup map, the strategist reconciles this file against the live roster and flags every divergence.
+>
+> Confirm and correct it in the interview — the agents trust it.
+>
+> **The operator.** Whoever runs this harness is recorded below with a trust note (`/start` identifies them from git config). The harness acts with their hands; the brain should know whose.
 >
 > **Keep it candid but careful.** This file is *not* synced to Day AI Pages by default (see `/sync-pages`) precisely so it can hold honest working notes. Don't put anything here you wouldn't want a teammate to read if it ever were shared.
 
 **Last updated:** {date} · **Workspace:** {name} · **Domains:** {claimed domains}
+
+## The operator
+
+> Who runs this harness, recorded by `/start`.
+
+- **Name / email:** {from git config}
+- **Trust note:** {connected: workspace role and what it allows · pre-signup: "operator of this repo; no workspace role yet"}
+- **Rollout lead:** {who} · **Exec sponsor:** {who}
 
 ---
 
@@ -19,6 +33,7 @@
 - **Workspace role:** {Owner / Admin / Member}
 - **Agent:** {agent name, or "none — no seat yet"}
 - **Owns:** {what they're responsible for — ties to OUTCOMES.md}
+- **Activation owner:** {who is accountable for this person actually using their agent — required pre-signup}
 - **How to work with them:** {one line — comms style, what to route to them, what not to}
 
 ---

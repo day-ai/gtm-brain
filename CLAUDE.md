@@ -13,10 +13,15 @@ Plan first. Implement from the plan. When reality and the plan diverge, the job 
 
 ---
 
-## Prerequisites every agent assumes
+## The three operator states
 
-1. **The Day AI MCP server (`day-ai`) is connected and authorized.** All workspace reads and writes go through it. Identity is implicit in the OAuth token — you never pass `workspaceId`, `userId`, or the current `assistantId`. You only pass `targetAssistantId` when an Owner/Admin acts on a *different* agent than their own.
-2. **The operator is an Owner or Admin.** Cross-agent and member-management actions require the `USERS:manage` permission. If a tool returns *"requires Admin or Owner,"* stop and tell the operator — don't design around it. `/start` confirms the role up front via `manage_workspace_members` → `list_configuration` → `currentUser.roleName`.
+Every run starts by knowing which of three states the operator is in. `/start` detects it (via `manage_workspace_members` → `list_configuration`) and every other skill inherits the answer.
+
+1. **Connected Owner/Admin.** The full harness. All workspace reads and writes go through the Day AI MCP; identity is implicit in the OAuth token — you never pass `workspaceId`, `userId`, or the current `assistantId`. You only pass `targetAssistantId` when acting on a *different* agent than your own. Cross-agent and member-management actions require the `USERS:manage` permission.
+2. **Connected Member.** The planning side works; inviting people, editing teammates' agents, and creating skills for others are blocked. If a tool returns *"requires Admin or Owner,"* stop and tell the operator — don't design around it.
+3. **Prospect (no workspace yet).** The pre-signup mode. The harness maps the GTM through `/discover` and the `map-your-gtm` initiative, and builds the deployable payload in `rollouts/preflight/`. Skills that need the workspace degrade the way `/sync-pages` does: state plainly what's unavailable and why, do the repo-side work, never pretend a write happened. Verification uses the pre-signup vocabulary — confirm from decisions and sign-offs, not from a doc existing.
+
+In every state, the harness knows **who is operating it**: `/start` reads git config (and `gh auth status` when available) and records the operator in `workspace/PEOPLE.md` with a trust note. The harness acts with that person's hands.
 
 ---
 
@@ -100,12 +105,18 @@ The shared state the team operates on. Agents read from and write to these locat
 
 | Location | What it is | Written by |
 |----------|-----------|-----------|
-| `planning/COMPANY_PLAN.md` | Company goals, forecasts, plans (layer 1) | `/plan`, manual |
-| `planning/STRATEGY.md` | CRO-level revenue strategy & direction (layer 2) | `/plan`, manual |
-| `planning/OUTCOMES.md` | Concrete, fine-grained outcomes that serve layers 1–2 (layer 3) | `/plan`, manual |
-| `initiatives/<slug>.md` | Bounded, owned, time-boxed efforts with verifiable success criteria and a status. The unit of work between the plan and implementation; realized through outcomes/agents/skills | `/start`, manual |
-| `workspace/PEOPLE.md` | Who's who in the workspace — roles, agents, focus | `/start`, `/plan` |
+| `planning/COMPANY_PLAN.md` | Company goals, forecasts, plans (layer 1) | `/plan`, `/discover`, manual |
+| `planning/STRATEGY.md` | CRO-level revenue strategy & direction (layer 2) | `/plan`, `/discover`, manual |
+| `planning/OUTCOMES.md` | Concrete, fine-grained outcomes that serve layers 1–2 (layer 3) | `/plan`, `/discover`, manual |
+| `initiatives/<slug>.md` | Bounded, owned, time-boxed efforts with verifiable success criteria and a status. The unit of work between the plan and implementation; realized through outcomes/agents/skills | `/start`, `/discover`, manual |
+| `workspace/PEOPLE.md` | Who's who — roles, agents, focus, the operator, activation owners | `/start`, `/plan`, `/discover` |
+| `workspace/TECH_STACK.md` | Every system a customer touches, owners, migration posture, data readiness | `/discover` |
+| `workspace/PRIVACY.md` | Per-persona sharing tiers, exclusions, and the sign-off that gates all dataflow | `/discover` |
+| `discovery/inbox/` | Source material the operator drops for discovery to read before it asks | operator |
+| `rollouts/preflight/` | The deployable payload built pre-signup: instruction draft, properties, pages, invites, agent specs + creation cards, skills, import plan, enablement assets | `/discover` |
 | `rollouts/<YYYY-MM-DD>-<slug>/` | Per-run artifacts: audit reports, agent specs, proposed/approved/deployed changes, snapshots | `/agent-audit`, `/audit`, `/design-agent`, `/implement` |
+| `rollouts/health/` | The binding manifest and dated brain-health reports | `/brain-health` |
+| `docs/INSTRUCTION_ARCHITECTURE.md` | Where every rule lives: workspace → agent → skill → prompt | shipped; read before configuring |
 | `docs/MCP_REQUIREMENTS.md` | MCP tool gaps the analyst needs closed, as Linear-ready tickets | manual |
 
 This data layer lives in the team's **own private GitHub repo** (made from the `day-ai/gtm-brain` template). That repo is the version-controlled source of truth the **operators** sync through — `git pull` before working, `git push` when the plan, an initiative, or `PEOPLE.md` changes. It's private because it holds strategy, forecasts, and candid notes about teammates. Three planes, kept distinct: the **private repo** (operators author and sync here), **Day AI Pages** (a published mirror of the plan and active initiatives the whole company reads, via `/sync-pages`), and the **Day AI workspace** (where it all executes, via the MCP). See the README's "Your team's GTM Brain repo."
@@ -131,14 +142,22 @@ Don't replicate its docs here. If someone wants to vibe-code a Day AI app, run *
 ## How the pieces fit
 
 ```
-/start        → connection + role check, take stock of initiatives, kick off what each one needs
+/start        → detect operator state, take stock of initiatives, kick off what each one needs
+/discover     → guided discovery: map the GTM (works with no workspace), scope the first win,
+                build the preflight payload
 /plan         → gtm-strategist + data-analyst build the planning layer
 /agent-audit  → data-analyst scores how well you're using Day AI's agents + recommends
 /design-agent → data-analyst + agent-implementor design one complete agent (identity + skills)
 /audit        → data-analyst + agent-implementor diff the workspace vs. the plan
-/implement    → agent-implementor invites people, tunes agents, deploys skills
+/implement    → agent-implementor invites people, tunes agents, deploys skills;
+                preflight mode applies rollouts/preflight/ at connect time
+/brain-health → binding manifest + drift report; proposals only, never applies
 /sync-pages   → push/pull planning docs to Day AI Pages
 /build-app    → vibe-code a custom app on the public Day AI SDK
 ```
 
-`/start` is the standing entrypoint: it reads `initiatives/`, reports each initiative's progress against its verifiable success criteria, and hands off to the skills above to do the work. On a fresh clone the only initiative is `bootstrap-day-ai`, so `/start` behaves like first-run setup. Two audit lenses: `/agent-audit` measures how well you're using Day AI's agents (independent of the plan); `/audit` measures how well the workspace delivers the plan. Read the plan, raise the bar on the agents, change the workspace, keep them in sync. That's the loop.
+`/start` is the standing entrypoint: it reads `initiatives/`, reports each initiative's progress against its verifiable success criteria, and hands off to the skills above to do the work. On a fresh clone with no workspace, the lead initiative is `map-your-gtm`; on a fresh connected clone it's `bootstrap-day-ai`. Two audit lenses: `/agent-audit` measures how well you're using Day AI's agents (independent of the plan); `/audit` measures how well the workspace delivers the plan. Read the plan, raise the bar on the agents, change the workspace, keep them in sync. That's the loop.
+
+**Three standing loops keep the brain alive:** the living-guide flywheel keeps shared content improving (producers propose page edits from call evidence), a scheduled `/audit` keeps the workspace matching the plan, and `/brain-health` keeps the brain's own bindings from rotting as the org changes. All three propose; the operator applies.
+
+**The posture the whole harness earns:** treat the brain the way a good founder treats a paid consultant — give it everything, answer its questions honestly, and listen to what it says. The harness holds up its end by doing the homework before asking (discovery reads before it interviews), citing evidence for every claim, and saying plainly what it can't verify.

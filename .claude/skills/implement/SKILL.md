@@ -1,6 +1,6 @@
 ---
 name: implement
-description: Turn the plan and audit into real configuration in Day AI — invite the right people at the right roles, tune each teammate's agent identity, and deploy role-specific skills. Always previews before it writes. Requires Owner/Admin. Usage: /implement [scope: a person, team, outcome, or "the high-priority audit items"]
+description: Turn the plan and audit into real configuration in Day AI — invite the right people at the right roles, tune each teammate's agent identity, and deploy role-specific skills. Always previews before it writes. Requires Owner/Admin. In preflight mode it applies the rollouts/preflight/ payload built during map-your-gtm, in dependency order, first-win slice first. Usage: /implement [scope: a person, team, outcome, "preflight", or "the high-priority audit items"]
 ---
 
 # /implement
@@ -10,6 +10,8 @@ Make the workspace reflect the plan. This is the only skill that writes to your 
 $ARGUMENTS
 
 Scope the run to what the argument names (a person, a team, an outcome, or "the high-priority items from the last audit"). If no scope is given, propose one from the latest audit and confirm it before proceeding.
+
+**If the argument is `preflight`, or `rollouts/preflight/` exists and has never been applied, run Preflight mode (below) instead of the standard flow.**
 
 ---
 
@@ -112,6 +114,21 @@ Save the rollout record to `rollouts/<YYYY-MM-DD>-<slug>/` (proposed set, approv
 
 Snapshots saved to rollouts/{date}-{slug}/. Re-run `/start` to re-take-stock and update initiative status, or `/audit` to re-check plan ↔ workspace alignment.
 ```
+
+---
+
+## Preflight mode — applying the map-your-gtm payload
+
+The connect-day flow: everything discovery authored in `rollouts/preflight/` gets applied to the newly connected workspace, in dependency order, with the same preview-then-approve gate at every step. This is the change-management moment; walk it deliberately. The payload formats and full apply order live in `rollouts/preflight/README.md`.
+
+1. **Verify role.** `list_configuration` → `currentUser.roleName` must be Owner or Admin; the payload touches everything. Stop otherwise.
+2. **Verify the privacy sign-off.** `workspace/PRIVACY.md` must carry a named, dated sign-off. If it doesn't, stop and route back to `/discover` Gate 4. Nothing in the payload deploys before privacy is settled.
+3. **Reconcile the map against reality.** The workspace may not be empty (trial data, auto-joined teammates). Diff `INVITES.md` against the live roster, `CUSTOM_PROPERTIES.json` against `read_crm_schema`, and report divergences before proposing anything.
+4. **Apply in dependency order, one preview per step:** workspace instruction (merge into the live record, then write back the whole text) → custom properties → pages and folders → invites → **pause for the manual step**: the operator creates each agent in the Day AI UI from its `CREATION_CARD.md`, and you verify each exists via `assistant_settings → list` before continuing → agent identities → skills → imports and backfills.
+5. **First-win first.** Within every step, items marked `priority: first-win` deploy before the rest. The pilot users' experience on day one is the whole point of having mapped early.
+6. **Resolve every `GROUND-AFTER-CONNECT` marker before enabling its skill.** Look up the live value (real stage names, page ids, actual meeting cadence) in the graph and write it into the prompt. A skill with an unresolved marker does not go live; generic first output is the failure mode we mapped early to avoid.
+7. **Hand out the human steps.** Per-user privacy setup instructions and rollout guides from `ENABLEMENT/` go to each person (their activation owner in `PEOPLE.md` verifies completion). These cannot be applied via MCP by design.
+8. **Snapshot and record** to `rollouts/<date>-preflight/` exactly like a standard run, and report initiative progress against `map-your-gtm` and `first-win`. Then point at `/start` to verify criteria the normal way.
 
 ---
 
