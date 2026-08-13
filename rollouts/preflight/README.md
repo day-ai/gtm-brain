@@ -30,7 +30,15 @@ rollouts/preflight/
 
 **INVITES.md:** a table: name, email, role (Owner/Admin/Member), why they belong (plan reference), activation owner. This is the input to `invite_member`; every row also appears in `workspace/PEOPLE.md`.
 
-**AGENTS/:** one folder per agent. `AGENT.md` is the standard `/design-agent` spec. `CREATION_CARD.md` exists because **agents cannot be created via MCP**: a human creates each agent in the Day AI UI (a seat and billing step), then the harness applies the identity and skills. The card is everything that human needs on one screen: agent name, title, photo suggestion, tier, and whose agent it is.
+**AGENTS/:** one folder per agent. `AGENT.md` is the standard `/design-agent` spec. `CREATION_CARD.md` exists because **agents cannot be created via MCP** (`assistant_settings` has no create mode): creating an agent is a billing action a **workspace Owner** performs in the Day AI UI, and the harness applies the identity and skills afterward. The card is a standalone page the Owner can follow without the harness, so include all of it:
+
+- Agent name, title, photo suggestion, and whose agent it is.
+- The tier (with the value-vs-cost line from `AGENT.md`; costs stay flagged as estimates until confirmed with Day AI).
+- The creation steps, verbatim on every card:
+  1. In Day AI, go to **Workspace Settings → Billing → Manage Assistants → New Authorization**. Only a workspace Owner can do this; it adds a paid assistant to the bill.
+  2. Authorize the assistant for the member named on this card, at the tier named on this card.
+  3. Before its first scheduled run, **disable the auto-provisioned "Morning Briefing" skill**. Every new agent gets one by default (weekday schedule, email notification), and audit any other default skills for email notifications. The real skills come from this payload next.
+  4. Tell the operator the agent exists. `/implement` then applies its identity (`assistant_settings`) and skills (`manage_skills`).
 
 **SKILLS/:** one skill per file, frontmatter + prompt:
 
@@ -76,7 +84,7 @@ At apply time, every marker is resolved against the live graph **before** the sk
 4. Custom properties
 5. Pages and folders
 6. Invites
-7. **Manual step:** a human creates each agent from its creation card
+7. **Manual step:** a workspace Owner creates each agent from its creation card (UI-only billing action; see AGENTS/ above)
 8. Agent identities (`assistant_settings update`)
 9. Skills (`priority: first-win` first, each with its GROUND-AFTER-CONNECT markers resolved before enabling)
 10. Imports, then backfills

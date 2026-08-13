@@ -26,7 +26,7 @@ An agent's **identity description is its definition**: the equivalent of a syste
 
 - **Personal vs managed:** every agent belongs to a member. Personal agents are configured by their owner; managed agents are deployed and maintained by an Admin/Owner (from templates or by hand) for teammates. Fleet design decides which is which per person.
 - **Delegation:** agents can hand work to other agents. Wire it explicitly in the fleet design; delegation changes what each agent's skills need to cover.
-- **The one thing you can't automate:** creating an agent happens in the Day AI UI (it's a seat/billing step). Everything after creation (identity, skills) applies via MCP. Pre-signup fleet designs ship a creation card per agent for this step.
+- **The one thing you can't automate:** creating an agent is a billing action only a **workspace Owner** can perform, in the Day AI UI (Workspace Settings → Billing → Manage Assistants → New Authorization). Everything after creation (identity, skills) applies via MCP. Pre-signup fleet designs ship a creation card per agent with these steps written out, so the Owner can run them without the harness; the card also reminds them to disable the auto-provisioned default "Morning Briefing" skill before it fires.
 
 ## Layer 3: The skill
 
