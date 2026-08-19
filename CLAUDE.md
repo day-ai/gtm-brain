@@ -9,7 +9,7 @@ There are two layers, and they have a strict relationship:
 
 Plan first. Implement from the plan. When reality and the plan diverge, the job is to either change the workspace or update the plan — never to let the gap sit silently.
 
-**Initiatives are the unit of work between the two.** An **initiative** (`initiatives/<slug>.md`) is a bounded, owned, time-boxed effort with a verifiable definition of success — it pulls from the plan and drives implementation work until its success criteria actually verify against the workspace. Initiatives sit *above* the fine-grained outcomes in `planning/OUTCOMES.md`: an outcome is atomic ("draft a follow-up after a call"); an initiative is the larger effort an outcome serves ("get the team running on Day AI by Q3"), realized through many outcomes, invites, agents, and skills. **`/start`** is the entrypoint that takes stock of every initiative and kicks off what each one needs. See [`initiatives/README.md`](initiatives/README.md) for the file format, status lifecycle (`NEW → IN_PROGRESS → SUCCEEDED`, plus `PAUSED`/`CANCELLED`), and the default `bootstrap-day-ai` initiative that ships with the repo.
+**Initiatives are the unit of work between the two.** An **initiative** (`initiatives/<slug>.md`) is a bounded, owned, time-boxed effort with a verifiable definition of success — it pulls from the plan and drives implementation work until its success criteria actually verify against the workspace. Initiatives sit *above* the fine-grained outcomes in `planning/OUTCOMES.md`: an outcome is atomic ("draft a follow-up after a call"); an initiative is the larger effort an outcome serves ("get the team running on Day AI by Q3"), realized through many outcomes, invites, agents, and skills. **`/start`** is the entrypoint that takes stock of every initiative and kicks off what each one needs. See [`initiatives/README.md`](initiatives/README.md) for the file format, status lifecycle (`NEW → IN_PROGRESS → SUCCEEDED`, plus `PAUSED`/`CANCELLED`), and the two initiatives that ship with the repo: `map-your-gtm` (leads pre-signup) and `bootstrap-day-ai` (leads once a workspace connects).
 
 ---
 
@@ -17,11 +17,11 @@ Plan first. Implement from the plan. When reality and the plan diverge, the job 
 
 Every run starts by knowing which of three states the operator is in. `/start` detects it (via `manage_workspace_members` → `list_configuration`) and every other skill inherits the answer.
 
-1. **Connected Owner/Admin.** The full harness. All workspace reads and writes go through the Day AI MCP; identity is implicit in the OAuth token — you never pass `workspaceId`, `userId`, or the current `assistantId`. You only pass `targetAssistantId` when acting on a *different* agent than your own. Cross-agent and member-management actions require the `USERS:manage` permission.
+1. **Connected Owner/Admin.** The full harness. All workspace reads and writes go through the Day AI MCP; identity is implicit in the OAuth token — you never pass `workspaceId`, `userId`, or the current `assistantId`. You only pass `targetAssistantId` when acting on a *different* agent than your own. Cross-agent and member-management actions require the Admin or Owner role.
 2. **Connected Member.** The planning side works; inviting people, editing teammates' agents, and creating skills for others are blocked. If a tool returns *"requires Admin or Owner,"* stop and tell the operator — don't design around it.
-3. **Prospect (no workspace yet).** The pre-signup mode. The harness maps the GTM through `/discover` and the `map-your-gtm` initiative, and builds the deployable payload in `rollouts/preflight/`. Skills that need the workspace degrade the way `/sync-pages` does: state plainly what's unavailable and why, do the repo-side work, never pretend a write happened. Verification uses the pre-signup vocabulary — confirm from decisions and sign-offs, not from a doc existing.
+3. **Prospect (no workspace yet).** The pre-signup mode. The harness maps the GTM through `/discover` and the `map-your-gtm` initiative, and builds the deployable payload in `rollouts/preflight/`. Skills that need the workspace degrade the way `/sync-pages` does: state plainly what's unavailable and why, do the repo-side work, never pretend a write happened. Verification uses the pre-signup vocabulary — confirm from recorded decisions with named owners, not from a doc existing.
 
-In every state, the harness knows **who is operating it**: `/start` reads git config (and `gh auth status` when available) and records the operator in `workspace/PEOPLE.md` with a trust note. The harness acts with that person's hands.
+In every state, the harness knows **who is operating it**: `/start` reads git config as a hint (and `gh auth status` when available), **confirms the identity with the operator**, and records the confirmed operator in `workspace/PEOPLE.md` with a trust note. Git identity is never trusted unconfirmed — a prospect's machine routinely carries someone else's. The harness acts with that person's hands.
 
 ---
 
@@ -34,17 +34,17 @@ This harness is built on the workspace-management tools plus the read-only graph
 | Tool | Purpose | Key modes |
 |------|---------|-----------|
 | `mcp__day-ai__assistant_settings` | Inspect & edit agents — your own, or (Admin/Owner) any agent in the workspace | `read`, `update`, `list` |
-| `mcp__day-ai__manage_skills` | Full skill lifecycle on an agent or in the workspace library, plus reading a skill's run history | `list`, `get`, `create`, `update`, `delete`, `reset_prompt`, `get_history` |
+| `mcp__day-ai__manage_skills` | Full skill lifecycle on an agent or in the workspace library, reading a skill's run history, and pushing library skills to teammates' agents | `list`, `get`, `create`, `update`, `delete`, `reset_prompt`, `get_history`, `deploy`/`undeploy` (Admin/Owner) |
 | `mcp__day-ai__manage_workspace_members` | Members, roles, invites, domain auto-invite, suggested invites | `list_configuration`, `invite_member`, `resend_invite`, `revoke_invite`, `update_invite_role`, `enable_auto_invite`, `disable_auto_invite`, `list_suggested_invites`, `navigate_to_billing` |
 | `mcp__day-ai__manage_workspace_instructions` | The single workspace-wide instruction every agent inherits — the home for rules that apply across the board | `list_configuration`, `update` |
 
 **Always start a member/invite task with `list_configuration`** — it returns the current members, roles, claimed domains, auto-invite config, and *what the caller is allowed to do*. Read `currentUser` before acting.
 
-**Cross-agent / `list` modes are Admin/Owner-only.** Targeting an agent other than your own (`targetAssistantId`) requires it; so does `assistant_settings` `mode: "list"` and `manage_skills` reading another agent's skills.
+**Writes to other people's agents are Admin/Owner-only.** `assistant_settings` `mode: "list"` works for everyone (non-admins see the agents they own; Admins/Owners see every agent in the workspace), and reading an agent you own via `targetAssistantId` is always allowed. Updating a *different* person's agent, and any `manage_skills` call on another agent's skills, requires Admin or Owner.
 
 **Tier limits are real.** Automated skills (those with a `SCHEDULE` or `EVENT` trigger) consume automated-skill slots governed by the *target agent's* tier. Over-budget creation is rejected with an explanation. When you create a skill for a teammate, the limit checks against *their* tier, not yours. Plan automations around the target agent's packaging; prefer one or two high-value scheduled skills over many.
 
-**Result envelopes** are `{ result: {...} }` on success and `{ error: { message } }` on failure. Permission failures are explicit — surface them, don't retry blindly.
+**Result envelopes** differ by tool family: the graph/read tools return `{ result: {...} }` on success and `{ error: { message } }` on failure; the management tools return top-level `{ success: true, ... }` payloads. Permission failures are explicit in both — surface them, don't retry blindly.
 
 **Workspace instructions drive rules and consistency across the whole business.** The general workspace instruction is standing guidance every agent inherits everywhere it works. It matters most in **chat**, where there's no prompt scoping the work — it's what helps an agent route and act well: company context and terminology ("our stages are X → Y → Z"), universal guardrails ("never email customers directly"), norms for when to hand something to a human. Skill runs inherit it too, but it's less load-bearing there — a skill's prompt already defines its scope. It is **not** a home for task instructions: work that runs on a schedule or produces a deliverable is a skill (workspace-library if the whole team needs it), and similar lines appearing across several skills is normal, not a smell. The contract makes care mandatory: there is **one** editable record, writes are Owner/Admin-only, the text caps at **3000 characters**, and `update` **replaces the entire text**. Always `list_configuration` first, merge into the existing text, and write back the complete result — a naive update clobbers everything there. The cap is a feature: it keeps the record to the few rules that genuinely apply everywhere, always.
 
@@ -52,7 +52,7 @@ This harness is built on the workspace-management tools plus the read-only graph
 
 Use the Day AI MCP's read-only graph tools to ground the plan and every skill prompt in what the workspace actually contains — pipeline, contacts, meetings, prior conversations. `search_objects` (general graph search) and `get_meeting_recording_context` (a specific meeting's full context) are the primary ones. Discover the rest from the connected tool list rather than assuming names. **Never fabricate a custom property, pipeline stage, or page that you haven't confirmed exists in the workspace.**
 
-`manage_skills → get_history` (read a skill's recent runs — full transcript, firing times, and the per-run `notification` delivery block) is how the analyst confirms a skill is *actually delivering value*, not just configured. Use the run's `notification.delivered` boolean to confirm delivery — never the channel config. Admin/Owner can read any agent's skill history via `targetAssistantId`.
+`manage_skills → get_history` (read a skill's recent runs — a truncated run digest: assistant-message and tool-call previews, firing times, and the per-run `notification` delivery block) is how the analyst confirms a skill is *actually delivering value*, not just configured. Use the run's `notification.delivered` boolean to confirm delivery — never the channel config; a `null` `notification` means no send was attempted on that run (nothing configured to deliver), which is a configuration gap, not a failed delivery. Admin/Owner can read any agent's skill history via `targetAssistantId`.
 
 ### Shared artifacts: pages, folders, and living guides
 
@@ -110,14 +110,14 @@ The shared state the team operates on. Agents read from and write to these locat
 | `planning/OUTCOMES.md` | Concrete, fine-grained outcomes that serve layers 1–2 (layer 3) | `/plan`, `/discover`, manual |
 | `initiatives/<slug>.md` | Bounded, owned, time-boxed efforts with verifiable success criteria and a status. The unit of work between the plan and implementation; realized through outcomes/agents/skills | `/start`, `/discover`, manual |
 | `workspace/PEOPLE.md` | Who's who — roles, agents, focus, the operator, activation owners | `/start`, `/plan`, `/discover` |
-| `workspace/TECH_STACK.md` | Every system a customer touches, owners, migration posture, data readiness | `/discover` |
-| `workspace/PRIVACY.md` | Per-persona sharing tiers, exclusions, and the sign-off that gates all dataflow | `/discover` |
+| `workspace/TECH_STACK.md` | Every system a customer touches, owners, migration posture, the call-capture posture, data readiness | `/discover` |
+| `workspace/PRIVACY.md` | How Day AI's per-user privacy settings work + the recommended setup per persona (guidance, not enforcement) | `/discover` |
 | `discovery/inbox/` | Source material the operator drops for discovery to read before it asks | operator |
 | `rollouts/preflight/` | The deployable payload built pre-signup: instruction draft, properties, pages, invites, agent specs + creation cards, skills, import plan, enablement assets | `/discover` |
 | `rollouts/<YYYY-MM-DD>-<slug>/` | Per-run artifacts: audit reports, agent specs, proposed/approved/deployed changes, snapshots | `/agent-audit`, `/audit`, `/design-agent`, `/implement` |
 | `rollouts/health/` | The binding manifest and dated brain-health reports | `/brain-health` |
 | `docs/INSTRUCTION_ARCHITECTURE.md` | Where every rule lives: workspace → agent → skill → prompt | shipped; read before configuring |
-| `docs/MCP_REQUIREMENTS.md` | MCP tool gaps the analyst needs closed, as Linear-ready tickets | manual |
+| `docs/CONNECTORS.md` | What Day AI connects to and imports from: the reference `/discover` uses to judge integration blockers and first-win gating; defers to the live sources (day.ai/resources/integrations-connectors and the in-product catalog) | manual; live sources win on conflict |
 
 This data layer lives in the team's **own private GitHub repo** (made from the `day-ai/gtm-brain` template). That repo is the version-controlled source of truth the **operators** sync through — `git pull` before working, `git push` when the plan, an initiative, or `PEOPLE.md` changes. It's private because it holds strategy, forecasts, and candid notes about teammates. Three planes, kept distinct: the **private repo** (operators author and sync here), **Day AI Pages** (a published mirror of the plan and active initiatives the whole company reads, via `/sync-pages`), and the **Day AI workspace** (where it all executes, via the MCP). See the README's "Your team's GTM Brain repo."
 
@@ -127,7 +127,16 @@ A core thesis the analyst and implementor operate on: **almost every active pers
 
 **Two is the default expectation, not a quota to hit.** Agents cost money — they consume seats, and their automated skills consume tier budget. So every recommendation to add an agent must carry its own **value-vs-cost case**: the job slice it delegates, the work product it would proactively produce, and the seat/tier it requires. An agent worth adding pays for itself many times over and that case is easy to make; an agent added to move a count is waste. Never recommend "add a second agent" without making the case, and surface the seat/tier cost (`navigate_to_billing` when a seat is needed) as part of the recommendation, not as a surprise at deploy time.
 
-**Measuring value honestly:** the MCP confirms whether an agent is *well-built* (identity, skill craft, automation) and — via `manage_skills → get_history` — whether each skill is *actually delivering*: firing recently, producing substantive (not hollow) output, and delivered (per the run's `notification.delivered`, never the channel config). The remaining unknown is engagement *depth* (does a human act on it?), which needs tools recorded in `docs/MCP_REQUIREMENTS.md`. Never assert "delivering value" from a schedule existing — read the run history.
+**Measuring value honestly:** the MCP confirms whether an agent is *well-built* (identity, skill craft, automation) and — via `manage_skills → get_history` — whether each skill is *actually delivering*: firing recently, producing substantive (not hollow) output, and delivered (per the run's `notification.delivered`, never the channel config). The remaining unknown is engagement *depth* (does a human act on it?), a signal the MCP doesn't expose yet; say so plainly rather than guessing. Never assert "delivering value" from a schedule existing — read the run history.
+
+## Pricing: tell the truth about the bill
+
+Every recommendation that changes what the operator pays (a new agent, a tier choice, automated-skill slots, prospecting, seats) carries its pricing implications, communicated at the decision point, not discovered after it. The rules, everywhere money comes up:
+
+1. **Advocate only what is an obvious net value-add to the user.** Tell the truth about cost even when it weakens the recommendation. When the value case isn't obvious, say so and recommend the smaller footprint, including "don't add this yet."
+2. **Show the math.** Seats plus tier per agent plus automated-skill slots, totaled, so the operator sees the whole bill rather than a unit price. Slot and tier arithmetic is where buyers actually get confused; the total is the communication, not the list price.
+3. **Make no pricing assumptions; check the live source, every time.** Connected: the workspace's own billing and tier data (`navigate_to_billing`, tier reads) is authoritative. Pre-signup, or wherever the workspace can't answer: fetch current pricing from https://day.ai/pricing at recommendation time. Always state which billing cadence a figure reflects (annual pricing differs from month-to-month, and the page may default to one of them). If no live source is reachable, present every figure as an unverified estimate and link the page; never assert a number from memory or training data.
+4. **Flag what the page can't answer.** Negotiated terms, annual agreements, and pilot pricing are "confirm with Day AI," not guesses.
 
 ---
 

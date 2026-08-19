@@ -15,7 +15,7 @@
 1. **Make it your team's repo.** This is a template. Create your **own private** repo from it (GitHub → *Use this template*, or clone and re-point the remote). Keep it private: it will hold your strategy, your privacy decisions, and candid notes. See [Your team's GTM Brain repo](#your-teams-gtm-brain-repo).
 2. **Open the folder in [Claude Code](https://claude.com/claude-code)** and run `/start`. With no workspace connected, it drives the `map-your-gtm` initiative: guided discovery that maps your tech stack, strategy, people, privacy posture, and agent fleet, and scopes a first-win pilot for you or a handful of teammates.
 3. **Feed it what you have.** Drop your GTM docs, CRM export, and org chart in `discovery/inbox/`; point it at anything you've already taught Claude (a Project, a CLAUDE.md, existing skills). It reads before it asks.
-4. **Walk out with the payload.** A designed agent fleet with costs, a rollout plan, privacy decisions signed off, and a deployable configuration in `rollouts/preflight/`. When you do sign up, setup is an apply step, not a project.
+4. **Walk out with the payload.** A designed agent fleet with costs, a rollout plan, privacy guidance captured (how the settings work, plus a recommended setup per persona), and a deployable configuration in `rollouts/preflight/`. When you do sign up, setup is an apply step, not a project.
 
 ### Once a workspace is connected
 
@@ -44,7 +44,7 @@ It is meant to be **cloned and adapted**. Nothing here is specific to one compan
 **To touch a live workspace**, two things:
 
 1. **The Day AI MCP server, authenticated.** Every workspace read and write runs through it. Setup instructions are below.
-2. **You must be an Owner or Admin of your Day AI workspace.** Most of what the implementation side does — reading and editing *other* teammates' agents, creating skills for them, inviting members, changing roles — requires the `USERS:manage` permission, which only Owners and Admins have. A Member can use the planning side, but the implementation side will return *"requires Admin or Owner"* errors. If you're not sure what role you are, run `/start` — it checks first.
+2. **You must be an Owner or Admin of your Day AI workspace.** Most of what the implementation side does — reading and editing *other* teammates' agents, creating skills for them, inviting members, changing roles — requires the Admin or Owner role. A Member can use the planning side, but the implementation side will return *"requires Admin or Owner"* errors. If you're not sure what role you are, run `/start` — it checks first.
 
 ---
 
@@ -62,7 +62,7 @@ This repo already ships a `.mcp.json` pointing at it:
 }
 ```
 
-When you open this folder in Claude Code, you'll be asked to approve the `day-ai` MCP server. Approve it, then complete the OAuth flow. To verify the connection and your role in one step, run:
+When you open this folder in Claude Code, you'll be asked to approve the `day-ai` MCP server. Approve it, then complete the OAuth flow. **No Day AI account yet?** Approve the server anyway and just close the OAuth login when it opens — nothing else is needed. `/start` detects the pre-signup state and drives the mapping work without a workspace; the connection only matters on connect day. To verify the connection and your role in one step, run:
 
 ```
 /start
@@ -93,7 +93,7 @@ This repo is a **template**. The first thing a team does is make it their own:
 3. **Keep it in sync like any shared repo.** `git pull` before you start, `git push` when you've updated the plan, an initiative, or `PEOPLE.md`. The repo is how operators stay aligned on *what the business is doing*; Day AI Pages is how the rest of the company reads it; the workspace is where it executes.
 4. **Pull harness improvements (optional).** If you want updates to the harness itself — new skills, better agent definitions — keep this template as an `upstream` remote and merge from it: `git remote add upstream https://github.com/day-ai/gtm-brain && git pull upstream main`.
 
-> The default `bootstrap-day-ai` initiative tracks this: "the team's private repo exists and the operators can sync" is one of its success criteria, so `/start` will check it's actually set up.
+> The `bootstrap-day-ai` initiative (the connected-mode default) tracks this: "the team's private repo exists and the operators can sync" is one of its success criteria, so `/start` will check it's actually set up.
 
 ---
 
@@ -130,7 +130,7 @@ This repo is a **template**. The first thing a team does is make it their own:
 
 You write (with an agent's help) what the business is trying to do. You break that into **initiatives** — bounded efforts with a clear, checkable definition of success and someone accountable. The harness then makes your Day AI workspace *reflect* the plan and drive each initiative to done — and keeps it reflecting as the plan evolves.
 
-**Initiatives vs. outcomes.** An outcome (`planning/OUTCOMES.md`) is atomic — "draft a follow-up after a call." An initiative is the larger, owned effort an outcome serves — "get the team running on Day AI by end of Q3" — realized through many outcomes, invites, agents, and skills. Every workspace starts with one default initiative, `bootstrap-day-ai`: get connected, get the people in, get each person on the agents they should have, get the plan real and synced. `/start` runs it first. See [`initiatives/README.md`](initiatives/README.md) for the file format and status lifecycle.
+**Initiatives vs. outcomes.** An outcome (`planning/OUTCOMES.md`) is atomic — "draft a follow-up after a call." An initiative is the larger, owned effort an outcome serves — "get the team running on Day AI by end of Q3" — realized through many outcomes, invites, agents, and skills. The repo ships two default initiatives: `map-your-gtm` (leads pre-signup: map the GTM and build the payload before you connect) and `bootstrap-day-ai` (leads once a workspace connects: get the people in, get each person on the agents they should have, get the plan real and synced). `/start` picks the right one for your state. See [`initiatives/README.md`](initiatives/README.md) for the file format and status lifecycle.
 
 ---
 
@@ -145,7 +145,7 @@ That has a sharp implication this harness is built around: **almost every active
 
 `/agent-audit` measures how far a workspace is from that bar and hands you the path to close it. `/design-agent` builds the agents. The whole harness exists to make the value of Day AI's agents real and visible — and most teams are capturing a fraction of it.
 
-> **A note on measuring value.** The analyst confirms an agent is *well-built* (identity, skill craft, automation) **and** *actually delivering* — it reads each skill's real run history via `manage_skills → get_history` to check it's firing, producing substantive (not hollow) output, and being delivered. The one thing it still can't see is engagement *depth* — whether a human acts on the output — which needs a couple of MCP tools that don't exist yet. Those remaining gaps are written up as ready-to-file Linear tickets in [`docs/MCP_REQUIREMENTS.md`](docs/MCP_REQUIREMENTS.md), and the analyst is explicit about the line between what it can and can't confirm.
+> **A note on measuring value.** The analyst confirms an agent is *well-built* (identity, skill craft, automation) **and** *actually delivering* — it reads each skill's real run history via `manage_skills → get_history` to check it's firing, producing substantive (not hollow) output, and being delivered. The one thing it still can't see is engagement *depth* — whether a human acts on the output — a signal the MCP doesn't expose yet; the analyst is explicit about the line between what it can and can't confirm.
 
 ---
 
@@ -169,7 +169,7 @@ Three subagents do the work. You rarely invoke them directly — the skills belo
 | **`/agent-audit`** | The agent-value review. Scores how well you're using Day AI's agents and hands you a prioritized path to a lot more — invites (with draft nudge emails), missing agents, and weak skills/identities. No changes are made. |
 | **`/design-agent`** | Design one complete, deployment-ready agent for a person — its identity and starter skills — built on a proven archetype (CRM Data Nerd, Coach, …). |
 | **`/audit`** | Compare the current workspace against *the plan* and produce a prioritized gap report. No changes are made. |
-| **`/implement`** | Turn the plan, audit, and agent designs into real changes: invites, agent identity, and deployed skills. Always previews before it writes. **Preflight mode** applies the `rollouts/preflight/` payload at connect time, first-win slice first, privacy sign-off verified before anything moves. |
+| **`/implement`** | Turn the plan, audit, and agent designs into real changes: invites, agent identity, and deployed skills. Always previews before it writes. **Preflight mode** applies the `rollouts/preflight/` payload at connect time, first-win slice first, privacy guidance reviewed with the operator before invites go out. |
 | **`/brain-health`** | The brain's own health loop: builds a binding manifest, compares the brain's files against the live workspace, and reports drift and breakage. Proposals only; never applies a change. |
 | **`/write-skill`** | The teaching guide for authoring a single high-quality skill prompt. Read before any skill is written. |
 | **`/sync-pages`** | Sync the planning documents to/from Day AI Pages so the rest of your company can see them. |
@@ -231,11 +231,11 @@ gtm-brain/
 │   └── OUTCOMES.md           ← layer 3: concrete, fine-grained outcomes
 ├── workspace/
 │   ├── PEOPLE.md             ← who's who: roster, operator, activation owners
-│   ├── TECH_STACK.md         ← every system a customer touches; migration posture
-│   └── PRIVACY.md            ← per-persona sharing tiers + the sign-off that gates dataflow
+│   ├── TECH_STACK.md         ← every system a customer touches; migration + call-capture posture
+│   └── PRIVACY.md            ← how privacy settings work + recommended setup per persona
 ├── docs/
 │   ├── INSTRUCTION_ARCHITECTURE.md ← where every rule lives: workspace → agent → skill → prompt
-│   └── MCP_REQUIREMENTS.md   ← MCP tool gaps the analyst needs (Linear-ready)
+│   └── CONNECTORS.md         ← what Day AI connects to and imports from
 └── rollouts/
     ├── preflight/            ← the deployable payload built pre-signup (see its README)
     ├── health/               ← binding manifest + brain-health reports
