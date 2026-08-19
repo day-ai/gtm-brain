@@ -1,6 +1,15 @@
 ---
 name: start
-description: The entrypoint for GTM Brain. Verifies the Day AI MCP connection and the operator's role, takes stock of every initiative in initiatives/, reports progress against each one's verifiable success criteria, and kicks off the agents and skills the active initiatives need. On a fresh clone it runs the default bootstrap initiative (connect, identify people, scaffold the plan). Run this whenever you sit down to work. Usage: /start [an initiative slug or focus]
+description: >-
+  The entrypoint for GTM Brain. Verifies the Day AI MCP connection and the
+  operator's role, takes stock of every initiative in initiatives/, reports
+  progress against each one's verifiable success criteria, and kicks off the
+  agents and skills the active initiatives need. On a fresh clone it runs the
+  default bootstrap initiative (connect, identify people, scaffold the plan).
+  Run this whenever you sit down to work. Usage: /start [an initiative slug or
+  focus]
+metadata:
+  internal: true
 ---
 
 # /start

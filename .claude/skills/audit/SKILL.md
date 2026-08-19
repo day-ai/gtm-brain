@@ -1,6 +1,12 @@
 ---
 name: audit
-description: Compare the current Day AI workspace (members, agents, skills) against the planning layer and produce a prioritized gap report. Read-only — makes no changes. Run before /implement. Usage: /audit [a specific person, team, or outcome to focus on]
+description: >-
+  Compare the current Day AI workspace (members, agents, skills) against the
+  planning layer and produce a prioritized gap report. Read-only — makes no
+  changes. Run before /implement. Usage: /audit [a specific person, team, or
+  outcome to focus on]
+metadata:
+  internal: true
 ---
 
 # /audit

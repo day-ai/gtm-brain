@@ -1,6 +1,13 @@
 ---
 name: write-skill
-description: The teaching guide for authoring a single high-quality Day AI skill prompt. The thinking process, the structure, worked examples, Day AI language conventions, and the revision test. Read this before writing any skill. Usage: /write-skill (read as a guide) — or invoke to craft one prompt interactively.
+description: >-
+  The teaching guide for authoring a single high-quality Day AI skill prompt.
+  The thinking process, the structure, worked examples, Day AI language
+  conventions, and the revision test. Read this before writing any skill.
+  Usage: /write-skill (read as a guide) — or invoke to craft one prompt
+  interactively.
+metadata:
+  internal: true
 ---
 
 # /write-skill

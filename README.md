@@ -8,10 +8,28 @@
 
 ## Quickstart
 
-1. **Make it your team's repo.** This is a template. Create your **own private** repo from it (GitHub → *Use this template*, or clone and re-point the remote), and add the people who'll run the harness — your CRO, RevOps, chief of staff — as collaborators. Keep it private: it holds your strategy, forecasts, and candid notes about teammates. See [Your team's GTM Brain repo](#your-teams-gtm-brain-repo).
-2. **Clone your repo** and open the folder in [Claude Code](https://claude.com/claude-code).
-3. **Authenticate** the Day AI MCP server (approve the `day-ai` server, complete the OAuth flow). You'll need to be an Owner or Admin of your workspace.
-4. **Run `/start`** — it checks the connection, takes stock of your initiatives, and (on a fresh clone) runs the default *bootstrap* initiative: set up the shared repo, learn who's in your workspace, and scaffold your plan.
+1. **Make it your team's private GTM Brain repo.** Do this once, as one of the
+   operators who will run it. Install the setup skill:
+
+   ```sh
+   npx skills add day-ai/gtm-brain --global
+   ```
+
+   Then run the `/setup-gtm-brain` skill. It creates the private team repo with
+   the complete harness and retains `day-ai/gtm-brain` as `upstream`. Add the
+   people who will run the harness—typically your CRO, RevOps lead, and chief
+   of staff—as GitHub collaborators. Keep the repo private: it holds strategy,
+   forecasts, and candid operating notes.
+
+2. **Open your team's repo** in your coding agent. If another operator already
+   created it, clone that private repository instead; do not run the setup
+   skill again.
+3. **Authenticate** the Day AI MCP server. Approve the `day-ai` server from
+   `.mcp.json` and complete the OAuth flow. You'll need Owner or Admin access
+   for the full implementation workflow.
+4. **Run the `/start` skill.** It checks the connection, takes stock of the
+   initiatives, and on a fresh repository begins the default bootstrap work:
+   learn who's in your workspace and scaffold your plan.
 
 That's it. Details below.
 
@@ -32,7 +50,7 @@ It is meant to be **cloned and adapted**. Nothing here is specific to one compan
 Two things, both non-negotiable:
 
 1. **The Day AI MCP server, authenticated.** Everything in this repo runs through it. Setup instructions are below.
-2. **You must be an Owner or Admin of your Day AI workspace.** Most of what this harness does — reading and editing *other* teammates' agents, creating skills for them, inviting members, changing roles — requires the `USERS:manage` permission, which only Owners and Admins have. A Member can use the planning side, but the implementation side will return *"requires Admin or Owner"* errors. If you're not sure what role you are, run `/start` — it checks first.
+2. **The full implementation workflow requires Owner or Admin.** Reading and editing *other* teammates' agents, creating skills for them, inviting members, and changing roles require `USERS:manage`. A Member can still use the planning side and configure their own agent. If you're not sure what role you have, run the `/start` skill—it checks first.
 
 ---
 
@@ -40,7 +58,7 @@ Two things, both non-negotiable:
 
 The MCP server lives at **`https://day.ai/api/mcp`** (streamable HTTP). It authenticates over OAuth — the first time a tool is called, you'll be prompted to authorize in the browser. That authorization resolves your workspace, your user, and the agent your token belongs to; you never pass any of those by hand.
 
-This repo already ships a `.mcp.json` pointing at it:
+This repository already ships a `.mcp.json` pointing at the Day AI MCP server:
 
 ```json
 {
@@ -50,15 +68,12 @@ This repo already ships a `.mcp.json` pointing at it:
 }
 ```
 
-When you open this folder in Claude Code, you'll be asked to approve the `day-ai` MCP server. Approve it, then complete the OAuth flow. To verify the connection and your role in one step, run:
+When you open this folder in Claude Code, approve the `day-ai` MCP server and
+complete the OAuth flow. To verify the connection and your role, run `/start`.
 
-```
-/start
-```
+If you prefer to add the server manually (or to your global configuration):
 
-If you prefer to add it manually (or to your global config):
-
-```
+```sh
 claude mcp add --transport http day-ai https://day.ai/api/mcp
 ```
 
@@ -74,14 +89,14 @@ GTM Brain runs across **three planes**, and it's worth keeping them straight:
 | **Day AI Pages** | A published, readable mirror of the plan and active initiatives | The **whole company** | `/sync-pages` |
 | **Your Day AI workspace** | The live execution surface: members, agents, skills | Everyone, via their agents | the Day AI MCP (`/implement`) |
 
-This repo is a **template**. The first thing a team does is make it their own:
+The public `day-ai/gtm-brain` repo is the harness source, not an enabled GitHub template. The guided setup skill creates the team repo with the correct history and remotes. The result should follow these rules:
 
-1. **Create a private repo from it.** On GitHub, *Use this template* → **private**. (Or clone, then `git remote set-url origin <your-repo>`.) It must be private — the planning layer contains revenue strategy, forecasts, and candid notes about teammates that don't belong in a public repo.
+1. **Keep the team repo private.** The planning layer contains revenue strategy, forecasts, and candid notes about teammates that don't belong in a public repo.
 2. **Add your operators as collaborators.** The people who actually run the harness — typically a small group: CRO, RevOps, chief of staff. They each clone the repo and work against the same `main`.
 3. **Keep it in sync like any shared repo.** `git pull` before you start, `git push` when you've updated the plan, an initiative, or `PEOPLE.md`. The repo is how operators stay aligned on *what the business is doing*; Day AI Pages is how the rest of the company reads it; the workspace is where it executes.
-4. **Pull harness improvements (optional).** If you want updates to the harness itself — new skills, better agent definitions — keep this template as an `upstream` remote and merge from it: `git remote add upstream https://github.com/day-ai/gtm-brain && git pull upstream main`.
+4. **Pull harness improvements (optional).** Keep `https://github.com/day-ai/gtm-brain.git` as `upstream`, so new skills and agent definitions can be merged with `git pull upstream main`.
 
-> The default `bootstrap-day-ai` initiative tracks this: "the team's private repo exists and the operators can sync" is one of its success criteria, so `/start` will check it's actually set up.
+> The default `bootstrap-day-ai` initiative tracks this: "the team's private repo exists and the operators can sync" is one of its success criteria, so the `/start` skill checks that it is actually set up.
 
 ---
 
@@ -104,7 +119,7 @@ This repo is a **template**. The first thing a team does is make it their own:
 │                             SUCCEEDED). The unit of work.              │
 └───────────────────────────────────────────────────────────────────────┘
                                    │
-                    /start takes stock and kicks off the work
+                   /start takes stock and kicks off the work
                                    ▼
 ┌──────────────────────── IMPLEMENTATION LAYER ────────────────────────┐
 │  Audit how well you're using Day AI's agents today (the agent-value    │
@@ -139,7 +154,7 @@ That has a sharp implication this harness is built around: **almost every active
 
 ## The agents
 
-Three subagents do the work. You rarely invoke them directly — the skills below orchestrate them — but they're defined in `.claude/agents/`:
+Three subagents do the work. You rarely invoke them directly—the skills below orchestrate them. They are defined in `.claude/agents/`:
 
 | Agent | Role |
 |-------|------|
@@ -147,36 +162,32 @@ Three subagents do the work. You rarely invoke them directly — the skills belo
 | **`agent-implementor`** | The workhorse. Reads the plan, audits the workspace, and creates/updates agents and skills via the MCP. Writes every skill prompt to a high bar. |
 | **`data-analyst`** | The agent-value analyst. Grounds the plan in reality *and* evaluates how much value you're actually getting from your Day AI agents — who should be in the workspace, who's missing the agents they need, and whether the skills and identities are any good. Recommends; never executes. |
 
-## The skills (slash commands)
+## The skills
 
-| Command | What it does |
-|---------|-------------|
-| **`/start`** | **Start here, every time.** Verifies the MCP connection and your role, takes stock of every initiative in `initiatives/`, reports progress against each one's verifiable success criteria, and kicks off the agents and skills the active ones need. On a fresh clone it runs the default `bootstrap-day-ai` initiative (identify people, scaffold the plan). |
-| **`/plan`** | Build or refresh the three planning-layer documents. Interview loop + workspace asset discovery. |
-| **`/agent-audit`** | The agent-value review. Scores how well you're using Day AI's agents and hands you a prioritized path to a lot more — invites (with draft nudge emails), missing agents, and weak skills/identities. No changes are made. |
-| **`/design-agent`** | Design one complete, deployment-ready agent for a person — its identity and starter skills — built on a proven archetype (CRM Data Nerd, Coach, …). |
-| **`/audit`** | Compare the current workspace against *the plan* and produce a prioritized gap report. No changes are made. |
-| **`/implement`** | Turn the plan, audit, and agent designs into real changes: invites, agent identity, and deployed skills. Always previews before it writes. |
-| **`/write-skill`** | The teaching guide for authoring a single high-quality skill prompt. Read before any skill is written. |
-| **`/sync-pages`** | Sync the planning documents to/from Day AI Pages so the rest of your company can see them. |
-| **`/build-app`** | Vibe-code a custom app or integration on the public [Day AI SDK](https://github.com/day-ai/day-ai-sdk) — for outcomes that need a real UI, an external automation, or a mashup the workspace can't express. Clones the SDK and builds from its example templates. |
+| Skill | What it does |
+|-------|--------------|
+| **/start** | **Start here, every time.** Verifies the MCP connection and your role, takes stock of every initiative, and kicks off what the active ones need. |
+| **/plan** | Build or refresh the three planning-layer documents. |
+| **/agent-audit** | Score how well the workspace uses Day AI agents and produce a prioritized recommendation set. No changes are made. |
+| **/design-agent** | Design one complete, deployment-ready agent for a person. |
+| **/audit** | Compare the current workspace against the plan. No changes are made. |
+| **/implement** | Turn the approved plan and designs into real changes. Always previews before it writes. |
+| **/write-skill** | The teaching guide for authoring a high-quality skill prompt. |
+| **/sync-pages** | Sync planning documents to/from Day AI Pages. |
+| **/build-app** | Build a custom app or integration on the public [Day AI SDK](https://github.com/day-ai/day-ai-sdk). |
 
 ---
 
 ## The full flow
 
-```
-1.  Open this folder in Claude Code and approve the `day-ai` MCP server.
-2.  Run  /start            → connection check, take stock of initiatives, kick off what's next
-                             (on a fresh clone: who's-who + planning scaffolds via bootstrap-day-ai)
-3.  Run  /plan             → fill in goals, strategy, and outcomes
-4.  Run  /agent-audit      → how well are you using Day AI's agents? what's the gap?
-5.  Run  /audit            → how well does the workspace deliver the plan?
-6.  Run  /design-agent     → design the missing agents (e.g. a Coach for each seller)
-7.  Run  /implement        → invite people, tune agents, deploy skills
-```
+1. Open this folder in Claude Code and authenticate the `day-ai` MCP server.
+2. Run **/start** for the connection check, initiative board, and next move. On a fresh clone it performs the light first pass for `bootstrap-day-ai`.
+3. Run **/plan** to fill in goals, strategy, and outcomes.
+4. Run **/agent-audit** and **/audit** for the agent-value and plan-alignment views.
+5. Run **/design-agent** for missing agents.
+6. Run **/implement** to preview and, after approval, deploy invites, agent changes, and skills.
 
-Come back to `/start` whenever you sit down to work — it's the standing entrypoint that tells you where every initiative stands and what to do next, not just a first-run command. `/agent-audit` and `/audit` are two lenses: one on *how well you're using Day AI*, one on *how well the workspace delivers your plan*. Re-run them — and `/implement` — whenever the plan or the team changes. The plan is living; the workspace should track it.
+Come back to **/start** whenever you sit down to work. It is the standing entrypoint that tells you where every initiative stands and what to do next, not just a first-run command. **/agent-audit** and **/audit** are two lenses: one on how well you are using Day AI and one on how well the workspace delivers your plan. Re-run them—and **/implement**—whenever the plan or team changes.
 
 ---
 
@@ -185,12 +196,12 @@ Come back to `/start` whenever you sit down to work — it's the standing entryp
 ```
 gtm-brain/
 ├── README.md                 ← you are here
-├── CLAUDE.md                 ← operating principles for every agent in this repo
-├── .mcp.json                 ← Day AI MCP server config
+├── CLAUDE.md                 ← Claude Code operating principles
+├── .mcp.json                 ← Claude Code Day AI MCP config
 ├── .claude/
 │   ├── agents/               ← gtm-strategist, agent-implementor, data-analyst
-│   └── skills/               ← start, plan, agent-audit, design-agent, audit,
-│                                implement, write-skill, sync-pages, build-app
+│   └── skills/               ← /start, /plan, /agent-audit, /design-agent, /audit,
+│                                /implement, /write-skill, /sync-pages, /build-app
 ├── initiatives/
 │   ├── README.md             ← what an initiative is: schema, statuses, lifecycle
 │   ├── TEMPLATE.md           ← copy this to start a new initiative
@@ -205,8 +216,6 @@ gtm-brain/
 │   └── MCP_REQUIREMENTS.md   ← MCP tool gaps the analyst needs (Linear-ready)
 └── rollouts/                 ← audit reports, agent specs, and deploy snapshots
 ```
-
----
 
 ## A note on trust
 

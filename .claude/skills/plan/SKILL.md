@@ -1,6 +1,12 @@
 ---
 name: plan
-description: Build or refresh the planning layer — the company plan, the CRO-level strategy, the concrete outcomes, and the who's-who. Runs the gtm-strategist through an interview loop and grounds the plan in the workspace graph. Usage: /plan [layer-1|layer-2|layer-3|people | a free-form focus]
+description: >-
+  Build or refresh the planning layer — the company plan, the CRO-level
+  strategy, the concrete outcomes, and the who's-who. Runs the gtm-strategist
+  through an interview loop and grounds the plan in the workspace graph. Usage:
+  /plan [layer-1|layer-2|layer-3|people | a free-form focus]
+metadata:
+  internal: true
 ---
 
 # /plan
