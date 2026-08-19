@@ -3,8 +3,8 @@ id: bootstrap-day-ai
 title: Get Day AI set up and delivering value
 status: NEW
 created: 2026-06-09
-target: 2026-07-21
-creator: christopher@day.ai
+target:                # set when this initiative kicks off
+creator:               # /start fills this with the confirmed operator
 dri:
 success_criteria:
   - The team's own private GitHub repo exists (made from this template), with the operators added as collaborators, and they can pull/push the plan, initiatives, and PEOPLE.md.

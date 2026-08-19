@@ -8,7 +8,7 @@
 >
 > Confirm and correct it in the interview — the agents trust it.
 >
-> **The operator.** Whoever runs this harness is recorded below with a trust note (`/start` identifies them from git config). The harness acts with their hands; the brain should know whose.
+> **The operator.** Whoever runs this harness is recorded below with a trust note (`/start` reads git config as a hint, then confirms the identity with the operator before recording it — never trust an unconfirmed machine identity). The harness acts with their hands; the brain should know whose.
 >
 > **Keep it candid but careful.** This file is *not* synced to Day AI Pages by default (see `/sync-pages`) precisely so it can hold honest working notes. Don't put anything here you wouldn't want a teammate to read if it ever were shared.
 
@@ -18,7 +18,7 @@
 
 > Who runs this harness, recorded by `/start`.
 
-- **Name / email:** {from git config}
+- **Name / email:** {confirmed by the operator — git config is only the opening guess}
 - **Trust note:** {connected: workspace role and what it allows · pre-signup: "operator of this repo; no workspace role yet"}
 - **Rollout lead:** {who} · **Exec sponsor:** {who}
 

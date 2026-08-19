@@ -29,8 +29,8 @@ title: Get Day AI set up and delivering value
 status: NEW                          # NEW | IN_PROGRESS | PAUSED | CANCELLED | SUCCEEDED
 created: 2026-06-09                  # date the initiative started (absolute, YYYY-MM-DD)
 target: 2026-07-21                   # date success should be achieved by (absolute)
-creator: christopher@day.ai          # who created the initiative
-dri: christopher@day.ai              # directly-responsible individual — optional; omit or leave blank if none
+creator: jordan@yourcompany.com      # who created the initiative
+dri: jordan@yourcompany.com          # directly-responsible individual — optional; omit or leave blank if none
 success_criteria:                    # VERIFIABLE statements; "done" is unambiguous and checkable
   - Every active seller has a Coach and a CRM Data Nerd agent, each with a strong identity.
   - At least one scheduled skill per active person is confirmed firing with substantive, delivered output.
@@ -48,7 +48,7 @@ sources:                             # where this initiative came from — cite 
 
 - **`status`** — exactly one of `NEW`, `IN_PROGRESS`, `PAUSED`, `CANCELLED`, `SUCCEEDED`. `/start` advances it; you can also edit it by hand. See the lifecycle below.
 - **`created` / `target`** — the timeframe: when it started and when success is due. Always absolute dates (`YYYY-MM-DD`), never "next month."
-- **`creator`** — required. **`dri`** — optional; the single person accountable for the outcome. If there's no DRI yet, omit the key or leave it blank — `/start` will flag it.
+- **`creator`** — required once the initiative is owned. The two shipped initiatives arrive with `creator` and `target` blank; `/start` fills `creator` with the confirmed operator and sets `target` when the initiative kicks off. **`dri`** — optional; the single person accountable for the outcome. If there's no DRI yet, omit the key or leave it blank — `/start` will flag it.
 - **`success_criteria`** — the heart of an initiative. Each must be **verifiable**: a person (or an agent reading the workspace graph) can look and say "true" or "false" without judgment calls. Prefer criteria that map to something queryable in Day AI (counts of agents, skills confirmed firing via `manage_skills → get_history`, pipeline coverage, a Page existing) over vibes. **Pre-signup initiatives** (no workspace yet) use the repo-verifiable vocabulary instead: a doc is complete, an owner is named, a decision is signed off, an asset is produced. The bar is the same: confirm from decisions and sign-offs, not from a doc merely existing.
 - **`sources`** — cite the origin so the initiative is traceable: the recorded planning meeting, the strategy Page, the Slack thread, the conversation. Use Day AI object ids / share URLs where the source lives in the workspace.
 

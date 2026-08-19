@@ -11,3 +11,5 @@ Highest-value drops, roughly in order:
 5. **Process docs**: sales methodology, CS playbooks, forecast rituals.
 
 Nothing in this folder syncs anywhere. It stays in your private repo as discovery source material. `/discover` cites what it used, so you can prune afterward.
+
+One deliberate exception, always by your explicit choice: at Gate 2, `/discover` will propose converting specific docs (your playbook, your process docs) into workspace Pages your agents work against, one yes-or-no per doc. Anything you don't approve stays here and goes nowhere.
