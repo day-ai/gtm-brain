@@ -37,7 +37,7 @@ Once you understand the person, structure the prompt this way:
    - **Bad:** "Check email. Check the calendar. Check the pipeline."
    - **Good:** "Promises coming due. Relationships going quiet. Unfinished business from yesterday's calls. Prep for who he's meeting today."
 
-3. **Name the patterns explicitly, with examples.** Not "surface relevant insights" — instead: *"A promise coming due: three weeks ago on the Trust & Will call he said he'd send pricing by end of month. That's tomorrow and no email has gone out."*
+3. **Name the patterns explicitly, with examples.** Not "surface relevant insights" — instead: *"A promise coming due: three weeks ago on the Meridian Analytics call he said he'd send pricing by end of month. That's tomorrow and no email has gone out."*
 
 4. **Set the quality bar with a number.** "2–5 items, not 15. Each item should make them think, 'I'm glad someone caught that.'" Without a number, agents pad.
 
@@ -122,9 +122,9 @@ After drafting, before deploying, check every one:
 When you hand a finished prompt to `agent-implementor` (or write the `manage_skills` call yourself), specify:
 
 - **name** and **slashCommand** (unique per agent, lowercase-hyphens).
-- **triggerType**: `SCHEDULE` (with a cron `triggerValue` + `timezone`), `EVENT` (with event types), or `NEITHER` (on-demand).
-- **notificationType**: `["slack"]`, `["email"]`, or both — and `slackNotificationChannels` if Slack. **If you set no notification target, the skill defaults to delivering by email** — so a skill never goes nowhere, but don't rely on the default by accident: choose the channel deliberately to match the output (long analysis → email; a short nudge → Slack), and set Slack explicitly when that's where the person actually works.
-- **scope**: a per-agent skill (`targetScope: "agent"` + the teammate's `targetAssistantId`) when the prompt is tailored to one person; a workspace-library skill (`targetScope: "workspace_library"`, `deploymentMode: "MANAGED"`) when a whole team needs the same capability.
+- **triggerType**: `SCHEDULE` (cron `triggerValue` + `timezone`; the platform accepts exactly four shapes, minutes on :00/:15/:30/:45 — daily `0 8 * * *`, weekdays `0 8 * * 1-5`, weekly `0 8 * * 1`, every 4 hours `0 */4 * * *`; a monthly or twice-weekly cron is rejected), `EVENT` (one of the platform's closed list of seven event types — see `docs/INSTRUCTION_ARCHITECTURE.md`), or `NEITHER` (on-demand).
+- **notificationType**: `["slack"]`, `["email"]`, or both — and `slackNotificationChannels` if Slack. **Always set it explicitly on a scheduled or event skill: with no notification target the skill runs and delivers nowhere** (the run records `notification: null`). Choose the channel to match the output (long analysis → email; a short nudge → Slack), and set Slack explicitly when that's where the person actually works.
+- **scope**: a per-agent skill (`targetScope: "agent"` + the teammate's `targetAssistantId`) when the prompt is tailored to one person; a workspace-library skill (`targetScope: "workspace_library"`) when a whole team needs the same capability. A **Managed** library skill encodes as `deploymentMode: "SHARED"`, a **Template** as `"TEMPLATE"`; the API never accepts `"MANAGED"` as a value.
 - Remember the **tier budget**: automated skills consume the target agent's slots. One excellent scheduled skill beats three thin ones.
 
-A scheduled skill defaults well at `0 13 * * 1-5` (8am US Eastern, weekdays) unless you know the person's timezone — then adjust.
+A morning skill defaults well at `0 8 * * 1-5` with the person's timezone. Crons are local to the `timezone` you set, so `0 8` means 8am *their* time — never write a UTC-offset cron.

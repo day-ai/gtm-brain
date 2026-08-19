@@ -35,7 +35,7 @@ Call `manage_workspace_members` with `action: "list_configuration"`.
   2. Otherwise, make sure `initiatives/map-your-gtm.md` exists. If it doesn't, create it from `initiatives/TEMPLATE.md` and the spec in `initiatives/README.md`. It becomes the lead initiative; `bootstrap-day-ai` stays parked until a workspace connects.
   3. Every skill that needs the workspace degrades the same way in this mode: it says plainly what is unavailable and why, and does the repo-side work it can. Nothing pretends a write happened.
 
-**In every state, identify the operator.** Read `git config user.name` and `git config user.email` (and `gh auth status` if `gh` is available). Record who is running the harness in `workspace/PEOPLE.md` as the operator, with a note on what they can do: in connected mode, their workspace role; in pre-signup mode, a plain trust note ("operator of this repo; no workspace role yet"). The harness acts with this person's hands, and the brain should know whose.
+**In every state, identify the operator — and confirm it with them.** Git identity is a hint, never the record. Read `git config user.name` and `git config user.email` as separate single-purpose commands (never chained with `;` or `&&` — compound probes get denied wholesale in restricted permission modes), and `gh auth status` only if `gh` is available. Then confirm before writing anything: "I'll record you as the operator — {name}, {email} — is that right?" If the reads fail, come back empty, or the operator corrects you, simply ask who they are: a machine set up by IT, a colleague, or a family member routinely carries someone else's git identity, and a wrong name here silently becomes the name on decision records and initiative logs. Record the *confirmed* identity in `workspace/PEOPLE.md` as the operator, with a note on what they can do: in connected mode, their workspace role; in pre-signup mode, a plain trust note ("operator of this repo; no workspace role yet"). Never write an identity the operator hasn't confirmed. The harness acts with this person's hands, and the brain should know whose.
 
 ---
 
@@ -48,7 +48,7 @@ Read every `initiatives/*.md` (skip `README.md` and `TEMPLATE.md`). Parse the fr
 For each initiative, **verify progress against its `success_criteria` from the workspace, not from the file's status field** — this is the core principle (confirm states from outcomes, not config). In pre-signup mode the same principle applies with the pre-signup criterion vocabulary: a criterion is met when the doc is complete, the owner is named, the decision is signed off, or the asset is produced, verified by reading the repo itself. Confirm from decisions and sign-offs, not from a doc merely existing: a `workspace/PRIVACY.md` with unanswered tiers is not a met criterion. Pull what each criterion needs:
 
 - agent-coverage criteria → `assistant_settings → mode: "list"`, mapped to members
-- "skill firing / delivering" criteria → `manage_skills → list` then `manage_skills → get_history` (read the run's `notification.delivered` boolean for delivery; never infer from a schedule existing)
+- "skill firing / delivering" criteria → `manage_skills → list` then `manage_skills → get_history` (read the run's `notification.delivered` boolean for delivery — `null` means no send was attempted; never infer from a schedule existing)
 - people/roster criteria → `list_configuration` + `list_suggested_invites`
 - plan/Pages criteria → the files in `planning/` and the Pages tools
 - pipeline/forecast criteria → `search_objects`
@@ -67,7 +67,9 @@ Present the **status board**:
 | {…} | NEW | jordan@… | 2026-08-01 | 0/4 — not started | kick off |
 ```
 
-Call out, briefly: any initiative with **no DRI**, any **past its target** still open, anything **PAUSED** with a stale log, and any criterion you **couldn't verify** (permission-gated or needs a tool that doesn't exist — point at `docs/MCP_REQUIREMENTS.md`).
+Call out, briefly: any initiative with **no DRI**, any **past its target** still open, anything **PAUSED** with a stale log, and any criterion you **couldn't verify** (permission-gated, or needs a signal the MCP doesn't expose — name it).
+
+The shipped initiatives arrive with `creator` and `target` blank. When one enters scope for the first time, write the confirmed operator into `creator`, and set `target` with the operator when the initiative actually kicks off — don't flag the blanks as problems on a fresh clone.
 
 ---
 

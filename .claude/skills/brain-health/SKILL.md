@@ -30,7 +30,7 @@ Requires the MCP connected; in pre-signup mode, skip to the repo-only checks in 
 
 - **Roster drift:** `list_configuration` vs `PEOPLE.md`. Departures, arrivals, role changes, owners named in the plan who aren't members.
 - **Fleet drift:** `assistant_settings → list` and `manage_skills → list` vs what the brain believes. Skills deleted or disabled, identities edited away from their specs, agents on unexpected tiers.
-- **Delivery health:** for scheduled skills, `manage_skills → get_history`: firing recently, substantive output, `notification.delivered` true. A skill that's configured but not delivering is drift of the most expensive kind.
+- **Delivery health:** for scheduled skills, `manage_skills → get_history`: firing recently, substantive output, `notification.delivered` true (a `null` `notification` means no send was attempted: a configuration gap, not a failed delivery). A skill that's configured but not delivering is drift of the most expensive kind.
 - **Object drift:** do the pages, folders, and properties the manifest binds to still exist where the brain thinks they are (`read_page`, `read_crm_schema`)?
 - **Capability drift:** tools the harness depends on that have changed shape or disappeared from the connected tool list.
 
@@ -39,7 +39,7 @@ Requires the MCP connected; in pre-signup mode, skip to the repo-only checks in 
 **The default answer is "no change."** The brain is intentionally thin, and most observations don't warrant touching it. Propose an update only when one of three conditions holds:
 
 1. **A binding broke or drifted:** a skill references a person who left, a page that moved, a property that was renamed; a spec and the live config disagree.
-2. **A recorded gap closed:** something the brain noted as impossible (in `docs/MCP_REQUIREMENTS.md` or an initiative's deferred list) is now possible, and an initiative wanted it.
+2. **A recorded gap closed:** something the brain noted as impossible (in an initiative's deferred list, or a prior report's can't-verify section) is now possible, and an initiative wanted it.
 3. **A pattern changed:** the business's own structure shifted (new pipeline stage, methodology change, a new SME owning a guide) in a way the brain's documents should reflect.
 
 Everything else is an observation, not a proposal. A new tool in the stack that nothing binds to is a line in the report, not a TECH_STACK.md edit.

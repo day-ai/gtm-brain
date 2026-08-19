@@ -20,7 +20,7 @@ The first argument is the **person** the agent is for (a name/email from `worksp
 Spawn or use the **`data-analyst`** to gather grounding (or read it from a recent `/agent-audit` report):
 
 - The person's real role and daily work, from `workspace/PEOPLE.md` and their activity in the graph (`search_objects`, a recent meeting via `get_meeting_recording_context`).
-- The company's **process**, which the agent must be fluent in: the pipeline definition(s) and stage criteria, the sales methodology, any documented process. (Reading pipeline/stage definitions cleanly may need a tool the public MCP doesn't expose yet — see `docs/MCP_REQUIREMENTS.md`; until then, infer the process from opportunity data and the plan, and ask the operator to confirm.)
+- The company's **process**, which the agent must be fluent in: the pipeline definition(s) and stage criteria, the sales methodology, any documented process. (Read them via `read_crm_schema` — it covers `native_pipeline` and `native_stage` — and `search_objects` with `includeRelationships` for a pipeline's stages; confirm the interpretation with the operator. Written stage entry/exit criteria may not exist as data anywhere — that part comes from the operator or the playbook docs.)
 - What agents the person already has (`assistant_settings` list), so this one covers a *distinct* job slice and doesn't overlap.
 
 A great agent is built on a real slice of this specific person's week — not a generic role template. Anchor on: what does this person do repeatedly, that an agent could own end-to-end?
@@ -61,7 +61,7 @@ Save a deployment-ready spec to `rollouts/<YYYY-MM-DD>-<person>-<archetype>/AGEN
 
 ## Value vs. cost
 - **Value:** {the job slice this agent delegates and the work product it produces proactively — the concrete reason it's worth running}
-- **Cost:** {a seat for {Person} (new or existing?); the tier needed to support {N} automated skills; whether that's a tier bump}
+- **Cost:** {a seat for {Person} (new or existing?); the tier needed to support {N} automated skills; whether that's a tier bump — priced per CLAUDE.md's pricing rules: workspace billing when connected, https://day.ai/pricing otherwise, never from memory}
 - **The case:** {one line — why the value clearly clears the cost. If it doesn't, this agent shouldn't be designed; say so and stop.}
 
 ## Identity
@@ -72,7 +72,7 @@ Save a deployment-ready spec to `rollouts/<YYYY-MM-DD>-<person>-<archetype>/AGEN
 - **DISC / personality:** {…}   **Default language:** {…}
 
 ## Starter skills
-### {Skill name}  ·  /{slash}  ·  {SCHEDULE 0 13 * * 1-5 America/New_York | EVENT … | NEITHER}  ·  {Slack #… | email}
+### {Skill name}  ·  /{slash}  ·  {SCHEDULE 0 8 * * 1-5 America/New_York | EVENT … | NEITHER}  ·  {Slack #… | email}
 ```
 {full prompt, ready for manage_skills create}
 ```
@@ -92,16 +92,18 @@ Spec saved to rollouts/{date}-{person}-{archetype}/AGENT.md
 
 ### Next
 - Review the description and skill prompts above — this is what {Person} will be working with daily.
-- `/implement {person}` → create the agent (identity + skills) on approval. Costs a seat and a tier that
-  supports {N} automated skills (see **Value vs. cost** above); the implementor surfaces billing
-  (`navigate_to_billing`) before deploying so the cost is never a surprise.
+- `/implement {person}` → deploy on approval: the operator creates the agent in the Day AI UI from this
+  spec's creation card (Settings → Workspace → Agents → New agent; Admin/Owner), then the implementor
+  applies identity + skills. Costs a seat and a tier that supports {N} automated skills (see **Value
+  vs. cost** above); the implementor surfaces billing (`navigate_to_billing`) before the create so the
+  cost is never a surprise.
 ```
 
 ---
 
 ## Notes
 
-- **Design only — no writes.** `/implement` creates the agent and skills on approval. (If `assistant_settings` can't create a brand-new agent for a person who has none, that's a provisioning/seat step — surface `navigate_to_billing` via the implementor; don't try to force it.)
+- **Design only — no writes.** `/implement` deploys on approval — but the agent itself is created manually in the Day AI UI (Settings → Workspace → Agents → New agent; Admin/Owner), following this spec's creation card. The implementor pauses there, verifies the agent exists (`assistant_settings → list`), then applies identity and skills. Agents cannot be created via MCP.
 - **One agent = one coherent job slice.** If the job-slice is really two jobs, design two agents — that's the ≥2-agents thesis in action.
 - **The description carries the agent.** Spend your effort there. A strong description with two decent skills beats a blank identity with five skills.
 - Ground the Coach in the company's actual process. A coach that doesn't know your stages and methodology is a generic motivational poster.

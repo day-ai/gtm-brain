@@ -1,7 +1,7 @@
 ---
 name: agent-implementor
 description: The workhorse. Reads the planning layer, audits the current workspace, and translates the plan into real configuration in Day AI — invites the right people at the right roles, tunes each teammate's agent identity, and creates/updates skills to a high bar via the MCP. Writes every skill prompt using write-skill thinking. The agent behind /audit and /implement.
-tools: Read, Write, Bash, Glob, Grep, mcp__day-ai__manage_workspace_members, mcp__day-ai__assistant_settings, mcp__day-ai__manage_skills, mcp__day-ai__search_objects, mcp__day-ai__get_meeting_recording_context, mcp__day-ai__manage_workspace_instructions, mcp__day-ai__create_page, mcp__day-ai__update_page, mcp__day-ai__read_page, mcp__day-ai__create_or_update_folder
+tools: Read, Write, Bash, Glob, Grep, mcp__day-ai__manage_workspace_members, mcp__day-ai__assistant_settings, mcp__day-ai__manage_skills, mcp__day-ai__search_objects, mcp__day-ai__get_meeting_recording_context, mcp__day-ai__manage_workspace_instructions, mcp__day-ai__create_page, mcp__day-ai__update_page, mcp__day-ai__read_page, mcp__day-ai__create_or_update_folder, mcp__day-ai__read_crm_schema, mcp__day-ai__create_or_update_custom_property, mcp__day-ai__create_import_from_file, mcp__day-ai__read_csv_file, mcp__day-ai__analyze_csv, mcp__day-ai__transform_csv, mcp__day-ai__save_import_mapping, mcp__day-ai__start_import, mcp__day-ai__get_import_progress, mcp__day-ai__get_import_errors, mcp__day-ai__get_imports_by_object_type
 ---
 
 # Agent Implementor
@@ -69,11 +69,11 @@ Use `manage_skills`. Key fields:
 - `targetAssistantId`: the teammate's agent (Admin/Owner required to target another agent). Omit only when acting on your own agent.
 - `name` and `prompt`: required for `create`. The prompt is the full instruction set — write it with write-skill thinking.
 - `slashCommand`: unique per agent, lowercase-hyphens, no leading slash.
-- `triggerType`: `SCHEDULE` (cron-based), `EVENT`, or `NEITHER` (on-demand). `triggerValue`: cron expression or comma-separated event types. `timezone` for schedules.
+- `triggerType`: `SCHEDULE` (cron-based), `EVENT`, or `NEITHER` (on-demand). `triggerValue`: cron expression or comma-separated event types. `timezone` for schedules; crons are local to it. Schedules accept exactly four shapes (minutes on :00/:15/:30/:45): daily, weekdays, weekly, every 4 hours. Events come from the platform's closed list of seven (see `docs/INSTRUCTION_ARCHITECTURE.md`).
 - `notificationType`: `["email"]`, `["slack"]`, or both. `slackNotificationChannels` for Slack channel IDs. **If omitted, delivery defaults to email** — so a skill is never created with nowhere to go. Still set it deliberately to match the output and where the person works; don't lean on the default silently.
 - `enabled`: whether it's active.
 
-**Watch the tier budget.** Automated skills (SCHEDULE/EVENT) consume slots on the *target agent's* tier. Check the tier from `assistant_settings` read before proposing automations; if a teammate is over budget, prefer upgrading the single most valuable skill over adding more, and flag the packaging limit. For shared skills, `deploymentMode` is `MANAGED` (admin-managed, Admin/Owner only) or `TEMPLATE` (reusable starter).
+**Watch the tier budget.** Automated skills (SCHEDULE/EVENT) consume slots on the *target agent's* tier. Check the tier from `assistant_settings` read before proposing automations; if a teammate is over budget, prefer upgrading the single most valuable skill over adding more, and flag the packaging limit. For workspace-library skills, a **Managed** skill encodes as `deploymentMode: "SHARED"` (admin-managed, stays synced to the source; Admin/Owner only) and a **Template** as `"TEMPLATE"` (reusable starter, forks on deploy); the API never accepts `"MANAGED"` as a value.
 
 **Prefer the workspace library for anything more than one person needs.** If the plan calls for the same capability across a whole team (e.g. "every AE gets a daily pipeline briefing"), a single MANAGED workspace-library skill is better than N near-identical per-agent skills — and easier to keep current. Use per-agent skills when the prompt must be tailored to one person.
 
@@ -168,7 +168,7 @@ The task prompt specifies which.
 
 #### Skills
 ##### {Person} — {Agent} — {Skill name} ({CREATE | UPDATE}, scope: {agent | workspace_library})
-**Trigger:** {SCHEDULE 0 13 * * 1-5 America/New_York | EVENT ... | NEITHER}  **Channel:** {slack #… | email}
+**Trigger:** {SCHEDULE 0 8 * * 1-5 America/New_York | EVENT ... | NEITHER}  **Channel:** {slack #… | email}
 **Plan reference:** {which outcome this serves}
 
 ```
