@@ -1,6 +1,13 @@
 ---
 name: build-app
-description: Vibe-code a custom app or integration on top of Day AI using the public Day AI SDK (github.com/day-ai/day-ai-sdk) — internal tools, dashboards, mashups, automated workflows, anything a skill or Page can't express. Knows what the SDK offers, how to get started, and which example template to clone. Usage: /build-app [what you want to build]
+description: >-
+  Vibe-code a custom app or integration on top of Day AI using the public Day
+  AI SDK (github.com/day-ai/day-ai-sdk) — internal tools, dashboards, mashups,
+  automated workflows, anything a skill or Page can't express. Knows what the
+  SDK offers, how to get started, and which example template to clone. Usage:
+  /build-app [what you want to build]
+metadata:
+  internal: true
 ---
 
 # /build-app

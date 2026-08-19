@@ -1,6 +1,16 @@
 ---
 name: start
-description: The entrypoint for GTM Brain. Detects the operator's state (connected Owner/Admin, connected Member, or a prospect with no Day AI workspace yet), takes stock of every initiative in initiatives/, reports progress against each one's verifiable success criteria, and kicks off the agents and skills the active initiatives need. With no workspace connected it drives the map-your-gtm discovery initiative; on a fresh connected clone it runs the bootstrap initiative. Run this whenever you sit down to work. Usage: /start [an initiative slug or focus]
+description: >-
+  The entrypoint for GTM Brain. Detects the operator's state (connected
+  Owner/Admin, connected Member, or a prospect with no Day AI workspace yet),
+  takes stock of every initiative in initiatives/, reports progress against
+  each one's verifiable success criteria, and kicks off the agents and skills
+  the active initiatives need. With no workspace connected it drives the
+  map-your-gtm discovery initiative; on a fresh connected clone it runs the
+  bootstrap initiative. Run this whenever you sit down to work. Usage: /start
+  [an initiative slug or focus]
+metadata:
+  internal: true
 ---
 
 # /start

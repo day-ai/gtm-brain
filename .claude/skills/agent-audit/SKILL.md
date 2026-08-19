@@ -1,6 +1,15 @@
 ---
 name: agent-audit
-description: The agent-value review. Evaluates how much value the workspace is actually getting out of its Day AI agents — who's in and who should be (with draft nudge emails), whether everyone has the agents they should (≥2 each; the right archetypes), and whether each agent's skills and identity are strong. Produces a scored report and a prioritized, ready-to-execute recommendation set. Recommend-only. Usage: /agent-audit [a person, team, or dimension to focus on]
+description: >-
+  The agent-value review. Evaluates how much value the workspace is actually
+  getting out of its Day AI agents — who's in and who should be (with draft
+  nudge emails), whether everyone has the agents they should (≥2 each; the
+  right archetypes), and whether each agent's skills and identity are strong.
+  Produces a scored report and a prioritized, ready-to-execute recommendation
+  set. Recommend-only. Usage: /agent-audit [a person, team, or dimension to
+  focus on]
+metadata:
+  internal: true
 ---
 
 # /agent-audit

@@ -1,6 +1,17 @@
 ---
 name: discover
-description: The guided-discovery engine for map-your-gtm. Reads everything the operator already has (their GTM repo, existing Claude projects and skills, connected MCP sources, file drops in discovery/inbox/), then interviews to fill only the gaps. Surfaces first-win pilot candidates early, walks the five gates (tech stack, strategy and owners, people and permissions, privacy, fleet design), and writes the planning layer, the workspace docs, and the preflight payload. Works with no Day AI workspace; in a connected workspace it runs as a retro-mapping pass grounded in live data. Usage: /discover [a gate name, "first-win", or a focus]
+description: >-
+  The guided-discovery engine for map-your-gtm. Reads everything the operator
+  already has (their GTM repo, existing Claude projects and skills, connected
+  MCP sources, file drops in discovery/inbox/), then interviews to fill only
+  the gaps. Surfaces first-win pilot candidates early, walks the five gates
+  (tech stack, strategy and owners, people and permissions, privacy, fleet
+  design), and writes the planning layer, workspace docs, and preflight
+  payload. Works with no Day AI workspace; in a connected workspace it runs as
+  a retro-mapping pass grounded in live data. Usage: /discover [a gate name,
+  "first-win", or a focus]
+metadata:
+  internal: true
 ---
 
 # /discover

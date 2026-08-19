@@ -12,7 +12,16 @@
 
 ### Before you sign up (map your GTM)
 
-1. **Make it your team's repo.** This is a template. Create your **own private** repo from it (GitHub → *Use this template*, or clone and re-point the remote). Keep it private: it will hold your strategy, your privacy decisions, and candid notes. See [Your team's GTM Brain repo](#your-teams-gtm-brain-repo).
+1. **Make it your team's private repo.** Do this once, as one of the operators who will run it:
+
+   ```sh
+   npx skills add day-ai/gtm-brain --global
+   ```
+
+   Then run `/setup-gtm-brain`. It creates the complete private team repo and
+   retains `day-ai/gtm-brain` as `upstream`. Add the people who will run the
+   harness as GitHub collaborators. Keep it private: it will hold your
+   strategy, privacy decisions, and candid notes.
 2. **Open the folder in [Claude Code](https://claude.com/claude-code)** and run `/start`. With no workspace connected, it drives the `map-your-gtm` initiative: guided discovery that maps your tech stack, strategy, people, privacy posture, and agent fleet, and scopes a first-win pilot for you or a handful of teammates.
 3. **Feed it what you have.** Drop your GTM docs, CRM export, and org chart in `discovery/inbox/`; point it at anything you've already taught Claude (a Project, a CLAUDE.md, existing skills). It reads before it asks.
 4. **Walk out with the payload.** A designed agent fleet with costs, a rollout plan, privacy guidance captured (how the settings work, plus a recommended setup per persona), and a deployable configuration in `rollouts/preflight/`. When you do sign up, setup is an apply step, not a project.
@@ -86,12 +95,14 @@ GTM Brain runs across **three planes**, and it's worth keeping them straight:
 | **Day AI Pages** | A published, readable mirror of the plan and active initiatives | The **whole company** | `/sync-pages` |
 | **Your Day AI workspace** | The live execution surface: members, agents, skills | Everyone, via their agents | the Day AI MCP (`/implement`) |
 
-This repo is a **template**. The first thing a team does is make it their own:
+`day-ai/gtm-brain` is the public harness source, not an enabled GitHub template.
+The guided setup skill creates the private team repo with the correct Git history
+and remotes. Once it does, the team should:
 
-1. **Create a private repo from it.** On GitHub, *Use this template* → **private**. (Or clone, then `git remote set-url origin <your-repo>`.) It must be private — the planning layer contains revenue strategy, forecasts, and candid notes about teammates that don't belong in a public repo.
+1. **Keep the team repo private.** The planning layer contains revenue strategy, forecasts, and candid notes about teammates that don't belong in a public repo.
 2. **Add your operators as collaborators.** The people who actually run the harness — typically a small group: CRO, RevOps, chief of staff. They each clone the repo and work against the same `main`.
 3. **Keep it in sync like any shared repo.** `git pull` before you start, `git push` when you've updated the plan, an initiative, or `PEOPLE.md`. The repo is how operators stay aligned on *what the business is doing*; Day AI Pages is how the rest of the company reads it; the workspace is where it executes.
-4. **Pull harness improvements (optional).** If you want updates to the harness itself — new skills, better agent definitions — keep this template as an `upstream` remote and merge from it: `git remote add upstream https://github.com/day-ai/gtm-brain && git pull upstream main`.
+4. **Pull harness improvements (optional).** Keep `https://github.com/day-ai/gtm-brain.git` as `upstream`, so new skills and agent definitions can be merged with `git pull upstream main`.
 
 > The `bootstrap-day-ai` initiative (the connected-mode default) tracks this: "the team's private repo exists and the operators can sync" is one of its success criteria, so `/start` will check it's actually set up.
 

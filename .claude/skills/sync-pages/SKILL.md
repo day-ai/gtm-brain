@@ -1,6 +1,13 @@
 ---
 name: sync-pages
-description: Sync the planning documents and active initiatives to/from Day AI Pages so the rest of the company sees the same source of truth. Pushes local planning/*.md and initiatives/*.md to Pages, or pulls Pages back into the repo. Degrades gracefully if Pages tools aren't available on the connected MCP. Usage: /sync-pages [push|pull|status]
+description: >-
+  Sync the planning documents and active initiatives to/from Day AI Pages so
+  the rest of the company sees the same source of truth. Pushes local
+  planning/*.md and initiatives/*.md to Pages, or pulls Pages back into the
+  repo. Degrades gracefully if Pages tools aren't available on the connected
+  MCP. Usage: /sync-pages [push|pull|status]
+metadata:
+  internal: true
 ---
 
 # /sync-pages

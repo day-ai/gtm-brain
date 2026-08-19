@@ -1,6 +1,14 @@
 ---
 name: brain-health
-description: The GTM Brain's own health loop. Builds a binding manifest of what the brain's files reference (people, pages, properties, skills, agents), compares the brain against the live workspace, and writes a proposals-only report of drift, breakage, and improvement opportunities. Never applies a change. Run weekly, or whenever the org or the workspace shifts. Usage: /brain-health [focus]
+description: >-
+  The GTM Brain's own health loop. Builds a binding manifest of what the
+  brain's files reference (people, pages, properties, skills, agents),
+  compares the brain against the live workspace, and writes a proposals-only
+  report of drift, breakage, and improvement opportunities. Never applies a
+  change. Run weekly, or whenever the org or workspace shifts. Usage:
+  /brain-health [focus]
+metadata:
+  internal: true
 ---
 
 # /brain-health

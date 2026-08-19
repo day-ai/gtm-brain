@@ -1,6 +1,14 @@
 ---
 name: design-agent
-description: Design one complete, deployment-ready Day AI agent for a person — its identity (name, title, description = its system prompt) and its 1–3 starter skills — built on a proven archetype (CRM Data Nerd, Coach, Relationship Radar, etc.) and grounded in the person's real role and the company's process. The companion to /write-skill (one skill) — this designs a whole human-shaped agent. Usage: /design-agent {person} [archetype or job-slice]
+description: >-
+  Design one complete, deployment-ready Day AI agent for a person — its
+  identity (name, title, description = its system prompt) and its 1–3 starter
+  skills — built on a proven archetype (CRM Data Nerd, Coach, Relationship
+  Radar, etc.) and grounded in the person's real role and the company's
+  process. The companion to /write-skill (one skill) — this designs a whole
+  human-shaped agent. Usage: /design-agent {person} [archetype or job-slice]
+metadata:
+  internal: true
 ---
 
 # /design-agent

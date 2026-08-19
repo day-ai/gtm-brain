@@ -1,6 +1,15 @@
 ---
 name: implement
-description: Turn the plan and audit into real configuration in Day AI — invite the right people at the right roles, tune each teammate's agent identity, and deploy role-specific skills. Always previews before it writes. Requires Owner/Admin. In preflight mode it applies the rollouts/preflight/ payload built during map-your-gtm, in dependency order, first-win slice first. Usage: /implement [scope: a person, team, outcome, "preflight", or "the high-priority audit items"]
+description: >-
+  Turn the plan and audit into real configuration in Day AI — invite the right
+  people at the right roles, tune each teammate's agent identity, and deploy
+  role-specific skills. Always previews before it writes. Requires Owner/Admin.
+  In preflight mode it applies the rollouts/preflight/ payload built during
+  map-your-gtm, in dependency order, first-win slice first. Usage: /implement
+  [scope: a person, team, outcome, "preflight", or "the high-priority audit
+  items"]
+metadata:
+  internal: true
 ---
 
 # /implement
