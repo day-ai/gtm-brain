@@ -183,7 +183,7 @@ Three subagents do the work. You rarely invoke them directly — the skills belo
 | **`/implement`** | Turn the plan, audit, and agent designs into real changes: invites, agent identity, and deployed skills. Always previews before it writes. **Preflight mode** applies the `rollouts/preflight/` payload at connect time, first-win slice first, privacy guidance reviewed with the operator before invites go out. |
 | **`/brain-health`** | The brain's own health loop: builds a binding manifest, compares the brain's files against the live workspace, and reports drift and breakage. Proposals only; never applies a change. |
 | **`/write-skill`** | The teaching guide for authoring a single high-quality skill prompt. Read before any skill is written. |
-| **`/sync-pages`** | Sync the planning documents to/from Day AI Pages so the rest of your company can see them. |
+| **`/sync-pages`** | Sync the planning documents to/from Day AI Pages so the rest of your company can see them. `push context` uploads the approved knowledge corpus from `rollouts/preflight/PAGES/` — folders, images, and live cross-links included. |
 | **`/build-app`** | Vibe-code a custom app or integration on the public [Day AI SDK](https://github.com/day-ai/day-ai-sdk) — for outcomes that need a real UI, an external automation, or a mashup the workspace can't express. Clones the SDK and builds from its example templates. |
 
 ---
