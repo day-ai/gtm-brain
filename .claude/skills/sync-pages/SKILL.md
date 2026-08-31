@@ -4,8 +4,10 @@ description: >-
   Sync the planning documents and active initiatives to/from Day AI Pages so
   the rest of the company sees the same source of truth. Pushes local
   planning/*.md and initiatives/*.md to Pages, or pulls Pages back into the
-  repo. Degrades gracefully if Pages tools aren't available on the connected
-  MCP. Usage: /sync-pages [push|pull|status]
+  repo. The context scope uploads the approved knowledge corpus in
+  rollouts/preflight/PAGES/ as real folders and pages, images and cross-links
+  included. Degrades gracefully if Pages tools aren't available on the
+  connected MCP. Usage: /sync-pages [push|pull|status] [context]
 metadata:
   internal: true
 ---
@@ -19,6 +21,7 @@ $ARGUMENTS
 - **`push`** (default) — write the local `planning/*.md` documents and active `initiatives/*.md` up to Day AI Pages.
 - **`pull`** — bring the Pages versions back into the repo (for edits made in Day AI).
 - **`status`** — report what's linked and whether local and Pages versions differ, without changing anything.
+- **`push context`** — upload the knowledge corpus staged in `rollouts/preflight/PAGES/` (Gate 2's approved doc conversions) as real Day AI folders and pages, images and page-to-page links included. `status context` reports the corpus's link/drift state without changing anything.
 
 ---
 
@@ -71,6 +74,12 @@ Resolve each target to a Page in this order, and **stop at the first hit**:
 3. **No match anywhere** → create the Page, then record its ID.
 
 **Never create a Page whose exact title already exists.** The recorded ID is the primary key; the exact-title search is the dedupe guard for when the link file can't be trusted. If the search/list capability is unavailable (per Step 0), you cannot run step 2 — fall back to ID-only and confirm with the operator before creating any unlinked Page.
+
+## push context
+
+The planning docs above are a flat mirror; `rollouts/preflight/PAGES/` is a **corpus** — folders, images, page-to-page links — staged by `/discover` Gate 2 under per-doc approval. `push context` applies it by executing **the canonical apply algorithm in `rollouts/preflight/README.md` (PAGES section)**, exactly — the algorithm lives there once so this skill and `/implement`'s preflight pages step can't drift. In brief: probe (including `get_page_image_upload_url` + `attach_page_image` — if they're absent from the session, degrade to recorded placeholders, never pretend an image landed) → preview the full tree and get approval → folders → create/update pages (resolution rules identical to push above; each new pageId recorded in `PAGES/.pages-sync.json` immediately) → per-page finalize (upload/attach/embed each image; rewrite each cross-link to its chip or anchor form) → `read_page` verification.
+
+The corpus ledger is `PAGES/.pages-sync.json` — same schema and dedupe role as `planning/.pages-sync.json`, plus any pending image attaches a degraded run left behind. The drift check applies here too: a context page edited in Day AI after the last sync gets the overwrite-or-pull question, never a silent clobber.
 
 ## pull
 

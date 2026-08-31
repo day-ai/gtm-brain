@@ -26,7 +26,7 @@ If arguments name a focus (a person, an agent, "bindings", "delivery"), scope to
 Scan the repo's markdown (planning docs, PEOPLE.md, TECH_STACK.md, PRIVACY.md, initiatives, preflight payload if present) and record every **binding**: a reference from a brain file to something live. Four kinds:
 
 - **People bindings:** a named owner, DRI, SME producer, or activation owner.
-- **Workspace-object bindings:** a page, folder, property, pipeline, or stage a skill or doc references by name or id.
+- **Workspace-object bindings:** a page, folder, property, pipeline, or stage a skill or doc references by name or id — including every pageId in the sync ledgers (`planning/.pages-sync.json`, `rollouts/preflight/PAGES/.pages-sync.json`), plus any pending image attaches a degraded context sync left behind.
 - **Skill/agent bindings:** which skills the brain believes exist on which agents, with which triggers.
 - **Capability bindings:** MCP tools the harness's own procedures depend on.
 
