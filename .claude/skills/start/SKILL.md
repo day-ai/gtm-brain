@@ -79,6 +79,8 @@ Present the **status board**:
 
 Call out, briefly: any initiative with **no DRI**, any **past its target** still open, anything **PAUSED** with a stale log, and any criterion you **couldn't verify** (permission-gated, or needs a signal the MCP doesn't expose — name it).
 
+**Then the motions.** If `motions/` has motion files with deployed ids (skip `README.md`, `TEMPLATE.md`, and scaffolds with blank ids), add a short board beneath: motion, owner, mode, evaluator last fired and delivered (`manage_skills → get_history`), last guide changelog date. Flag a stalled loop: evaluator not firing, or a guide unchanged for 60+ days while calls keep landing. A motion that needs work hands off to `/flywheel {motion}`.
+
 The shipped initiatives arrive with `creator` and `target` blank. When one enters scope for the first time, write the confirmed operator into `creator`, and set `target` with the operator when the initiative actually kicks off — don't flag the blanks as problems on a fresh clone.
 
 ---
@@ -96,6 +98,7 @@ For each `NEW` or `IN_PROGRESS` initiative in scope, read its **Plan of attack**
   - needs the plan vs. workspace gap → `/audit`
   - needs changes deployed (invites, identities, skills) → `/implement` *(previews first; Owner/Admin)*
   - needs the plan published → `/sync-pages`
+  - needs a motion made self-improving (guide, managed skill, routing, evaluator) → `/flywheel {motion}`
 - **`PAUSED` / `CANCELLED` / `SUCCEEDED`** → don't act. For `SUCCEEDED`, if your Step-2 verification shows a criterion is no longer true, flag the regression.
 
 **Never write to the workspace from `/start` directly.** `/start` orchestrates and reads; the skills it hands off to (`/implement` especially) own their own preview-then-approve gate. Deploying changes always goes through `/implement`.

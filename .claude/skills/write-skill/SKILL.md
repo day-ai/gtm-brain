@@ -93,7 +93,13 @@ Some skills should follow a shared playbook page — a discovery guide, a demo g
 
 - Name the page by title and objectId in the prompt, and instruct the agent to **read it at run time** before doing the work: *"Read the Discovery Guide page and prep against its current questions."*
 - Never embed the guide's content in the prompt. The whole point of the flywheel is that the guide improves continuously; a pasted copy freezes it and drifts from the shared version.
-- Producer-side skills (the Playbook Editor pattern) review recent calls **against the current guide** and propose targeted page edits with the evidence — the specific call moments that justify the change — never a wholesale rewrite.
+- Producer-side skills (the Motion Evaluator pattern) read the current guide, then compare calls **across outcome cohorts**, never just against the guide. Write them to this bar:
+  - **Name the cohorts and the outcome signal** in real workspace terms: "reps in the top fifth by Discovery → Evaluation conversion over the last 90 days," not "top performers."
+  - **Name the lenses**: questions asked, qualification coverage, follow-up depth, objection handling, segment differences.
+  - **Shape the output as edits**: section, before, after, and the calls that justify it (call, rep, one-line quote, in the owner's delivery only). Never a wholesale rewrite. The changelog the skill writes on the shared guide page cites call ids only: no rep names, no rankings.
+  - **Set the evidence bar with numbers**: at least two cited calls per proposal, and the motion's `min_evidence` calls from at least two reps for an automatic edit. Below the proposal floor, say the evidence is thin and propose nothing.
+  - **Carry the mode verbatim**: in human-in-the-loop mode the skill proposes and never edits; in automatic mode it lists the exact `auto_apply` categories, the per-run cap, and the changelog entry it must write, and states that it never removes content or touches `never_auto` items.
+  - **Give it permission to say nothing**: "no change this week" is a valid run.
 
 ## Day AI language conventions
 

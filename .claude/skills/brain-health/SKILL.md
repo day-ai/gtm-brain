@@ -39,6 +39,7 @@ Requires the MCP connected; in pre-signup mode, skip to the repo-only checks in 
 - **Roster drift:** `list_configuration` vs `PEOPLE.md`. Departures, arrivals, role changes, owners named in the plan who aren't members.
 - **Fleet drift:** `assistant_settings → list` and `manage_skills → list` vs what the brain believes. Skills deleted or disabled, identities edited away from their specs, agents on unexpected tiers.
 - **Delivery health:** for scheduled skills, `manage_skills → get_history`: firing recently, substantive output, `notification.delivered` true (a `null` `notification` means no send was attempted: a configuration gap, not a failed delivery). A skill that's configured but not delivering is drift of the most expensive kind.
+- **Motion health:** for each deployed motion in `motions/`, the evaluator skill's delivery (as above), the guide page's changelog (last edit date, and whether edits cite calls), the consumer skill still deployed to the sellers who run the motion, and the routing line still present in the workspace instruction. A guide unchanged for 60+ days while the motion's calls keep landing is a stalled loop. Auto-applied edits that don't match the motion's `auto_apply` categories or bounds are drift of the governance kind: flag them first.
 - **Object drift:** do the pages, folders, and properties the manifest binds to still exist where the brain thinks they are (`read_page`, `read_crm_schema`)?
 - **Capability drift:** tools the harness depends on that have changed shape or disappeared from the connected tool list.
 
@@ -81,6 +82,6 @@ Present the report, and where a proposal is repo-only (fix a stale owner in PEOP
 
 ## Notes
 
-- **Never auto-apply.** Not even the trivial fixes. A background loop that edits the brain silently is how trust in the brain dies; the operator reviews, always.
-- **Cadence:** weekly is right for most teams. This skill also makes a good scheduled skill on the operator's own Day AI agent once connected, delivering the report as a page or Slack post; pair it with a scheduled `/audit` for the plan-vs-workspace lens. The living-guide flywheel covers content freshness; this loop covers structural health. Three loops, three jobs.
+- **Never auto-apply.** Not even the trivial fixes. A background loop that edits the brain silently is how trust in the brain dies; the operator reviews, always. (This governs the brain's structure: its files, bindings, and configuration. A motion's guide content may change by bounded auto-apply, but only because its owner opted in through the motion file. This skill audits that those bounds held; it never widens them.)
+- **Cadence:** weekly is right for most teams. This skill also makes a good scheduled skill on the operator's own Day AI agent once connected, delivering the report as a page or Slack post; pair it with a scheduled `/audit` for the plan-vs-workspace lens. Self-improving motions cover content freshness; this loop covers structural health. Three loops, three jobs.
 - **Honest gaps are findings.** Checks you couldn't run (permissions, missing tools) get listed as unverified, not skipped silently.

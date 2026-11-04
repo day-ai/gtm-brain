@@ -160,6 +160,24 @@ That has a sharp implication this harness is built around: **almost every active
 
 ---
 
+## Self-improving motions
+
+Most GTM teams write down how a motion *should* run (a discovery guide, a messaging framework, a pilot playbook) and never update it from what actually works. GTM Brain closes that loop for each motion you register in [`motions/`](motions/README.md):
+
+```
+EXECUTE → CAPTURE → ANALYZE → IMPROVE → DISTRIBUTE → (repeat)
+```
+
+1. **Execute.** A guide Page and a managed skill tell every seller's agent how to run the motion.
+2. **Capture.** Every call, email, and meeting lands in your customer memory.
+3. **Analyze.** An evaluator compares how the motion is run **against deal outcomes**: what your top reps, your fastest deals, and the deals that advanced do differently from everyone else.
+4. **Improve.** The output is a proposed guide edit **with cited calls**. Either the motion's owner reviews each one, or, if they opt in, edits in declared categories ship automatically, within an evidence threshold and a per-run cap, with a changelog entry.
+5. **Distribute.** The managed skill reads the guide at run time and a routing line in the workspace instruction points every agent at it, so the improvement reaches everyone the moment the page changes.
+
+Analysis is the engine; customer memory is the fuel. The comparison only works when every rep's calls are captured in one shared, permissioned memory tied to the deals they belong to, and when something can act on the findings across the team. That's the Day AI workspace plus this harness. `/flywheel discovery` builds the first loop; discovery is the worked example because every rep runs it and the outcome is visible. `/flywheel discovery personalize` goes further: it finds each rep's strengths and gaps and recommends team variants and coaching overlays.
+
+---
+
 ## The agents
 
 Three subagents do the work. You rarely invoke them directly — the skills below orchestrate them — but they're defined in `.claude/agents/`:
@@ -181,6 +199,7 @@ Three subagents do the work. You rarely invoke them directly — the skills belo
 | **`/design-agent`** | Design one complete, deployment-ready agent for a person — its identity and starter skills — built on a proven archetype (CRM Data Nerd, Coach, …). |
 | **`/audit`** | Compare the current workspace against *the plan* and produce a prioritized gap report. No changes are made. |
 | **`/implement`** | Turn the plan, audit, and agent designs into real changes: invites, agent identity, and deployed skills. Always previews before it writes. **Preflight mode** applies the `rollouts/preflight/` payload at connect time, first-win slice first, privacy guidance reviewed with the operator before invites go out. |
+| **`/flywheel`** | Make a motion self-improving. `design` stands up the guide page, managed skill, routing line, and evaluator; `run` compares execution against deal outcomes across the team and proposes guide edits with cited calls (or applies them within the motion's declared bounds); `personalize` recommends per-rep coaching overlays and team variants. |
 | **`/brain-health`** | The brain's own health loop: builds a binding manifest, compares the brain's files against the live workspace, and reports drift and breakage. Proposals only; never applies a change. |
 | **`/write-skill`** | The teaching guide for authoring a single high-quality skill prompt. Read before any skill is written. |
 | **`/sync-pages`** | Sync the planning documents to/from Day AI Pages so the rest of your company can see them. |
@@ -211,7 +230,8 @@ Connected (from signup day onward):
 4.  Run  /audit            → how well does the workspace deliver the plan?
 5.  Run  /design-agent     → design the missing agents (e.g. a Coach for each seller)
 6.  Run  /implement        → invite people, tune agents, deploy skills
-7.  Run  /brain-health     → weekly: catch drift before it becomes breakage
+7.  Run  /flywheel discovery → make discovery self-improving: guide, managed skill, routing, evaluator
+8.  Run  /brain-health     → weekly: catch drift before it becomes breakage
 ```
 
 Come back to `/start` whenever you sit down to work — it's the standing entrypoint that tells you where every initiative stands and what to do next, not just a first-run command. `/agent-audit` and `/audit` are two lenses: one on *how well you're using Day AI*, one on *how well the workspace delivers your plan*. Re-run them — and `/implement` — whenever the plan or the team changes. The plan is living; the workspace should track it.
@@ -228,12 +248,16 @@ gtm-brain/
 ├── .claude/
 │   ├── agents/               ← gtm-strategist, agent-implementor, data-analyst
 │   └── skills/               ← start, discover, plan, agent-audit, design-agent, audit,
-│                                implement, brain-health, write-skill, sync-pages, build-app
+│                                implement, flywheel, brain-health, write-skill, sync-pages, build-app
 ├── initiatives/
 │   ├── README.md             ← what an initiative is: schema, statuses, lifecycle
 │   ├── TEMPLATE.md           ← copy this to start a new initiative
 │   ├── map-your-gtm.md       ← the pre-signup default: map the GTM before you connect
 │   └── bootstrap-day-ai.md   ← the connected default first-run initiative
+├── motions/
+│   ├── README.md             ← self-improving motions: the loop, the two modes, the format
+│   ├── TEMPLATE.md           ← copy this to register a motion
+│   └── discovery.md          ← the worked example
 ├── discovery/
 │   └── inbox/                ← drop your GTM docs, exports, and Claude assets here
 ├── planning/
