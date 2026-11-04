@@ -44,5 +44,6 @@
 | 1 | Every AE starts the day with their top 3 at-risk deals and a drafted nudge | Mid-market outbound motion | VP Sales | AEs act on the briefing 4+ days/wk | Daily "deal-risk briefing" skill on each AE's agent (workspace-library, MANAGED) |
 | 2 | No discovery call happens without prep auto-delivered that morning | Land-via-RevOps bet | VP Sales | 100% of external meetings get a prep | Scheduled morning prep skill on AE agents reading the day's calendar |
 | 3 | The two new AEs are in the workspace with tuned agents by week 1 | Mid-market outbound motion | Ops | Both active within 7 days | Invites (Member) + agent identity tuning |
+| 4 | The discovery guide improves every week from what winning calls do | Land-via-RevOps bet | Enablement lead | Evaluator delivers weekly; ≥1 evidenced guide edit shipped per 2 weeks | `/flywheel discovery design`: guide page + managed prep skill + routing line + evaluator on the owner's agent (`motions/discovery.md`) |
 
 </details>

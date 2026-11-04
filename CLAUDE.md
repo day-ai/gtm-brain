@@ -58,7 +58,14 @@ Use the Day AI MCP's read-only graph tools to ground the plan and every skill pr
 
 Some of what the harness deploys isn't agent config — it's **shared content agents work against**: playbooks, guides, dashboards. The MCP exposes `create_page` / `update_page` / `read_page` (rich HTML pages; `update_page` prefers targeted-edit and insert modes — full replace is a last resort that requires proof you read the current page) and `create_or_update_folder` (a folder created with `shareWithWorkspace: true` makes everything filed in it workspace-visible; deleting a folder unfiles its pages, never deletes them).
 
-The signature pattern is the **living-guide flywheel**: a playbook (e.g. the discovery guide) lives as a workspace-shared Page, and skills on *different people's* agents form a loop around it — **consumer** skills on each seller's agent read the guide when prepping meetings, and a **producer** skill on the playbook owner's agent reviews recent calls against the guide and proposes targeted `update_page` edits. Because skills reference the page rather than embedding its content, every improvement propagates to everyone's prep the moment the page changes — no skill redeploys. The archetype and audit rubric live in `.claude/agents/data-analyst.md`; `/design-agent` proposes the pairing.
+The signature pattern is the **self-improving motion** (the living-guide flywheel). A motion's playbook (e.g. the discovery guide) lives as a workspace-shared Page, and the loop runs **execute → capture → analyze → improve → distribute**:
+
+- **Execute + distribute:** a managed workspace-library skill (`deploymentMode: "SHARED"`) on every seller's agent reads the guide at run time, and a routing line in the workspace instruction sends any agent asked about the motion to the guide. Content lives in the page; behavior lives in the skill. Because skills reference the page rather than embedding it, every improvement reaches everyone's prep the moment the page changes, with no skill redeploys.
+- **Capture:** every rep's calls land in customer memory. A loop that sees half the calls teaches the wrong lessons.
+- **Analyze:** an **evaluator** skill on the motion owner's agent compares how the motion is executed **against deal outcomes**: what the top reps, the fastest deals, and the deals that advanced do differently from everyone else. It doesn't just check calls against the guide. `/flywheel run` does the same analysis in bulk from this repo.
+- **Improve:** the output is a **proposed edit with cited calls**, never just a report. Two modes: **human in the loop** (the motion owner accepts, edits, or rejects each edit) or **automatic, bounded** (the in-workspace evaluator applies guide-page edits in the categories the motion file declares under `auto_apply` without review, with an evidence threshold, a per-run cap, and a changelog entry; skill prompts, routing, and anything in `never_auto` always go through `/implement`). From this repo, the harness still previews before it writes: `/flywheel run` applies auto-eligible edits as one batch, pre-approved by the motion's policy, after a single operator yes.
+
+Each motion is registered in `motions/<id>.md`; `motions/README.md` has the format, the modes and their bounds, and the table of motions beyond discovery. `/flywheel` designs, runs, and personalizes a motion; the Motion Evaluator archetype and audit rubric live in `.claude/agents/data-analyst.md`.
 
 ### Snapshots
 
@@ -113,6 +120,7 @@ The shared state the team operates on. Agents read from and write to these locat
 | `workspace/TECH_STACK.md` | Every system a customer touches, owners, migration posture, the call-capture posture, data readiness | `/discover` |
 | `workspace/PRIVACY.md` | How Day AI's per-user privacy settings work + the recommended setup per persona (guidance, not enforcement) | `/discover` |
 | `discovery/inbox/` | Source material the operator drops for discovery to read before it asks | operator |
+| `motions/<id>.md` | Standing, self-improving motions (discovery first): owner, guide page, managed and evaluator skills, outcome signal, cohorts, improvement mode and bounds, changelog | `/flywheel`, `/discover` |
 | `rollouts/preflight/` | The deployable payload built pre-signup: instruction draft, properties, pages, invites, agent specs + creation cards, skills, import plan, enablement assets | `/discover` |
 | `rollouts/<YYYY-MM-DD>-<slug>/` | Per-run artifacts: audit reports, agent specs, proposed/approved/deployed changes, snapshots | `/agent-audit`, `/audit`, `/design-agent`, `/implement` |
 | `rollouts/health/` | The binding manifest and dated brain-health reports | `/brain-health` |
@@ -160,6 +168,8 @@ Don't replicate its docs here. If someone wants to vibe-code a Day AI app, run *
 /audit        → data-analyst + agent-implementor diff the workspace vs. the plan
 /implement    → agent-implementor invites people, tunes agents, deploys skills;
                 preflight mode applies rollouts/preflight/ at connect time
+/flywheel     → make a motion self-improving: design the loop, run the evaluator against outcomes,
+                personalize per rep
 /brain-health → binding manifest + drift report; proposals only, never applies
 /sync-pages   → push/pull planning docs to Day AI Pages
 /build-app    → vibe-code a custom app on the public Day AI SDK
@@ -167,6 +177,6 @@ Don't replicate its docs here. If someone wants to vibe-code a Day AI app, run *
 
 `/start` is the standing entrypoint: it reads `initiatives/`, reports each initiative's progress against its verifiable success criteria, and hands off to the skills above to do the work. On a fresh clone with no workspace, the lead initiative is `map-your-gtm`; on a fresh connected clone it's `bootstrap-day-ai`. Two audit lenses: `/agent-audit` measures how well you're using Day AI's agents (independent of the plan); `/audit` measures how well the workspace delivers the plan. Read the plan, raise the bar on the agents, change the workspace, keep them in sync. That's the loop.
 
-**Three standing loops keep the brain alive:** the living-guide flywheel keeps shared content improving (producers propose page edits from call evidence), a scheduled `/audit` keeps the workspace matching the plan, and `/brain-health` keeps the brain's own bindings from rotting as the org changes. All three propose; the operator applies.
+**Three standing loops keep the brain alive:** self-improving motions keep the playbooks improving from what actually wins (evaluators compare execution against outcomes and edit the guides), a scheduled `/audit` keeps the workspace matching the plan, and `/brain-health` keeps the brain's own bindings from rotting as the org changes. `/audit` and `/brain-health` only propose. A motion proposes too, except where its owner has opted into bounded auto-apply: guide-page edits in declared categories, evidenced and logged. Everything else the operator applies.
 
 **The posture the whole harness earns:** treat the brain the way a good founder treats a paid consultant — give it everything, answer its questions honestly, and listen to what it says. The harness holds up its end by doing the homework before asking (discovery reads before it interviews), citing evidence for every claim, and saying plainly what it can't verify.

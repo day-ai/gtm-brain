@@ -42,8 +42,8 @@ child directory beside the current project after confirmation; it does not
 modify the project's existing files.
 
 Do not treat an arbitrary existing folder of plans as a GTM Brain repository.
-The harness owns `CLAUDE.md`, `.claude/`, `initiatives/`, `planning/`, and
-`workspace/`; merging into existing files can create a broken half-harness.
+The harness owns `CLAUDE.md`, `.claude/`, `initiatives/`, `motions/`,
+`planning/`, and `workspace/`; merging into existing files can create a broken half-harness.
 This setup always creates a new directory.
 
 The invoking request may name the destination directory and private repository.
@@ -67,7 +67,8 @@ harness, with:
 - `upstream` pointing to `https://github.com/day-ai/gtm-brain.git`, or to the
   explicitly confirmed `--source` only during local validation;
 - the Claude Code harness (`CLAUDE.md`, `.mcp.json`, `.claude/`), plus the
-  planning templates, initiatives, workspace file, docs, and rollout space;
+  planning templates, initiatives, motions, workspace file, docs, and rollout
+  space;
 - a clean Git worktree that shares history with `upstream`, so future harness
   updates can use `git pull upstream main`.
 

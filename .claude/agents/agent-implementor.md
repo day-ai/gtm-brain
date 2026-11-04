@@ -106,7 +106,7 @@ Guides and playbooks that agents work against are Day AI Pages, filed in workspa
 
 - **Folders first:** `create_or_update_folder` with `shareWithWorkspace: true` — content filed there is visible to the whole workspace. Deleting a folder unfiles its pages, never deletes them. Find existing folders via `search_objects` (objectType `native_folder`) before creating a duplicate.
 - **Pages:** `create_page` with clean semantic HTML (no `style`/`class` attributes, headings h2/h3 only); share with the team via `publishedForUserAt`. For edits, `read_page` first, then prefer **targeted edits** (`oldContentMatch` + `newContentReplace`) or **inserts** (`insertContentHtml`) — full `pageHtmlContent` replace is a last resort that requires proof you read the current page (`oldContentMatch` or `refreshFirst`).
-- **Flywheel deploys** (see CLAUDE.md): the page is infrastructure — create the shared folder and guide page *before* the skills, then write the consumer/producer skill prompts referencing the guide by title and objectId.
+- **Flywheel deploys** (see CLAUDE.md and `motions/README.md`): the page is infrastructure. Order: shared folder → guide page (with a Changelog section) → routing line merged into the workspace instruction → managed consumer skill, deployed to the sellers → evaluator skill on the motion owner's agent. Both skills reference the guide by title and objectId. The evaluator prompt carries the motion's mode and auto-apply bounds verbatim, and the preview shows them, so the operator approves the governance along with the prompt. After deploy, write the ids back into `motions/<id>.md`.
 
 ## Inviting and managing members
 

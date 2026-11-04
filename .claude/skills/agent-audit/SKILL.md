@@ -75,6 +75,7 @@ Save to `rollouts/<YYYY-MM-DD>-agent-audit/REPORT.md` and present a tight summar
 | Agents with a strong identity (name + title + description) | {N}/{N} |
 | Skills well-written AND properly automated | {N}/{N} |
 | Scheduled skills confirmed firing with substantive, delivered output | {N}/{N} |
+| Motions with a turning loop (evaluator delivered in last 14 days; guide edited in last 30 with cited calls) | {N}/{N} motions the team runs |
 | People who should be in the workspace but aren't | {N} |
 | Recommended new agents · seats they'd need · ~free moves (no new seat) | {N} · {N} · {N} |
 
