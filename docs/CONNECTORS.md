@@ -37,7 +37,7 @@ bulk-import history, and an integration does not give an agent actions.
 
 | Source | Level | What syncs |
 |--------|-------|-----------|
-| **Gmail** | Per-user | Emails, thread summaries, contact extraction. Per-user sharing rules control what teammates see (see `workspace/PRIVACY.md`). |
+| **Gmail** | Per-user | Emails, thread summaries, contact extraction. Per-user sharing rules (by Gmail label, address or domain) control what teammates see (see `workspace/PRIVACY.md` and `docs/EMAIL_SHARING_RULES.md`). |
 | **Google Calendar** | Per-user | Calendar events and attendees. One Google OAuth per user covers both. |
 | **Day AI notetaker** | Per-user | Meeting recordings, transcripts, action items. Rides the calendar connection; per-user auto-record toggles for internal and external meetings. |
 | **Slack** | Workspace | Messages and users from connected channels; channels are added individually or in bulk. |

@@ -2,7 +2,7 @@
 
 > **What this is:** how privacy works in Day AI, and the setup this team recommends per persona. Gate 4 of `map-your-gtm`.
 >
-> **How privacy actually works in Day AI:** every user controls their own sharing settings — email sharing (workspace vs. private, with rules by domain or address), recording mode, and meeting sharing — and applies them themselves when they activate. None of it can be pushed via MCP or enforced by this harness. So this file's job is **clarity, not enforcement**: explain the settings, record the setup the operator wants to recommend for each kind of user, and turn that into the per-user instructions in `rollouts/preflight/ENABLEMENT/` that each person follows in their first session. It sits fourth in the discovery conversation only because guidance is per-persona, so the roster (Gate 3) has to exist first.
+> **How privacy actually works in Day AI:** every user controls their own sharing settings — email sharing (workspace vs. private, with inclusion and exclusion rules by Gmail label, email address or domain), recording mode, and meeting sharing — and applies them themselves when they activate. When several email rules match, they resolve in a fixed order (Gmail labels first, then address, then domain, then the global toggle, with Private beating Shared at each step); see [`docs/EMAIL_SHARING_RULES.md`](../docs/EMAIL_SHARING_RULES.md) before recommending a setup. None of it can be pushed via MCP or enforced by this harness. So this file's job is **clarity, not enforcement**: explain the settings, record the setup the operator wants to recommend for each kind of user, and turn that into the per-user instructions in `rollouts/preflight/ENABLEMENT/` that each person follows in their first session. It sits fourth in the discovery conversation only because guidance is per-persona, so the roster (Gate 3) has to exist first.
 >
 > **Questions about Day AI's own security posture** (SOC 2, data handling, encryption): see **https://day.ai/trust**; the SOC 2 Type II report is available under NDA via the request form there. Record anything the trust center doesn't answer as an open question for your Day AI contact.
 
@@ -22,12 +22,15 @@
 
 ## Workspace-level exclusions
 
-> Domains and addresses whose mail should stay out of the customer memory (HR, legal, investor relations, personal). Recorded as guidance: exclusions land as rules in each user's own sharing settings (see ENABLEMENT); anything that needs a workspace-wide mechanism is an open question for your Day AI contact.
+> Gmail labels, domains and addresses whose mail should stay out of the customer memory (HR, legal, investor relations, personal). Recorded as guidance: exclusions land as Private rules in each user's own sharing settings (see ENABLEMENT). If workspace default rules are enabled, an Owner or Admin can also add Private address and domain defaults for everyone; anything else that needs a workspace-wide mechanism is an open question for your Day AI contact.
+>
+> **Label rules decide first.** A Private (exclusion) label always beats a Shared (inclusion) label on the same email. But a Shared label also overrides address, domain and default exclusions, so mail that must stay private regardless of labels needs a Private label rule (a Gmail filter can apply it automatically). Full order: [`docs/EMAIL_SHARING_RULES.md`](../docs/EMAIL_SHARING_RULES.md).
 
 | Exclusion | Type | Why |
 |-----------|------|-----|
 | {e.g. hr-vendor.com} | domain | HR matters |
 | {e.g. counsel@lawfirm.com} | address | Legal privilege |
+| {e.g. Investors [CONFIDENTIAL]} | Gmail label | Board and fundraising threads; beats any Shared label |
 | {investor relations, personal domains, ...} | | |
 
 ## Guest and external access
