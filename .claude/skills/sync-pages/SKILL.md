@@ -56,6 +56,7 @@ Track the link between each file and its Page (the Page ID and last-synced state
 2. **Resolve the target to an existing Page before creating anything** (see "Resolving a target" below). Only create a new Page when no existing one resolves.
 3. If it resolved to an existing Page, **update** it (after the drift check). If nothing resolved, **create** it and record its ID in `.pages-sync.json`.
 4. Preserve the document's markdown structure as faithfully as the Page format allows.
+4a. **Make sure the company can actually read it.** Pages are created **private by default**: a synced plan nobody else can open hasn't been published. File synced pages in one workspace-shared folder (e.g. "GTM Plan", created once with `create_or_update_folder` + `shareWithWorkspace: true`), or set `publishedForUserAt` on create. Never set `madeExternalAt` (a public link). Record the folder id in `.pages-sync.json`, and report each page's sharing state.
 5. Report what was **created** vs. **updated** vs. **adopted** (an unlinked Page matched by title and newly linked), with the Page links.
 
 Before overwriting a Page that has changed since the last sync, **check for drift** — if the Page was edited in Day AI after the last push, warn the operator and ask whether to overwrite (push wins) or pull first. Don't silently clobber edits made in the product.
@@ -82,6 +83,7 @@ Resolve each target to a Page in this order, and **stop at the first hit**:
 
 Run the same **resolution** as push (by recorded ID, then exact title) but make **no changes**. Report, per document:
 - **Linked Page** — linked by ID / would be *adopted* by title (exists but not yet linked) / none found.
+- **Shared** — whether the linked Page is visible to the workspace (in a shared folder or published) or still private.
 - **Drift** — whether local and Page differ, and which side changed since the last sync.
 - **Duplicates** — flag any target title that matches more than one Page; these need cleanup before push can sync them safely.
 

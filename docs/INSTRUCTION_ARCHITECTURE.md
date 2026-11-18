@@ -17,12 +17,12 @@ One editable record for the whole workspace. Every agent inherits it in everythi
 
 - **What belongs here:** company terminology ("our stages are X → Y → Z"), universal guardrails ("never email customers directly"), the top 1-3 business priorities, norms for handing work to a human.
 - **What doesn't:** anything task-shaped. Work that runs on a schedule or produces a deliverable is a skill.
-- **The contract:** 3000-character cap, Owner/Admin-only writes, and `update` **replaces the entire text**. Always read the current text, merge, and write back the whole result. The cap is a feature: only rules that genuinely apply everywhere, always.
-- Pre-signup, the draft lives at `rollouts/preflight/WORKSPACE_INSTRUCTION.md`, written to the cap.
+- **The contract:** 7500-character platform cap, Owner/Admin-only writes, and `update` **replaces the entire text**. Always read the current text, merge, and write back the whole result. Write to a ~3000-character working budget, well under the cap: every agent carries this text on every turn, so only rules that genuinely apply everywhere, always.
+- Pre-signup, the draft lives at `rollouts/preflight/WORKSPACE_INSTRUCTION.md`, written to that budget.
 
 ## Layer 2: The agent
 
-An agent's **identity description is its definition**: the equivalent of a system prompt. A blank or generic description is an unconfigured agent. Beyond identity: personality settings (DISC profile, personality notes, default language) and the **tier**, which gates which tools the agent can use and how many automated skills it can run. Via the MCP, identity and personality (`assistant_settings`) are the whole configurable agent surface; behavior beyond that lives in the agent's skills.
+An agent's **identity description is its definition**: the equivalent of a system prompt. A blank or generic description is an unconfigured agent. Beyond identity: personality settings (DISC profile, personality notes, default language) and the **tier** (Turbo, Professional, Executive, Super), which gates which tools the agent can use — dashboards, campaigns, external search, prospecting, AI-populated properties — and how many automated skills it can run. The gates and slot counts are in `docs/PRODUCT_FACTS.md`; choosing one is `docs/playbooks/choose-a-tier.md`. Day AI bills per agent at its tier; human members are free. Via the MCP, identity and personality (`assistant_settings`) are the whole configurable agent surface; behavior beyond that lives in the agent's skills.
 
 - **Personal vs managed:** every agent belongs to a member. Personal agents are configured by their owner; managed agents are deployed and maintained by an Admin/Owner (from templates or by hand) for teammates. Fleet design decides which is which per person.
 - **Delegation:** agents can hand work to other agents. Wire it explicitly in the fleet design; delegation changes what each agent's skills need to cover.
@@ -32,13 +32,13 @@ An agent's **identity description is its definition**: the equivalent of a syste
 
 A skill is a prompt with a trigger. Three trigger types:
 
-- **SCHEDULE:** cron + timezone; the cron is local to that timezone. The platform accepts exactly four shapes, minutes aligned to :00/:15/:30/:45: daily, weekdays, weekly, and every 4 hours. Morning briefings, weekly syntheses.
-- **EVENT:** a closed list of seven events: meeting recording summary ready (fires only for meetings the skill's *owner* recorded — Gate 1's call-capture posture decides who that is), email summary ready (only the owner's own mail; promotional and automated mail never triggers), Slack summary ready, user context upserted, Zapier object upserted, opportunity created, and opportunity stage changed (optionally narrowed to specific stages). There is no contact-created or pre-meeting event.
+- **SCHEDULE:** cron + timezone; the cron is local to that timezone. The platform accepts exactly four shapes, minutes aligned to :00/:15/:30/:45: daily, weekdays, weekly, and every 4 hours (Executive and Super only). Morning briefings, weekly syntheses.
+- **EVENT:** a closed list of seven selectable events: meeting recording summary ready (fires only for meetings the skill's *owner* recorded — Gate 1's call-capture posture decides who that is), email summary ready (only the owner's own mail; promotional and automated mail never triggers), Slack summary ready, user context upserted, Zapier object upserted, opportunity created, and opportunity stage changed (optionally narrowed to specific stages). There is no contact-created or pre-meeting event. (The platform has other internal events — import completions, campaign status checks — that skills can't select.)
 - **On-demand:** no trigger; invoked by its slash command in chat.
 
-Skills with a SCHEDULE or EVENT trigger are **automated skills** and consume the *target agent's* tier slots; budget them during fleet design, not at deploy time. Set the delivery channel explicitly — a skill with no notification target runs and delivers nowhere — and **route to Slack deliberately**, because a briefing in an unread inbox trains people to ignore their agent. Scope is per-agent or workspace library; a team-wide capability is one Managed library skill (API encoding: `deploymentMode: "SHARED"`), not N per-agent copies.
+Skills with a SCHEDULE or EVENT trigger are **automated skills** and consume the *target agent's* tier slots (Turbo 2, Professional 5, Executive and Super 10; each campaign the agent works takes two more); budget them during fleet design, not at deploy time. Set the delivery channel explicitly — a skill with no notification target runs and delivers nowhere — and **route to Slack deliberately**, because a briefing in an unread inbox trains people to ignore their agent. Scope is per-agent or workspace library; a team-wide capability is one Managed library skill (API encoding: `deploymentMode: "SHARED"`), not N per-agent copies — and before writing either, check Day AI's own library templates (`docs/playbooks/deploy-library-skills.md`).
 
-The craft bar for the prompt itself lives in `.claude/skills/write-skill/SKILL.md`. Skills reference shared Pages by title and id and read them at run time, never paste their content; that's what makes the living-guide flywheel work.
+The craft bar for the prompt itself lives in `.claude/skills/write-skill/SKILL.md`. Skills bind to shared Pages and Folders by **attachment** (up to 10 per skill, read live at run time) and never paste their content; that's what makes the living-guide flywheel work. A skill can also **include** up to 5 other skills on the same agent, so a shared voice or procedure lives in one place instead of being copied.
 
 ## Layer 4: The prompt
 

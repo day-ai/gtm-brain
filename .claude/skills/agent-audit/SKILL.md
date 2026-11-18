@@ -76,11 +76,12 @@ Save to `rollouts/<YYYY-MM-DD>-agent-audit/REPORT.md` and present a tight summar
 | Skills well-written AND properly automated | {N}/{N} |
 | Scheduled skills confirmed firing with substantive, delivered output | {N}/{N} |
 | People who should be in the workspace but aren't | {N} |
-| Recommended new agents · seats they'd need · ~free moves (no new seat) | {N} · {N} · {N} |
+| Recommended new agents · tier changes · ~free moves (no new agent or tier change) | {N} · {N} · {N} |
+| Agents on a tier that doesn't fit their work (under-tiered for their skills, or paying for gates they never use) | {N}/{N} |
 
 **Where this team is:** {one line — e.g. "using Day AI as a shared contact list, not as GTM automation."}
 **The single highest-leverage move:** {one line}
-**The cost to close the gap:** {one line — e.g. "3 new seats for the 3 active sellers; the other 5 highest-value moves need no new seat."}
+**The cost to close the gap:** {one line — e.g. "3 new Professional agents for the 3 active sellers (live price, annual); the other 5 highest-value moves cost nothing."}
 ```
 
 Then the analyst's full findings, recommendations, and the draft nudge emails verbatim.
@@ -114,7 +115,7 @@ Report saved to rollouts/{date}-agent-audit/REPORT.md
 - **Recommend-only. No invites, no edits, no skill writes.** This skill sees clearly and proposes; `/implement` acts.
 - **The draft nudge emails are a first-class output** — they're often the single highest-ROI thing in the report, because re-engaging an already-invited person is nearly free. Draft them in the operator's voice, specific to each person, short and human.
 - **Confirm effectiveness from `manage_skills → get_history`, not config.** Read recent runs: firing? substantive vs hollow output? delivered (per the run's `notification.delivered` boolean — `slackFailureReason` explains a failure, and a `null` `notification` means nothing was configured to send: a config gap, not a failed delivery — never the channel config)? Firing + substantive + delivered = delivering value. The only thing still unmeasurable is engagement *depth* (does the person act on it?) — a signal the MCP doesn't expose yet; name it as unmeasured. Don't claim "delivering value" from a schedule existing.
-- Prioritize by **value per cost**, not raw leverage: a near-free move (re-engaging an already-invited person, rewriting an existing skill, scheduling a skill that already exists) outranks one that needs a new seat unless the value is overwhelming. Standing up Coach + CRM Data Nerd agents for a team of active sellers is high value *and* worth the seats — but say what it costs. Every recommended new agent must carry its value-vs-cost case (job slice + output vs. seat/tier), and the report must total the cost to close the gap so the operator sees the bill before `/implement`, never after. Cost figures follow CLAUDE.md's pricing rules: live source (workspace billing, or https://day.ai/pricing), full math shown, unverifiable figures flagged.
+- Prioritize by **value per cost**, not raw leverage: a near-free move (re-engaging an already-invited person, rewriting an existing skill, scheduling a skill that already exists) outranks one that needs a new agent or tier change unless the value is overwhelming. Standing up Coach + CRM Data Nerd agents for a team of active sellers is high value *and* worth the cost — but say what it costs. Every recommended new agent must carry its value-vs-cost case (job slice + output vs. tier, per `docs/playbooks/choose-a-tier.md`), and the report must total the cost to close the gap so the operator sees the bill before `/implement`, never after. Cost figures follow CLAUDE.md's pricing rules: live source (workspace billing, or https://day.ai/pricing), full math shown, unverifiable figures flagged.
 - **Recommending against a Day AI skill is a valid recommendation.** Where a capability gap is best served by the team's own Claude repo — interactive, orchestrating, or operator-only work that a single Day AI prompt would flatten — say so plainly, with the reasoning, instead of proposing a skill that would fire and disappoint. Use the same disposition thinking as `/discover` Gate 5's triage menu.
 - Re-run periodically — the maturity table is most useful as a trend.
 - **This audit is how `/start` verifies an initiative's agent-coverage and skill-delivery criteria.** When invoked as a grounding step for an initiative (e.g. `bootstrap-day-ai`), the maturity table maps directly onto those success criteria — frame the headline around what the initiative still needs to hit, not just abstract maturity.

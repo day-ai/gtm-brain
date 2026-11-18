@@ -20,7 +20,7 @@
 > this file. If neither live source answers the question, record it as an open
 > question for your Day AI contact; never treat an absence here as proof.
 
-**Last verified:** 2026-08-17 (against day.ai/resources/integrations-connectors and the live product surface)
+**Last verified:** 2026-11-18 (against the Day AI product source; re-check day.ai/resources/integrations-connectors and the in-product picker before relying on a beta or newly listed connector)
 
 ---
 
@@ -35,6 +35,11 @@ bulk-import history, and an integration does not give an agent actions.
 
 ## Integrations (data flows into your customer memory)
 
+Workspace integrations live under Settings → Integrations and are set up by
+the workspace **Owner** (Admins can't by default), so name the Owner as the
+step's owner in the rollout plan. Email and calendar are each person's own
+connection.
+
 | Source | Level | What syncs |
 |--------|-------|-----------|
 | **Gmail** | Per-user | Emails, thread summaries, contact extraction. Per-user sharing rules control what teammates see (see `workspace/PRIVACY.md`). |
@@ -43,20 +48,42 @@ bulk-import history, and an integration does not give an agent actions.
 | **Slack** | Workspace | Messages and users from connected channels; channels are added individually or in bulk. |
 | **Gong** | Workspace | Meeting recordings, transcripts, participants. One-way import. Confirm the sync cadence for new calls with your Day AI contact before promising it in a rollout plan. |
 | **Granola** | Workspace | Meeting notes and transcripts, via an Enterprise API key. |
+| **Fireflies** | Workspace | Meeting recordings and transcripts from Fireflies. Confirm what history imports with your Day AI contact. |
+| **Linear (customer sync)** | Workspace | The other direction: pushes Day AI organizations out to Linear as customers, so product and engineering see who's asking. Distinct from the Linear MCP connector below. |
 | **Zapier** | Workspace | Pushes person and organization records from other apps; good for long-tail systems with no direct connector. Configured on Zapier's side. |
 
 ## MCP connectors (your agents get live tools, not a data sync)
 
-Inside Day AI, agents can be granted MCP connectors with per-tool permissions
-(always allow / needs approval / never). These give an agent live reads and
-actions in the external system.
+Inside Day AI, each person connects MCP connectors for their own agents
+(User Settings → Connectors), with per-tool permissions (always allow / needs
+approval / never). These give an agent live reads and actions in the external
+system. **External connector tools ask for approval by default**; a skill
+that names a connector (`mcpProviders`) has it pre-approved for that skill's
+runs, using the skill owner's own connection, never a shared credential.
 
 The majors, per the live reference page: **Linear** (create and manage
 issues), **Notion** (search and manage pages and databases), **HubSpot** (CRM
 objects, engagements, pipelines), and **Affinity** (CRM people,
 organizations, lists, notes). The in-product catalog is larger and changes
-over time; the connector picker on any agent is the authoritative list, so
-check it (or ask your Day AI contact) for any system not named on the page.
+over time; the connector picker is the authoritative list, so check it (or
+ask your Day AI contact) for any system not named on the page.
+
+As of the last verification the catalog also listed, among others:
+
+- **CRM and data:** Salesforce, Attio, BigQuery (beta)
+- **Prospecting and outbound:** Apollo, Clay, lemlist, HeyReach, Nooks,
+  Common Room, Sumble, Harmonic, Crossbeam (beta)
+- **Product analytics:** Amplitude, PostHog
+- **Docs and contracts:** Guru, PandaDoc, Docusign, Asana
+- **Support and billing:** Intercom, Tabs
+- **Automation:** n8n
+- **Microsoft 365:** Outlook 365 Mail, Outlook 365 Calendar, Microsoft
+  Teams (all beta)
+
+All of these are live tools for an agent, not data syncs. Treat beta
+connectors as "confirm before you promise" in a rollout plan.
+
+Teams can also register their own custom MCP servers in workspace settings.
 
 Setup nuances worth surfacing in Gate 1, because they create small
 IT-adjacent steps that need a named owner:
@@ -68,8 +95,10 @@ IT-adjacent steps that need a named owner:
   a customer it is "connect and authorize"; don't assume.
 
 One harness-level note: the Day AI MCP server this repo uses does not
-currently expose a tool that lists the connector catalog, so verification is
-always the live page plus the in-product surfaces above, never an MCP call.
+expose a tool that lists or connects connectors (that's chat or the UI
+only), so verification is always the live page plus the in-product surfaces
+above, never an MCP call. Connecting is each person's own step: put it in
+their ENABLEMENT setup, not in `/implement`.
 
 ## Imports (bulk history in)
 
@@ -88,10 +117,13 @@ is how the preflight payload gets applied on connect day.
 
 ## Not natively synced today
 
-- **Microsoft 365 / Outlook / Teams:** no native account connection; the
-  account model is Google. A Microsoft-stack prospect should flag this to
-  their Day AI contact before scoping a pilot around email evidence.
-- **Salesforce / HubSpot live two-way sync:** not a native sync. The supported
+- **Microsoft 365 / Outlook / Teams:** no native account *sync*; the
+  account model is Google, and campaigns send from Gmail mailboxes. Outlook
+  365 Mail, Calendar, and Teams exist as **beta MCP connectors**: an agent
+  can read and act live, but the mail doesn't flow into customer memory the
+  way Gmail does. A Microsoft-stack prospect should flag this to their Day
+  AI contact before scoping a pilot around email evidence or campaigns.
+- **Salesforce / HubSpot live two-way sync:** not a native sync (both are MCP connectors). The supported
   pattern is the CSV bridge plus an MCP connector for live reads. Do not
   design a first win that assumes bidirectional CRM sync.
 

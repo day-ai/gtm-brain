@@ -81,7 +81,7 @@ Save the report to `rollouts/<YYYY-MM-DD>-audit/REPORT.md` and present a summary
 |--------|-------|-------|-----------------|
 
 ## What the data won't support yet
-- {outcomes blocked by missing integrations, thin/stale pipeline, seat/tier limits}
+- {outcomes blocked by missing integrations, thin/stale pipeline, tier gates or slot limits}
 
 ## Recommended /implement scope
 {The highest-leverage subset to roll out first, in priority order.}

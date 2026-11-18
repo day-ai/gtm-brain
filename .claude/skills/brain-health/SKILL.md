@@ -40,7 +40,9 @@ Requires the MCP connected; in pre-signup mode, skip to the repo-only checks in 
 - **Fleet drift:** `assistant_settings → list` and `manage_skills → list` vs what the brain believes. Skills deleted or disabled, identities edited away from their specs, agents on unexpected tiers.
 - **Delivery health:** for scheduled skills, `manage_skills → get_history`: firing recently, substantive output, `notification.delivered` true (a `null` `notification` means no send was attempted: a configuration gap, not a failed delivery). A skill that's configured but not delivering is drift of the most expensive kind.
 - **Object drift:** do the pages, folders, and properties the manifest binds to still exist where the brain thinks they are (`read_page`, `read_crm_schema`)?
-- **Capability drift:** tools the harness depends on that have changed shape or disappeared from the connected tool list.
+- **Capability drift:** tools the harness depends on that have changed shape or disappeared from the connected tool list — and the reverse: the connected tool list showing a tool, mode, or limit that `docs/PRODUCT_FACTS.md` doesn't know about or contradicts (a new `manage_skills` action, a changed instruction cap). Product facts the brain teaches are bindings too; propose the doc edit with the evidence.
+- **Tier fit:** agents whose tier no longer covers their skills (slots over the limit, an every-4-hours schedule on a tier that can't run it, a dashboard or campaign skill on a tier without those tools), and AI-populated properties whose owning Super agent is gone or downgraded.
+- **Dashboard and campaign bindings:** dashboard pages the brain references still exist and are shared as intended; campaigns an initiative depends on are still active, not archived.
 
 ## Step 3: Apply the philosophy filter
 

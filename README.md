@@ -24,7 +24,7 @@
    strategy, privacy decisions, and candid notes.
 2. **Open the folder in [Claude Code](https://claude.com/claude-code)** and run `/start`. With no workspace connected, it drives the `map-your-gtm` initiative: guided discovery that maps your tech stack, strategy, people, privacy posture, and agent fleet, and scopes a first-win pilot for you or a handful of teammates.
 3. **Feed it what you have.** Drop your GTM docs, CRM export, and org chart in `discovery/inbox/`; point it at anything you've already taught Claude (a Project, a CLAUDE.md, existing skills). It reads before it asks.
-4. **Walk out with the payload.** A designed agent fleet with costs, a rollout plan, privacy guidance captured (how the settings work, plus a recommended setup per persona), and a deployable configuration in `rollouts/preflight/`. When you do sign up, setup is an apply step, not a project.
+4. **Walk out with the payload.** A designed agent fleet with each agent's tier justified and costed, a rollout plan, privacy guidance captured (how the settings work, plus a recommended setup per persona), and a deployable configuration in `rollouts/preflight/`. When you do sign up, setup is an apply step, not a project.
 
 ### Once a workspace is connected
 
@@ -246,7 +246,10 @@ gtm-brain/
 │   └── PRIVACY.md            ← how privacy settings work + recommended setup per persona
 ├── docs/
 │   ├── INSTRUCTION_ARCHITECTURE.md ← where every rule lives: workspace → agent → skill → prompt
-│   └── CONNECTORS.md         ← what Day AI connects to and imports from
+│   ├── CONNECTORS.md         ← what Day AI connects to and imports from
+│   ├── PRODUCT_FACTS.md      ← tiers, slots, campaigns, dashboards, library, MCP surface: what's gated on what
+│   ├── GUIDES.md             ← use case → day.ai/guides link, for best practice the brain points to rather than copies
+│   └── playbooks/            ← choose a tier · build a live dashboard · set up a campaign · deploy library skills
 └── rollouts/
     ├── preflight/            ← the deployable payload built pre-signup (see its README)
     ├── health/               ← binding manifest + brain-health reports

@@ -91,7 +91,7 @@ Notice: it would produce *different* output for a different person, every sectio
 
 Some skills should follow a shared playbook page — a discovery guide, a demo guide, an objection playbook. **Reference the page; never paste it:**
 
-- Name the page by title and objectId in the prompt, and instruct the agent to **read it at run time** before doing the work: *"Read the Discovery Guide page and prep against its current questions."*
+- **Attach** the page to the skill (`attachmentChanges`, with a short instruction like "prep against its current questions"), and name it by title in the prompt so the instruction reads naturally: *"Read the Discovery Guide and prep against its current questions."* The run reads the attached page live. Attach a **folder** when the guide set will grow — pages added later are picked up automatically.
 - Never embed the guide's content in the prompt. The whole point of the flywheel is that the guide improves continuously; a pasted copy freezes it and drifts from the shared version.
 - Producer-side skills (the Playbook Editor pattern) review recent calls **against the current guide** and propose targeted page edits with the evidence — the specific call moments that justify the change — never a wholesale rewrite.
 
@@ -124,14 +124,19 @@ After drafting, before deploying, check every one:
 
 ---
 
+## Before you write: is it already in the library?
+
+Day AI ships maintained library templates for the most common GTM jobs — Meeting Prep, Deal Brief, Deal Follow-Up, Follow-Up Sweep, Pipeline Review, Pipeline Dashboard, CRM Cleanup, Record Check, Customer Health, and more (`docs/PRODUCT_FACTS.md`). If one does the job, adding it beats writing a new prompt (`docs/playbooks/deploy-library-skills.md`). Write a custom skill when the company's own process, pages, or language must be inside the prompt — and when you do, read the matching template first: it's a strong reference for handling missing data, repeats, and sensitive topics.
+
 ## Config that ships with the prompt
 
 When you hand a finished prompt to `agent-implementor` (or write the `manage_skills` call yourself), specify:
 
 - **name** and **slashCommand** (unique per agent, lowercase-hyphens).
-- **triggerType**: `SCHEDULE` (cron `triggerValue` + `timezone`; the platform accepts exactly four shapes, minutes on :00/:15/:30/:45 — daily `0 8 * * *`, weekdays `0 8 * * 1-5`, weekly `0 8 * * 1`, every 4 hours `0 */4 * * *`; a monthly or twice-weekly cron is rejected), `EVENT` (one of the platform's closed list of seven event types — see `docs/INSTRUCTION_ARCHITECTURE.md`), or `NEITHER` (on-demand).
+- **triggerType**: `SCHEDULE` (cron `triggerValue` + `timezone`; the platform accepts exactly four shapes, minutes on :00/:15/:30/:45 — daily `0 8 * * *`, weekdays `0 8 * * 1-5`, weekly `0 8 * * 1`, every 4 hours `0 */4 * * *` (Executive and Super only); a monthly or twice-weekly cron is rejected), `EVENT` (one of the platform's closed list of seven event types — see `docs/INSTRUCTION_ARCHITECTURE.md`), or `NEITHER` (on-demand).
 - **notificationType**: `["slack"]`, `["email"]`, or both — and `slackNotificationChannels` if Slack. **Always set it explicitly on a scheduled or event skill: with no notification target the skill runs and delivers nowhere** (the run records `notification: null`). Choose the channel to match the output (long analysis → email; a short nudge → Slack), and set Slack explicitly when that's where the person actually works.
 - **scope**: a per-agent skill (`targetScope: "agent"` + the teammate's `targetAssistantId`) when the prompt is tailored to one person; a workspace-library skill (`targetScope: "workspace_library"`) when a whole team needs the same capability. A **Managed** library skill encodes as `deploymentMode: "SHARED"`, a **Template** as `"TEMPLATE"`; the API never accepts `"MANAGED"` as a value.
-- Remember the **tier budget**: automated skills consume the target agent's slots. One excellent scheduled skill beats three thin ones.
+- **attachments** (`attachmentChanges`): the Pages or Folders the skill reads at run time (≤10). **includedSkills**: other skills on the same agent whose instructions it should fold in (≤5), e.g. a shared Email Writing voice.
+- Remember the **tier budget**: automated skills consume the target agent's slots (Turbo 2, Professional 5, Executive/Super 10; every 4 hours needs Executive+). One excellent scheduled skill beats three thin ones. And the tier gates the **tools** the skill can call — a dashboard-building skill needs Professional+, campaign creation Executive+, prospecting Super.
 
 A morning skill defaults well at `0 8 * * 1-5` with the person's timezone. Crons are local to the `timezone` you set, so `0 8` means 8am *their* time — never write a UTC-offset cron.

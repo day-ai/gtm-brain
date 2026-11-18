@@ -12,7 +12,7 @@ metadata:
 
 # /build-app
 
-Sometimes an outcome can't be delivered by an agent skill or a Page — it needs a real interface, an external automation, or a mashup with another system. A deal-room dashboard. A meeting-prep mobile view. A cron job that pushes pipeline data somewhere else. That's what the **Day AI SDK** is for, and this skill is the bridge to it.
+Sometimes an outcome can't be delivered by an agent skill or a Page — it needs a real interface, an external automation, or a mashup with another system. A deal-room app for customers. A meeting-prep mobile view. A cron job that pushes pipeline data somewhere else. That's what the **Day AI SDK** is for, and this skill is the bridge to it.
 
 $ARGUMENTS
 
@@ -37,7 +37,7 @@ It offers a lot:
 | `examples/mobile/` | Mobile app with OAuth deep linking | React Native, Expo |
 | `examples/vercel-weather-cron/` | Automated daily workflow → Day AI notification | Next.js, Vercel Cron |
 
-One caveat to carry: **which MCP tools the SDK can call depends on the authorizing user's assistant tier** (free → turbo → professional → executive, cumulative). Check the README's tier table before designing around a tool.
+One caveat to carry: **which MCP tools the SDK can call depends on the authorizing user's agent tier** (Free → Turbo → Professional → Executive → Super, cumulative; gates in `docs/PRODUCT_FACTS.md`). Check the SDK README's tier table too, and trust the live tool list over either.
 
 ## How to work with it
 
@@ -60,5 +60,6 @@ Don't replicate the SDK's documentation here — clone it and work inside it. Th
 
 - **Reach for the SDK** when the outcome needs a UI, runs outside Day AI (external cron, another system's webhook), or mashes Day AI data up with something the workspace can't see.
 - **Don't reach for it** when an agent skill, a Page, or a view already delivers the outcome — those are cheaper to build, live where the team already works, and need no hosting or credentials. The SDK is the escape hatch, not the default.
+- **Dashboards especially:** a Day AI Page with live widgets (`create_widget` / `create_table_widget`, the dashboard grid, report queries with `asOf` and `.changes`) already gives the team a pipeline dashboard that recomputes on every load (`docs/playbooks/build-a-dashboard.md`). Build an SDK dashboard only when it must live outside Day AI or blend in data Day AI can't see.
 
 If you build something the team will rely on, record it: where it lives, what it does, and which initiative/outcome it serves — a line in the relevant initiative file or `planning/OUTCOMES.md` is enough.

@@ -39,11 +39,13 @@ Start from the playbook in `.claude/agents/data-analyst.md` (Dimension 2), then 
 
 - **CRM Data Nerd** — keeps opportunities, notes, and context objects correct and complete from what actually happened in conversations. Works on Day AI or alongside HubSpot/Salesforce.
 - **Coach** — deep on every open opportunity; finds patterns, blockers, and what's working on other reps' deals; fluent in *this company's* process; preps before meetings, drafts unblock/follow-up emails.
-- **Relationship Radar · Pipeline/Forecast Analyst · Follow-Up Drafter · Market & Account Watch · Chief of Staff · Playbook Editor** — match to the role.
+- **Relationship Radar · Pipeline/Forecast Analyst · Follow-Up Drafter · Market & Account Watch · Chief of Staff · Playbook Editor · Campaign Operator · Prospector** — match to the role.
+
+**Pick the tier from the job, not the other way round.** Walk `docs/playbooks/choose-a-tier.md`: list what the agent must do, read off the floor (live dashboards → Professional; creating campaigns → Executive; prospecting or owning AI-populated properties → Super, annual-only), count slots (one per automated skill, two per campaign), and justify anything above the floor.
 
 The archetype is the skeleton. The flesh — the company, the person, the pipeline names, the real accounts — is what makes the agent worth having.
 
-**Check the flywheel.** If the agent preps meetings (a Coach especially), look for the living guide pages its prep should read — workspace-shared Pages like a discovery guide (`search_objects`, then `read_page`; the pattern is in `.claude/agents/data-analyst.md`). If a guide exists, the prep skill references it by title and objectId. If none exists, or nobody owns updating it, say so in the spec's **Notes**: the operator likely wants the producer side — an Playbook Editor skill that reviews calls against the guide — designed next, or the flywheel never spins.
+**Check the flywheel.** If the agent preps meetings (a Coach especially), look for the living guide pages its prep should read — workspace-shared Pages like a discovery guide (`search_objects`, then `read_page`; the pattern is in `.claude/agents/data-analyst.md`). If a guide exists, the prep skill **attaches** it (`attachmentChanges`) and names it in the prompt. If none exists, or nobody owns updating it, say so in the spec's **Notes**: the operator likely wants the producer side — a Playbook Editor skill that reviews calls against the guide — designed next, or the flywheel never spins.
 
 ## Step 3 — Write the identity (this is the agent's definition)
 
@@ -56,7 +58,7 @@ The identity fields are the agent's operating brief — the description especial
 
 ## Step 4 — Design the starter skills
 
-1–3 skills that make the agent real on day one. Read `.claude/skills/write-skill/SKILL.md` and write each prompt to that bar. Favor **push-mode** skills (scheduled or event-triggered, delivered to Slack/email) — an agent whose skills only run when asked isn't automation. For each skill: name, slash command, trigger (with cadence/event + timezone), channel, and the full prompt. Respect the target agent's **tier budget** for automated skills — propose the highest-value one or two, not a pile of thin ones.
+1–3 skills that make the agent real on day one. First check Day AI's library templates (`docs/playbooks/deploy-library-skills.md`): if Meeting Prep, Deal Follow-Up, Pipeline Review, or another template already does a starter skill's job, specify the template instead of a new prompt. Read `.claude/skills/write-skill/SKILL.md` and write each custom prompt to that bar. Favor **push-mode** skills (scheduled or event-triggered, delivered to Slack/email) — an agent whose skills only run when asked isn't automation. For each skill: name, slash command, trigger (with cadence/event + timezone), channel, and the full prompt. Respect the target agent's **tier budget** for automated skills — propose the highest-value one or two, not a pile of thin ones.
 
 ## Step 5 — Write the spec
 
@@ -65,11 +67,11 @@ Save a deployment-ready spec to `rollouts/<YYYY-MM-DD>-<person>-<archetype>/AGEN
 ```markdown
 # Agent Spec — {Agent name} for {Person} ({their role}) at {Company}
 
-**Archetype:** {Coach | CRM Data Nerd | …}   **Owner:** {person email}   **Tier needed:** {…}
+**Archetype:** {Coach | CRM Data Nerd | …}   **Owner:** {person email}   **Tier needed:** {Turbo | Professional | Executive | Super} — {the gate or slot count that sets the floor}
 
 ## Value vs. cost
 - **Value:** {the job slice this agent delegates and the work product it produces proactively — the concrete reason it's worth running}
-- **Cost:** {a seat for {Person} (new or existing?); the tier needed to support {N} automated skills; whether that's a tier bump — priced per CLAUDE.md's pricing rules: workspace billing when connected, https://day.ai/pricing otherwise, never from memory}
+- **Cost:** {a new agent for {Person} at {tier}, or a tier change on an existing agent; {N} automated skills (+2 per campaign) against the tier's slots; why not the tier below — priced per CLAUDE.md's pricing rules: workspace billing when connected, https://day.ai/pricing otherwise, never from memory; Super is annual-only}
 - **The case:** {one line — why the value clearly clears the cost. If it doesn't, this agent shouldn't be designed; say so and stop.}
 
 ## Identity
@@ -88,6 +90,7 @@ Save a deployment-ready spec to `rollouts/<YYYY-MM-DD>-<person>-<archetype>/AGEN
 
 ## Notes
 - {what this agent does NOT do — the boundary with the person's other agents}
+- {further reading: the one Day AI guide that matches this agent's job, from `docs/GUIDES.md` (e.g. keep-pipeline-accurate for a CRM Data Nerd, ai-meeting-prep for a Coach), linked, never pasted}
 - {process assumptions to confirm with the operator; data the skills depend on}
 ```
 
@@ -102,7 +105,7 @@ Spec saved to rollouts/{date}-{person}-{archetype}/AGENT.md
 - Review the description and skill prompts above — this is what {Person} will be working with daily.
 - `/implement {person}` → deploy on approval: the operator creates the agent in the Day AI UI from this
   spec's creation card (Settings → Workspace → Agents → New agent; Admin/Owner), then the implementor
-  applies identity + skills. Costs a seat and a tier that supports {N} automated skills (see **Value
+  applies identity + skills. Costs one agent at {tier}, which supports {N} automated skills (see **Value
   vs. cost** above); the implementor surfaces billing (`navigate_to_billing`) before the create so the
   cost is never a surprise.
 ```

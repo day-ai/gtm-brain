@@ -31,7 +31,7 @@
 ### {Full name} — {real role}
 - **Email:** {email}
 - **Workspace role:** {Owner / Admin / Member}
-- **Agent:** {agent name, or "none — no seat yet"}
+- **Agent:** {agent name and tier, or "none — no agent yet"}
 - **Owns:** {what they're responsible for — ties to OUTCOMES.md}
 - **Activation owner:** {who is accountable for this person actually using their agent — required pre-signup}
 - **How to work with them:** {one line — comms style, what to route to them, what not to}
