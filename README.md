@@ -248,6 +248,7 @@ gtm-brain/
 │   ├── INSTRUCTION_ARCHITECTURE.md ← where every rule lives: workspace → agent → skill → prompt
 │   ├── CONNECTORS.md         ← what Day AI connects to and imports from
 │   ├── PRODUCT_FACTS.md      ← tiers, slots, campaigns, dashboards, library, MCP surface: what's gated on what
+│   ├── GUIDES.md             ← use case → day.ai/guides link, for best practice the brain points to rather than copies
 │   └── playbooks/            ← choose a tier · build a live dashboard · set up a campaign · deploy library skills
 └── rollouts/
     ├── preflight/            ← the deployable payload built pre-signup (see its README)

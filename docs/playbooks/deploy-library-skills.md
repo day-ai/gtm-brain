@@ -55,6 +55,10 @@ Professional.
 - **Verify** from the agent's skill list afterwards, and from `get_history`
   once it has had time to fire. "Deployed" isn't "delivering."
 
+## Guides
+
+For teams new to library skills, link [Deploy a Claude Skill to Every Rep](https://day.ai/guides/deploy-a-claude-skill-to-your-team) (Managed vs Template, picking agents). For checking skills before a wider rollout, link [Evaluate GTM AI Agents Before Rollout](https://day.ai/guides/grade-your-ai-agent-setup).
+
 ## Maintaining it
 
 - Edit Managed skills at the **source** (the library record), never the

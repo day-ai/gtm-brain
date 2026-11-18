@@ -82,7 +82,7 @@ At apply time, every marker is resolved against the live graph **before** the sk
 
 **ENABLEMENT/:** the change-management half of the payload, for humans not MCP:
 
-- `rollout-guide-<persona>.md`: per-persona, what your agent does, your first week, how to engage with the guides/emails/call structures it produces, how to set up your connectors, how to adjust your own skills.
+- `rollout-guide-<persona>.md`: per-persona; link at most one or two Day AI guides from `docs/GUIDES.md` for the person's main use case instead of re-explaining it; covers what your agent does, your first week, how to engage with the guides/emails/call structures it produces, how to set up your connectors, how to adjust your own skills.
 - `privacy-setup-<person>.md`: generated from `workspace/PRIVACY.md`, the exact sharing settings each user applies in their first session (these cannot be pushed via MCP; the activation owner verifies completion).
 - `first-24-hours.md`: what to expect. Email sync takes hours before skills have anything to read; workspace context generates overnight. Set the expectation so the quiet start reads as normal, not broken.
 

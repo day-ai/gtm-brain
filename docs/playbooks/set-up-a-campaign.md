@@ -81,6 +81,10 @@ Build a small dashboard page per the dashboard playbook:
 - a table of members awaiting a next touch.
 Attach the page to the owner's weekly review skill, if there is one.
 
+## Guides
+
+For the best-practice case and how campaigns run end to end, link [A CRM With AI That Runs Outbound Email Sequences](https://day.ai/guides/ai-crm-with-outbound-email-sequences) rather than restating it. This playbook stays the source for the decisions and limits.
+
 ## Cost line (for the preview)
 
 Show:

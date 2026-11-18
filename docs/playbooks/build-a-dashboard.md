@@ -78,6 +78,10 @@ skill on the pipeline owner's agent attaches the page (`attachmentChanges`)
 and writes the narrative: "three deals slipped, here's why." The skill reads
 the page; the page never needs the skill.
 
+## Guides
+
+Day AI has no dedicated dashboard guide yet (check `../GUIDES.md`). For the pipeline-hygiene practice that makes a dashboard trustworthy, link [Keep Your Pipeline Accurate](https://day.ai/guides/keep-pipeline-accurate).
+
 ## When it isn't a Page
 
 Reach for `/build-app` (the SDK) only when the view must live outside Day

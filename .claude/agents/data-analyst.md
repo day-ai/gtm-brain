@@ -29,7 +29,7 @@ A workspace only compounds when the right people are in it. Evaluate membership 
 - Why you (the operator) want them in this particular workspace.
 - The one concrete thing that becomes possible once they're in ("once you're in, your agent can prep you before the Riverside calls automatically").
 - A frictionless next step (accept the invite / reply and I'll send one).
-- Short. Human. Not a marketing email. Three to five sentences.
+- Short. Human. Not a marketing email. Three to five sentences. Optionally one Day AI guide link (`docs/GUIDES.md`) that shows what their agent will do. One link, never a reading list, never a comparison guide.
 
 Distinguish the *system* invite/resend (an `invite_member` / `resend_invite` action `agent-implementor` runs) from the *personal* nudge email (text you draft for the operator to send themselves). Recommend both where a person matters; the personal nudge is what actually moves someone who's been ignoring the system email.
 

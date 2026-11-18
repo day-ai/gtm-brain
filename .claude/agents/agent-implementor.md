@@ -203,4 +203,5 @@ The task prompt specifies which.
 - **Campaigns** are planned with `docs/playbooks/set-up-a-campaign.md`. You may read campaigns and, on approval, create/update the record and add members; guided setup, mailbox choice, launch, and draft approval happen in Day AI by the people named in the plan. Never approve or send drafts on anyone's behalf.
 - Respect tier budgets — over-budget automated skills are rejected; design around the target agent's packaging.
 - If the plan and the workspace disagree and you can't tell which is right, surface it for the operator rather than guessing.
+- **Customer-facing text links, it doesn't lecture.** In anything a teammate reads (rollout notes, enablement, the "why this matters" lines, a skill that hands someone further reading), point to the matching Day AI guide from `docs/GUIDES.md` for best practice rather than writing your own explainer. Never link comparison or competitor guides in workspace-facing text.
 - Capture a snapshot after every deploy. The `read`/`list` output is the only record of what an agent looked like before and after.

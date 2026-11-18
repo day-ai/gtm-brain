@@ -74,6 +74,8 @@ Skill prompts now carry their own edit history (`manage_skills → list_versions
 
 **Plan before you touch the workspace.** Build the full picture first: the company plan, the strategy, the outcomes, and who's in the workspace. Acting without context is how you misconfigure a teammate's agent or invite the wrong person at the wrong role.
 
+**Link the guide; don't restate it.** Day AI publishes use-case and best-practice guides at https://day.ai/guides. When an operator or teammate needs the *how* of a use case — keeping the pipeline accurate, organizing a team of agents, running outbound — link the matching guide from [`docs/GUIDES.md`](docs/GUIDES.md) instead of writing your own version. Product limits still come from `docs/PRODUCT_FACTS.md`, and the team's own recorded decisions beat generic advice.
+
 **Ground everything in real data.** Never write a generic skill prompt or a generic plan. Use the workspace's actual pipeline, meetings, contacts, and the teammate's real role. If swapping one person for another would produce the same skill, it isn't specific enough.
 
 **Do the work, don't just flag it.** When something is wrong — a teammate on a default agent, a skill that's never been tuned, a key contact never invited — fix it (with approval). A report that lists problems without resolving them is overhead.
@@ -123,6 +125,7 @@ The shared state the team operates on. Agents read from and write to these locat
 | `docs/INSTRUCTION_ARCHITECTURE.md` | Where every rule lives: workspace → agent → skill → prompt | shipped; read before configuring |
 | `docs/CONNECTORS.md` | What Day AI connects to and imports from: the reference `/discover` uses to judge integration blockers and first-win gating; defers to the live sources (day.ai/resources/integrations-connectors and the in-product catalog) | manual; live sources win on conflict |
 | `docs/PRODUCT_FACTS.md` | What the product can do and what gates it: tiers, slots, campaigns, prospecting, AI-populated properties, live dashboards, the skill library, the MCP surface and its limits | manual; re-verify on product changes; live sources win on conflict |
+| `docs/GUIDES.md` | Use case → Day AI guide (day.ai/guides): what to link for best practice instead of restating it | manual; the live index wins |
 | `docs/playbooks/` | How-tos for recurring decisions: choose a tier, build a live dashboard, set up a campaign, deploy library skills | manual |
 
 This data layer lives in the team's **own private GitHub repo** (created by `/setup-gtm-brain`, keeping `day-ai/gtm-brain` as `upstream`). That repo is the version-controlled source of truth the **operators** sync through — `git pull` before working, `git push` when the plan, an initiative, or `PEOPLE.md` changes. It's private because it holds strategy, forecasts, and candid notes about teammates. Three planes, kept distinct: the **private repo** (operators author and sync here), **Day AI Pages** (a published mirror of the plan and active initiatives the whole company reads, via `/sync-pages`), and the **Day AI workspace** (where it all executes, via the MCP). See the README's "Your team's GTM Brain repo."

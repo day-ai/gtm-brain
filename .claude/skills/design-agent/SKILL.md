@@ -90,6 +90,7 @@ Save a deployment-ready spec to `rollouts/<YYYY-MM-DD>-<person>-<archetype>/AGEN
 
 ## Notes
 - {what this agent does NOT do — the boundary with the person's other agents}
+- {further reading: the one Day AI guide that matches this agent's job, from `docs/GUIDES.md` (e.g. keep-pipeline-accurate for a CRM Data Nerd, ai-meeting-prep for a Coach), linked, never pasted}
 - {process assumptions to confirm with the operator; data the skills depend on}
 ```
 

@@ -66,6 +66,10 @@ schedule. Campaigns the agent works count two slots each, and below
 Professional it can't work them at all. List what would turn off, in the
 recommendation.
 
+## Guides
+
+When the operator is comparing Day AI's bill to a per-seat tool, link [Per-Agent vs Per-Seat CRM Pricing](https://day.ai/guides/per-agent-vs-per-seat-pricing). Current figures still come from https://day.ai/pricing. There's no tier-choice guide yet.
+
 ## Never
 
 - Recommend the **Partner** tier. It's staff-only.

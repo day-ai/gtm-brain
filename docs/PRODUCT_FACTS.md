@@ -14,6 +14,9 @@
 > or has changed shape, trust the tool list, say so, and update this file.
 > Never assert a figure from this file that a live source contradicts.
 
+For *how* to run a use case well (best practice, not limits), link the
+matching Day AI guide from [`GUIDES.md`](GUIDES.md).
+
 **Last verified:** 2026-11-18, against the Day AI product source and
 https://day.ai/pricing.
 
