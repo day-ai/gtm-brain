@@ -8,9 +8,11 @@ Everything a workspace needs at launch, authored as files before the workspace e
 
 ```
 rollouts/preflight/
-  WORKSPACE_INSTRUCTION.md     the one workspace-wide instruction, drafted to the 3000-char cap
+  WORKSPACE_INSTRUCTION.md     the one workspace-wide instruction, drafted to a ~3000-char budget (platform cap 7500)
   CUSTOM_PROPERTIES.json       property definitions
   PAGES/                       company/GTM knowledge pages (one .html or .md per page)
+  DASHBOARDS/<slug>.md         live dashboard specs: the questions, widget definitions, layout, sharing
+  CAMPAIGNS/<slug>.md          planned campaigns: goal, audience, owner + agents, mailbox, sequence, send-limit math
   INVITES.md                   roster + roles + activation owners
   AGENTS/<person>-<archetype>/
     AGENT.md                   the /design-agent spec (identity, value-vs-cost, starter skills)
@@ -22,18 +24,22 @@ rollouts/preflight/
 
 ## Formats
 
-**WORKSPACE_INSTRUCTION.md:** the full proposed text, at or under 3000 characters (count it; the cap is hard). At apply time the implementor reads the live record first and merges; on a fresh workspace the merge is trivial, but the discipline is the same because `update` replaces the entire text.
+**WORKSPACE_INSTRUCTION.md:** the full proposed text, at or under ~3000 characters (count it). The platform's hard cap is 7500; the lower budget is the brain's discipline, because every agent carries this text on every turn. At apply time the implementor reads the live record first and merges; on a fresh workspace the merge is trivial, but the discipline is the same because `update` replaces the entire text.
 
-**CUSTOM_PROPERTIES.json:** an array of definitions matching `create_or_update_custom_property`: `name`, `description`, `objectTypeId`, `propertyTypeId`, `options` (for enums), `aiManaged`, `useWeb`. AI-managed properties carry their populating prompt in `description`, written null-case first (what the agent should conclude when the evidence isn't there). `aiManaged` and `useWeb` must be `false` on person (`native_contact`) properties; background enrichment is organization/opportunity-only.
+**CUSTOM_PROPERTIES.json:** an array of definitions matching `create_or_update_custom_property`: `name`, `description`, `objectTypeId`, `propertyTypeId`, `options` (for enums), `aiManaged`, `useWeb`. AI-managed properties carry their populating prompt in `description`, written null-case first (what the agent should conclude when the evidence isn't there). `aiManaged` and `useWeb` must be `false` on person (`native_contact`) properties; background enrichment is organization/opportunity-only. **AI population is gated to Super agents:** a property with `aiManaged` or `useWeb` true needs an owning Super agent (`ownerAgent`: which spec in `AGENTS/`, applied as `assistantId`), max 20 per agent, and Super is annual-only. A property with no Super owner ships with both flags `false` and a note on which skill keeps it current. At apply time, plain properties go in at step 4; AI-populated ones wait until their Super owner exists (after step 7).
 
 **PAGES/:** each file is one page. First line is the title; body is the content. Content comes from two places: pages the harness authors (the plan, the fleet design) and **existing docs the operator explicitly approved for conversion at Gate 2** (their sales playbook, process docs); nothing from `discovery/inbox/` becomes a page without that per-doc approval. Converted pages carry a provenance comment naming the source doc, are freshened against what discovery learned rather than copied blind, and never include content the operator wouldn't want workspace-visible. Pages that anchor a living-guide flywheel name their SME producer in a comment at the top. Include the visuals: the agent hierarchy and the key workflows with their owners, as SVG or Mermaid, so the team can see the design, not just read it.
 
 **INVITES.md:** a table: name, email, role (Owner/Admin/Member), why they belong (plan reference), activation owner. This is the input to `invite_member`; every row also appears in `workspace/PEOPLE.md`.
 
+**DASHBOARDS/:** one file per live dashboard page, following `docs/playbooks/build-a-dashboard.md`: who reads it and what they decide, the 4–6 questions, each widget as source + measure + grouping (or report query), the layout, and the sharing (private, a shared folder, or `publishedForUserAt`). Field and stage ids are `GROUND-AFTER-CONNECT`; widgets are created at apply time against the live schema and embedded with their full recipe. Needs a Professional-or-higher agent to build.
+
+**CAMPAIGNS/:** one file per planned campaign, following `docs/playbooks/set-up-a-campaign.md`. Its decisions are recorded here; the campaign record can be created over the MCP at apply time, but guided setup, mailbox choice, launch, and draft approval happen in Day AI by the named owner.
+
 **AGENTS/:** one folder per agent. `AGENT.md` is the standard `/design-agent` spec. `CREATION_CARD.md` exists because **agents cannot be created via MCP** (`assistant_settings` has no create mode): creating an agent is a billing-gated action performed in the Day AI UI, and the harness applies the identity and skills afterward. The card is a standalone page its holder can follow without the harness, so include all of it:
 
 - Agent name, title, photo suggestion, and whose agent it is.
-- The tier (with the value-vs-cost line from `AGENT.md`; priced per CLAUDE.md's pricing rules: current figures from https://day.ai/pricing, negotiated or annual terms flagged "confirm with Day AI").
+- The tier — Turbo, Professional, Executive, or Super — with the gate that sets its floor and the value-vs-cost line from `AGENT.md` (per `docs/playbooks/choose-a-tier.md`; priced per CLAUDE.md's pricing rules: current figures from https://day.ai/pricing, negotiated or annual terms flagged "confirm with Day AI"). A **Super** agent is annual-only and set up through Day AI sales; the card says so and names who is talking to sales.
 - The creation steps, verbatim on every card:
   1. In Day AI, open **Settings → Workspace → Agents**. The tab is locked unless you're an Admin or Owner.
   2. Click **New agent** (or open the member's row menu and choose **Add agent to {their name}**) and follow the wizard: select the tier named on this card, then the avatar and name from this card.
@@ -53,6 +59,9 @@ trigger: SCHEDULE | EVENT | NEITHER
 trigger_value: {cron + timezone, or event types}
 notification: slack | email
 deployment_mode: MANAGED | TEMPLATE      # workspace_library only; MANAGED applies as deploymentMode "SHARED"
+library_template: {Day AI template slug}  # optional: use a Day AI template instead of a custom prompt (added in Day AI, not via MCP)
+attachments: [{page or folder title}]    # optional: Pages/Folders the skill reads at run time
+slots: {1 if SCHEDULE/EVENT, else 0}
 priority: first-win | standard
 ---
 
@@ -84,12 +93,13 @@ At apply time, every marker is resolved against the live graph **before** the sk
 1. Verify operator role (`list_configuration`)
 2. Review the privacy guidance with the operator (`workspace/PRIVACY.md` + `ENABLEMENT/` instructions)
 3. Workspace instruction (merge, then write)
-4. Custom properties
+4. Custom properties (plain fields; AI-populated ones after their Super owner exists, step 8)
 5. Pages and folders
 6. Invites
 7. **Manual step:** a workspace Owner creates each agent from its creation card (UI-only billing action; see AGENTS/ above)
 8. Agent identities (`assistant_settings update`)
-9. Skills (`priority: first-win` first, each with its GROUND-AFTER-CONNECT markers resolved before enabling)
+9. Skills (`priority: first-win` first, each with its GROUND-AFTER-CONNECT markers resolved before enabling; Day AI library templates as a checklist for the operator)
 10. Imports
+11. Dashboards (widgets need real data to be worth reviewing, so they follow the import) and campaign records, each previewed; campaign launch stays a human step in Day AI
 
 Slices marked `priority: first-win` deploy first within every step they appear in, so the pilot users see grounded output in their first session.

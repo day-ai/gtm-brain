@@ -34,7 +34,7 @@ This is what /start reads to know what to kick off. Reference the skills by name
 /design-agent, /audit, /implement, /sync-pages.>
 
 ## Cost
-<What pursuing this consumes — seats, tier budget, people's time. Make the value-vs-cost case explicit.>
+<What pursuing this consumes — agents and their tiers, automated-skill slots, people's time. Make the value-vs-cost case explicit.>
 
 ## Log
 <!-- append-only, date-stamped, newest at the bottom -->

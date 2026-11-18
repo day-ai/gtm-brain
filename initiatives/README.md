@@ -60,7 +60,7 @@ The body **describes the initiative and carries all the relevant context — or 
 - **Context** — everything needed to act, or pointers to where it lives. Link Day AI objects (Pages, meetings, opportunities, contacts) by id/URL rather than copying them; this file should stay a durable index, not a stale snapshot.
 - **What success looks like** — prose around the `success_criteria`, and how each will be checked.
 - **Plan of attack** — the agents, skills, invites, and outcomes this initiative is realized through, and roughly the order. This is what `/start` reads to know what to kick off.
-- **Cost** — what pursuing it consumes (seats, tier budget, people's time), so the value-vs-cost case is explicit. See the cost principle in [`../CLAUDE.md`](../CLAUDE.md).
+- **Cost** — what pursuing it consumes (agents and their tiers, automated-skill slots, people's time), so the value-vs-cost case is explicit. See the cost principle in [`../CLAUDE.md`](../CLAUDE.md).
 - **Log** — append-only notes as the initiative progresses (date-stamped). Useful for `/start` to see where things stand.
 
 Copy [`TEMPLATE.md`](./TEMPLATE.md) to start a new one.
