@@ -246,7 +246,8 @@ gtm-brain/
 │   └── PRIVACY.md            ← how privacy settings work + recommended setup per persona
 ├── docs/
 │   ├── INSTRUCTION_ARCHITECTURE.md ← where every rule lives: workspace → agent → skill → prompt
-│   └── CONNECTORS.md         ← what Day AI connects to and imports from
+│   ├── CONNECTORS.md         ← what Day AI connects to and imports from
+│   └── EMAIL_SHARING_RULES.md ← which email sharing rule wins (labels, address, domain)
 └── rollouts/
     ├── preflight/            ← the deployable payload built pre-signup (see its README)
     ├── health/               ← binding manifest + brain-health reports
