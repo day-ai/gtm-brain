@@ -27,7 +27,7 @@ Scan the repo's markdown (planning docs, PEOPLE.md, TECH_STACK.md, PRIVACY.md, i
 
 - **People bindings:** a named owner, DRI, SME producer, or activation owner.
 - **Workspace-object bindings:** a page, folder, property, pipeline, or stage a skill or doc references by name or id.
-- **Skill/agent bindings:** which skills the brain believes exist on which agents, with which triggers.
+- **Skill/agent bindings:** which skills the brain believes exist on which agents, with which triggers. A Chief of Staff's routing table is one binding per row (agent, slash command); a deleted or renamed skill there silently misroutes work.
 - **Capability bindings:** MCP tools the harness's own procedures depend on.
 
 Write the manifest to `rollouts/health/manifest.md` as `file:line → binding → what depends on it`. The manifest is what makes the rest of the pass cheap and precise, and other skills may consult it ("does anything reference this page before I move it?").

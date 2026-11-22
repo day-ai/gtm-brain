@@ -18,7 +18,8 @@ For *how* to run a use case well (best practice, not limits), link the
 matching Day AI guide from [`GUIDES.md`](GUIDES.md).
 
 **Last verified:** 2026-11-18, against the Day AI product source and
-https://day.ai/pricing.
+https://day.ai/pricing. Delegation and cross-agent reads were verified
+2026-11-22.
 
 ---
 
@@ -207,7 +208,83 @@ See [`playbooks/build-a-dashboard.md`](playbooks/build-a-dashboard.md).
   `get_version` read a skill's edit history, and restoring an old version is
   `get_version` and then `update`.
 - **Run history:** `get_history` returns run digests with the `notification`
-  delivery block, and can filter to runs that called a given tool.
+  delivery block, and can filter to runs that called a given tool
+  (`calledTool`). It pages newest first, up to 20 runs a page, with no date
+  filter. Message previews are truncated (about 500 characters of text), so
+  a skill that will be read this way should put its summary at the top of
+  its final message. The owner of an agent, or an Admin/Owner, can read it.
+
+## Delegation: a team of agents
+
+One user can own several agents, and they can hand work to each other. This
+is what the Chief of Staff pattern runs on
+([`playbooks/run-a-team-of-agents.md`](playbooks/run-a-team-of-agents.md)).
+Verified 2026-11-22.
+
+- **`delegate_to_agent`** hands a task to another agent. Inputs:
+  - the target `assistantId`, a `title` (under 50 characters), a
+    self-contained `prompt`, and a `model`;
+  - optional `objects` (up to 8 records, attached to the delegated chat as
+    context), `skillId`, `editsObjects`, `notifyUser` (`email`, `slack`), and
+    `allowSkillNotifications` (Slack channels only, never a DM or email).
+- **Same owner only.** An agent can delegate only to agents owned by the same
+  user, and the Admin and Owner roles don't change that. Handing work to a
+  teammate's agent is refused, because that agent runs with its own owner's
+  access. An agent may delegate to itself, which is how it splits up long,
+  repetitive work.
+- **One level deep.** Only a top-level run can delegate: the user's chat, a
+  scheduled or event skill run, or a campaign run. A delegated run cannot
+  delegate again, to another agent or to itself. The coordinator does all the
+  fanning out, and specialists don't hand work to each other mid-task.
+- **Asynchronous.** The call returns immediately, and the result posts back
+  into the asking chat as a new message. Each delegated run has roughly an
+  hour. A scheduled skill that delegates gets a resume turn when results
+  arrive, and keeps its permission to notify. No cap on parallel delegations
+  is enforced.
+- **What the receiving agent sees:** only the prompt, the attached objects,
+  the user's standing memory, and its own description and skills. It doesn't
+  see the asking conversation and keeps no memory between delegations. A
+  follow-up delegation restates the full context.
+- **`skillId`** runs the task in one of the target agent's own skills. The
+  skill must exist on that agent and be enabled; to use another agent's
+  skill, delegate to that agent. The agent roster in each agent's context
+  lists the user's own agents (up to 20, and up to 8 skills each) as
+  `/slash-command (skillId: …)`. Past that, `assistant_settings → list`
+  gives the full set.
+- **Not available:**
+  - over the MCP (so this harness configures delegation but can't trigger
+    it);
+  - on a thread that started in Slack (the agent does the work itself);
+  - on Free.
+
+  Turbo and above have it.
+- **Follow-up tools:**
+  - `check_delegation` reads status and the result. The outcome is
+    `completed`, `needs_input`, `cancelled`, `dismissed`, or `timeout`.
+  - `respond_to_delegation` answers a task that paused on questions (up to
+    3 rounds).
+  - `cancel_delegation` stops a task. Work already done is not undone.
+- **The user can see it.** Each handoff is tracked as an action assigned to
+  the agent doing the work, and the delegated chat stays readable.
+- **Changing another agent's skill is not a delegation.** Feedback on how an
+  agent works becomes a targeted `manage_skills` edit of that agent's skill.
+  That edit is allowed when the user owns the agent; the owner gets an in-app
+  notice when someone else edits it. Never ask the other agent to "update
+  yourself."
+- **Reading across the user's own agents:**
+  - **Pages** are checked against the user, not the agent, so an agent can
+    read pages its owner's other agents created, without sharing them.
+    Sharing (a `shareWithWorkspace` folder or `publishedForUserAt`) is only
+    needed for teammates.
+  - **Skill history:** `manage_skills → get_history` with `targetAssistantId`
+    works on any agent the user owns, with no Admin role needed.
+  - **Chats:** `get_thread_context` reads a chat the user owns, such as the
+    delegated chat (`childThreadId` from `check_delegation`).
+- **Notifications from a skill go only to its owner** (email or Slack DM) or
+  to configured Slack channels (`slackNotificationChannels`). The one
+  exception is a Slack DM to a colleague. The agent's owner picks colleagues
+  in the skill editor's Slack settings, and both people need linked Slack
+  accounts; it can't be set over a tool.
 
 ## The skill library
 
@@ -282,6 +359,8 @@ Day AI):
   changed over the MCP either.
 - **Connect or list MCP connectors.** That's chat or the UI only.
 - **Edit workspace rules.**
+- **Delegate work between agents.** `delegate_to_agent` runs only inside
+  Day AI (chat and skill runs).
 - **Email customers directly.** Skills deliver to their owner;
   `send_notification_mcp` notifies the authorizing user (email or Slack DM)
   or posts to a Slack channel.

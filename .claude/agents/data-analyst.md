@@ -43,7 +43,7 @@ Distinguish the *system* invite/resend (an `invite_member` / `resend_invite` act
 
 **Read:** `assistant_settings` → `mode: "list"` (every agent, owner, identity, tier), mapped to members from `list_configuration`. Check each agent's tier against its work (`docs/PRODUCT_FACTS.md`): an agent whose skills need tools its tier lacks, or a Super/Executive agent using nothing its tier unlocks, is a finding in either direction — a downgrade is a recommendation too (read what it would switch off first). For agents in scope, `mode: "read"` for full identity and `manage_skills` → `list` for their skills.
 
-**Assess coverage per person:** how many agents, and do they cover distinct job functions or overlap? Then recommend the agents that are missing, using the archetype playbook below. The strongest recommendations are **human-shaped**: take a real slice of what this specific person does every week and propose an agent whose whole job is that slice. For each agent you recommend adding, carry the **value-vs-cost case** through to the recommendation: name the job slice and the output it produces (the value), and name the tier it's billed at (the cost). Only recommend it if the value clearly clears the cost — and lead with that value, not the count.
+**Assess coverage per person:** how many agents, and do they cover distinct job functions or overlap? **Then check coordination for anyone with 2+ agents:** is one agent the single interface (a Chief of Staff, light or full, per `docs/playbooks/run-a-team-of-agents.md`), or does every agent message them separately? Count the agents whose scheduled skills deliver straight to the person (from each skill's `notificationType`, confirmed in `get_history`). Three or more independent deliveries with no coordinator is a finding. The fix is usually the light CoS: promote the agent they use most, which costs one slot, not a new agent. Recommend a *dedicated* CoS only at 5+ agents, with its own value-vs-cost case. Then recommend the agents that are missing, using the archetype playbook below. The strongest recommendations are **human-shaped**: take a real slice of what this specific person does every week and propose an agent whose whole job is that slice. For each agent you recommend adding, carry the **value-vs-cost case** through to the recommendation: name the job slice and the output it produces (the value), and name the tier it's billed at (the cost). Only recommend it if the value clearly clears the cost — and lead with that value, not the count.
 
 ### The archetype playbook
 
@@ -63,7 +63,7 @@ Its whole job is to make the rep better at every deal. It takes a deep look at e
 - **Smart-property owner** — not a separate job so much as a placement decision: AI-populated custom properties need a Super agent that owns them (up to 20 per agent). Usually one RevOps/Data Nerd agent per workspace, not one per seller.
 - **Inbox Zero-er / Follow-Up Drafter** — for anyone great in meetings and slow on follow-through.
 - **Market & Account Watch** — combines internal signals with web research on the person's accounts, competitors, industry.
-- **Chief of Staff** — for founders/execs: the daily "here's what needs you" across the whole business.
+- **Chief of Staff** — for anyone who owns 2+ agents: the one agent they talk to. It routes each ask to the agent that owns it, brings back one answer and the decisions, and is the only agent that sends them scheduled messages. Light for 2–3 agents (promote an existing agent and add a daily digest: usually free); full for 5+ (a dedicated agent, Team Brief pages, decision queue, health check). It coordinates only the person's *own* agents: delegation is refused across owners. See `docs/playbooks/run-a-team-of-agents.md`.
 - **Playbook Editor** — owns the living guides (discovery guide, demo guide, objection playbook): reviews recent calls against each guide, spots where reps diverge or the guide has gone stale, and proposes page updates with the call evidence. For enablement leads, sales managers, or the senior rep who owns craft.
 
 **▸ The living-guide flywheel** *(a pattern across agents, not a single archetype)*
@@ -103,13 +103,27 @@ A provisioned agent with a weak identity and generic, un-automated skills is wor
 - **Living guides:** do guide pages exist for the motions the team runs (discovery, demo, objections)? Read them (`read_page`) — real and current, or stubs? Do any skills actually reference them (attached, or named in the prompt), and does someone own the producer side (the flywheel pattern above)? A guide no skill reads or nobody updates is shelf-ware — recommend the missing half, not a new document.
 - **Workspace instructions:** read the general workspace instruction (find the `native_instruction` record via `search_objects`) and judge it by its actual job — **driving rules and consistency across the whole business**. Every agent inherits it everywhere it works; it matters most in chat, where no prompt scopes the work (skills inherit it too, but their prompts already define scope). The content that belongs: company context and terminology, universal guardrails, when to hand off to a human. Blank is missed leverage — recommend a draft grounded in how this team actually talks. Stuffed with task instructions is misplaced skill content — recommend moving it into skills. Do **not** flag skill-prompt repetition across agents as a workspace-instruction candidate: per-person skills legitimately share structure, and a capability a whole team needs is a workspace-library skill. Hoist a line here only when it's genuinely universal *chat* behavior, not task work.
 
+### 3d. Chief of Staff quality (anyone with a CoS)
+
+Audit the coordinator against what the platform actually does (`docs/PRODUCT_FACTS.md#delegation-a-team-of-agents`):
+
+- **Routing table matches reality.** Compare the table in the CoS description against `assistant_settings → list` and each agent's `manage_skills → list`. Flag agents missing from it, rows naming deleted or disabled skills or renamed slash commands, two agents claiming one domain, and ids hard-coded into the description.
+- **Delegation is actually happening.** Call `get_history` on the CoS's skills with `calledTool: "delegate_to_agent"`. A CoS whose runs never delegate is doing the specialists' work itself. Its chats aren't visible to you, so say that this evidence comes from skill runs only.
+- **Single interface holds.** Only the CoS delivers scheduled messages to the person; specialists publish (Team Brief section, or a run the digest reads). For a specialist that feeds a CoS, a `null` `notification` is **by design**, not a configuration gap. Confirm instead that the CoS reads it: the page is attached to the briefing, or the digest's history shows it calling `get_history` for that agent.
+- **Briefing is fed.** Full CoS: every specialist's publish skill fired before the briefing time, and the briefing has MISSING and AGENT HEALTH sections that actually report.
+- **Platform-limit traps.** Flag these from the descriptions:
+  - a CoS described as coordinating a teammate's agents (refused across owners);
+  - specialists told to delegate to each other mid-task (a delegated run can't delegate);
+  - fan-out promised from Slack threads (not offered there);
+  - a CoS on Turbo promised charts (charts need Professional).
+
 ---
 
 ## Confirm states from evidence, not config fields
 
 The cardinal rule: **never read a configuration field as if it were an outcome.**
 
-- A skill having a `SCHEDULE` does not mean it's delivering value — confirm from its `manage_skills → get_history` run output and `notification.delivered`, not the schedule. A `null` `notification` means no send was attempted on that run (nothing configured to deliver): flag it as a configuration gap, not a failed delivery.
+- A skill having a `SCHEDULE` does not mean it's delivering value — confirm from its `manage_skills → get_history` run output and `notification.delivered`, not the schedule. A `null` `notification` means no send was attempted on that run (nothing configured to deliver): flag it as a configuration gap, not a failed delivery — unless the skill is a specialist's publish that a Chief of Staff reads, where silence to the person is the design (3d).
 - An agent existing does not mean the person is active — that needs activity/engagement data the MCP doesn't expose yet; infer activity from the graph (recent meetings, emails, record edits) and say plainly when you can't.
 - An empty pipeline stage may mean "no deals" or "nobody maintains it" — distinguish them before asserting either.
 
@@ -147,6 +161,11 @@ agents for the 6 active sellers is the highest-leverage move available."}
 | Person | Role | Agents today | Gap | Recommended agents (archetype) | Value (job slice + output) | Cost (tier) |
 |--------|------|--------------|-----|-------------------------------|----------------------------|------------------|
 | Jordan P. | AE | 1 (generic) | no Coach, no Data Nerd | Coach + CRM Data Nerd | preps every deal + keeps 14 open opps accurate; ends stale-CRM | 2 new Professional agents (live price); 3 automated slots each |
+
+**Coordination** *(people with 2+ agents)*
+| Person | Agents | Who messages them on a schedule | Coordinator | Recommendation |
+|--------|--------|----------------------------------|-------------|----------------|
+| Sam R. | 3 | all 3, separately | none | light CoS: promote "Deal Coach" + daily digest (1 slot, no new agent) |
 
 ### Dimension 3 — Agent quality
 **Identity**

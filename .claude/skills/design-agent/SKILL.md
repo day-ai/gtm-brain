@@ -29,7 +29,7 @@ Spawn or use the **`data-analyst`** to gather grounding (or read it from a recen
 
 - The person's real role and daily work, from `workspace/PEOPLE.md` and their activity in the graph (`search_objects`, a recent meeting via `get_meeting_recording_context`).
 - The company's **process**, which the agent must be fluent in: the pipeline definition(s) and stage criteria, the sales methodology, any documented process. (Read them via `read_crm_schema` — it covers `native_pipeline` and `native_stage` — and `search_objects` with `includeRelationships` for a pipeline's stages; confirm the interpretation with the operator. Written stage entry/exit criteria may not exist as data anywhere — that part comes from the operator or the playbook docs.)
-- What agents the person already has (`assistant_settings` list), so this one covers a *distinct* job slice and doesn't overlap.
+- What agents the person already has (`assistant_settings` list), so this one covers a *distinct* job slice and doesn't overlap. **Count them.** If the person will own 2+ agents once this one exists, the design has to say who coordinates them; see Step 2's *Team of agents* check.
 
 A great agent is built on a real slice of this specific person's week — not a generic role template. Anchor on: what does this person do repeatedly, that an agent could own end-to-end?
 
@@ -39,9 +39,15 @@ Start from the playbook in `.claude/agents/data-analyst.md` (Dimension 2), then 
 
 - **CRM Data Nerd** — keeps opportunities, notes, and context objects correct and complete from what actually happened in conversations. Works on Day AI or alongside HubSpot/Salesforce.
 - **Coach** — deep on every open opportunity; finds patterns, blockers, and what's working on other reps' deals; fluent in *this company's* process; preps before meetings, drafts unblock/follow-up emails.
-- **Relationship Radar · Pipeline/Forecast Analyst · Follow-Up Drafter · Market & Account Watch · Chief of Staff · Playbook Editor · Campaign Operator · Prospector** — match to the role.
+- **Relationship Radar · Pipeline/Forecast Analyst · Follow-Up Drafter · Market & Account Watch · Playbook Editor · Campaign Operator · Prospector** — match to the role.
+- **Chief of Staff** — the one agent a person with several agents talks to: it routes each ask to the agent that owns it, synthesizes one answer, and is the only agent that sends them scheduled messages. Light (2–3 agents: promote an existing agent, add a digest) or full (5+: a dedicated agent with Team Brief pages, a decision queue, and a health check). The skeleton and skills are in [`chief-of-staff.md`](chief-of-staff.md); when to use which, slot math, and platform limits are in `docs/playbooks/run-a-team-of-agents.md`.
 
 **Pick the tier from the job, not the other way round.** Walk `docs/playbooks/choose-a-tier.md`: list what the agent must do, read off the floor (live dashboards → Professional; creating campaigns → Executive; prospecting or owning AI-populated properties → Super, annual-only), count slots (one per automated skill, two per campaign), and justify anything above the floor.
+
+**Team of agents.** When the person owns (or will own) 2+ agents, check these before going further. Delegation only works between agents with the same owner, so count only the person's own agents:
+- **Designing a Chief of Staff:** generate its routing table from the person's actual agents (`assistant_settings → list`, then `manage_skills → list` with `targetAssistantId` for each agent's skills and slash commands), following playbook Step 3. Never write the table from memory. For a light CoS, prefer promoting the agent they talk to most over adding a new agent.
+- **Designing a specialist for someone who has a CoS (or should):** write the specialist contract (playbook Step 5) into its description. Its scheduled skills publish (to its Team Brief page when the CoS is full) instead of messaging the person. Then flag that the CoS's routing table needs a new row; that change is part of this rollout.
+- **2+ agents, no coordinator:** say so in the spec's **Notes** and recommend the light CoS (`docs/playbooks/run-a-team-of-agents.md`). Part of what a new agent costs is one more agent messaging the person.
 
 The archetype is the skeleton. The flesh — the company, the person, the pipeline names, the real accounts — is what makes the agent worth having.
 
@@ -81,6 +87,11 @@ Save a deployment-ready spec to `rollouts/<YYYY-MM-DD>-<person>-<archetype>/AGEN
   > {the full description, ready to paste into assistant_settings}
 - **DISC / personality:** {…}   **Default language:** {…}
 
+## Routing table  *(Chief of Staff only: generated {date} from assistant_settings list + manage_skills list)*
+| Domain | Agent | Route here when… | Skills to target |
+|--------|-------|------------------|------------------|
+| {…} | {…} | {…} | /{slash}, … |
+
 ## Starter skills
 ### {Skill name}  ·  /{slash}  ·  {SCHEDULE 0 8 * * 1-5 America/New_York | EVENT … | NEITHER}  ·  {Slack #… | email}
 ```
@@ -90,6 +101,7 @@ Save a deployment-ready spec to `rollouts/<YYYY-MM-DD>-<person>-<archetype>/AGEN
 
 ## Notes
 - {what this agent does NOT do — the boundary with the person's other agents}
+- {team of agents: who coordinates this person's agents (CoS name, light or full), and the routing-table row this agent adds; or "single agent, no CoS"}
 - {further reading: the one Day AI guide that matches this agent's job, from `docs/GUIDES.md` (e.g. keep-pipeline-accurate for a CRM Data Nerd, ai-meeting-prep for a Coach), linked, never pasted}
 - {process assumptions to confirm with the operator; data the skills depend on}
 ```

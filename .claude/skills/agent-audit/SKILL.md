@@ -48,13 +48,16 @@ Evaluate all three dimensions per your instructions:
    Recommend invites/resends AND draft the personal nudge emails the operator can send themselves.
 2. Agent coverage — does every active person have ≥2 agents covering distinct job functions?
    Recommend the missing agents by archetype (every seller needs a CRM Data Nerd and a Coach),
-   favoring human-shaped agents built on a real slice of each person's week.
+   favoring human-shaped agents built on a real slice of each person's week. For anyone with 2+
+   agents, check coordination: is there one interface (a Chief of Staff, light or full, per
+   docs/playbooks/run-a-team-of-agents.md), or does each agent message them separately?
 3. Agent quality — for each agent: skill craft (vs write-skill bar), automation fitness (scheduled/
    triggered vs manual, right cadence), and effectiveness from `manage_skills → get_history` (firing recently?
    output substantive vs hollow? delivered — per the run's `notification.delivered`, not channel config?). And
    identity quality: name, title, and especially the description (the agent's system prompt). The one
    thing you still can't see is engagement depth (does a human act on the output?) — name it plainly
-   as unmeasured.
+   as unmeasured. Where a Chief of Staff exists, audit it too (your 3d): routing table vs. the
+   person's real agents and skills, delegation evidence, single interface, and platform-limit traps.
 Recommend; do not execute. Return your full analysis in your output format, prioritized for /implement.
 ```
 
@@ -75,6 +78,7 @@ Save to `rollouts/<YYYY-MM-DD>-agent-audit/REPORT.md` and present a tight summar
 | Agents with a strong identity (name + title + description) | {N}/{N} |
 | Skills well-written AND properly automated | {N}/{N} |
 | Scheduled skills confirmed firing with substantive, delivered output | {N}/{N} |
+| People with 2+ agents who hear from one coordinating agent (a Chief of Staff) | {N}/{N} |
 | People who should be in the workspace but aren't | {N} |
 | Recommended new agents · tier changes · ~free moves (no new agent or tier change) | {N} · {N} · {N} |
 | Agents on a tier that doesn't fit their work (under-tiered for their skills, or paying for gates they never use) | {N}/{N} |

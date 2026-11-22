@@ -148,5 +148,6 @@ The connect-day flow: everything discovery authored in `rollouts/preflight/` get
 - **Invites are outward-facing.** They email real people. Treat the invite list with the same care as the skill prompts — confirm role and rationale for each.
 - **Respect tier budgets.** Automated skills consume the target agent's slots; over-budget creates are rejected. Prefer one excellent scheduled skill over several thin ones, and prefer a single MANAGED workspace-library skill when a whole team needs the same capability.
 - **Don't touch Actions or Opportunity-automation skills** unless the scope explicitly includes them.
+- **Chief of Staff rollouts deploy bottom-up** (`docs/playbooks/run-a-team-of-agents.md` Step 7): specialist descriptions, Team Brief pages and folder, specialist publish skills (with their direct deliveries to the person switched off), then the CoS description with its routing table regenerated from the live agents and skills, then the CoS briefing or digest. A briefing deployed before the sections it reads exist opens with nothing but MISSING.
 - **Always snapshot after deploying.** The `read`/`list` output is the only before/after record an agent has.
 - If the operator is a Member, the only writes available are to their own agent. Be clear about that rather than letting calls fail one by one.
